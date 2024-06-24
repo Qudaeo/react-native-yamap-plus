@@ -8,35 +8,35 @@ import android.os.Looper;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.Field;
 import java.net.URL;
-import java.net.URLConnection;
 
 public class ImageLoader {
     private static int getResId(String resName, Class<?> c) {
         try {
-            Field idField = c.getDeclaredField(resName);
+            var idField = c.getDeclaredField(resName);
             return idField.getInt(idField);
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception ex) {
+            ex.printStackTrace();
             return -1;
         }
     }
 
     private static Bitmap getBitmap(final Context context, final String url) throws IOException {
-        if (url.contains("http://") || url.contains("https://")) {
-            URL aURL = new URL(url);
-            URLConnection conn = aURL.openConnection();
+        if (url.startsWith("http://") || url.startsWith("https://")) {
+            var aURL = new URL(url);
+            var conn = aURL.openConnection();
             conn.connect();
-            InputStream is = conn.getInputStream();
-            BufferedInputStream bis = new BufferedInputStream(is);
-            Bitmap bitmap = BitmapFactory.decodeStream(bis);
+
+            var is = conn.getInputStream();
+            var bis = new BufferedInputStream(is);
+            var bitmap = BitmapFactory.decodeStream(bis);
             bis.close();
             is.close();
+
             return bitmap;
         }
-        int id = context.getResources().getIdentifier(url, "drawable", context.getPackageName());
+
+        var id = context.getResources().getIdentifier(url, "drawable", context.getPackageName());
 
         return BitmapFactory.decodeResource(context.getResources(), id); //getResId(url, R.drawable.class));
     }
@@ -46,17 +46,12 @@ public class ImageLoader {
             @Override
             public void run() {
                 try {
-                    final Bitmap bitmap = getBitmap(context, url);
+                    final var bitmap = getBitmap(context, url);
                     if (bitmap != null) {
-                        new Handler(Looper.getMainLooper()).post(new Runnable() {
-                            @Override
-                            public void run() {
-                                cb.invoke(bitmap);
-                            }
-                        });
+                        new Handler(Looper.getMainLooper()).post(() -> cb.invoke(bitmap));
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
                 }
             }
         }.start();

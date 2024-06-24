@@ -39,8 +39,7 @@ export interface YaMapProps extends ViewProps {
   nightMode?: boolean;
   mapStyle?: string;
   mapType?: MapType;
-  onCameraPositionChange?: (event: NativeSyntheticEvent<CameraPosition>) => void;
-  onCameraPositionChangeEnd?: (event: NativeSyntheticEvent<CameraPosition>) => void;
+  onCameraPositionChanged?: (event: NativeSyntheticEvent<CameraPosition>) => void;
   onMapPress?: (event: NativeSyntheticEvent<Point>) => void;
   onMapLongPress?: (event: NativeSyntheticEvent<Point>) => void;
   onMapLoaded?: (event: NativeSyntheticEvent<MapLoaded>) => void;
@@ -86,21 +85,15 @@ export class YaMap extends React.Component<YaMapProps> {
   }
 
   public static setLocale(locale: string): Promise<void> {
-    return new Promise((resolve, reject) => {
-      NativeYamapModule.setLocale(locale, () => resolve(), (err: string) => reject(new Error(err)));
-    });
+    return NativeYamapModule.setLocale(locale);
   }
 
   public static getLocale(): Promise<string> {
-    return new Promise((resolve, reject) => {
-      NativeYamapModule.getLocale((locale: string) => resolve(locale), (err: string) => reject(new Error(err)));
-    });
+    return NativeYamapModule.getLocale();
   }
 
   public static resetLocale(): Promise<void> {
-    return new Promise((resolve, reject) => {
-      NativeYamapModule.resetLocale(() => resolve(), (err: string) => reject(new Error(err)));
-    });
+    return NativeYamapModule.resetLocale();
   }
 
   public findRoutes(points: Point[], vehicles: Vehicles[], callback: (event: RoutesFoundEvent<DrivingInfo | MasstransitInfo>) => void) {

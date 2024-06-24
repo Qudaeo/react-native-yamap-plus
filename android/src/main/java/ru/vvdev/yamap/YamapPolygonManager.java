@@ -20,7 +20,8 @@ import ru.vvdev.yamap.view.YamapPolygon;
 public class YamapPolygonManager extends ViewGroupManager<YamapPolygon> {
     public static final String REACT_CLASS = "YamapPolygon";
 
-    YamapPolygonManager() { }
+    YamapPolygonManager() {
+    }
 
     @Override
     public String getName() {

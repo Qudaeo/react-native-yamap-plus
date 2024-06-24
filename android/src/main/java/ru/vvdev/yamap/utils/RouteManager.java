@@ -8,8 +8,8 @@ import java.util.HashMap;
 
 // todo: не используется
 public class RouteManager {
-    private HashMap<String, Route> data = new HashMap<>();
-    private HashMap<String, ArrayList<MapObject>> mapObjects = new HashMap<>();
+    private final HashMap<String, Route> data = new HashMap<>();
+    private final HashMap<String, ArrayList<MapObject>> mapObjects = new HashMap<>();
 
     public static String generateId() {
         return java.util.UUID.randomUUID().toString();

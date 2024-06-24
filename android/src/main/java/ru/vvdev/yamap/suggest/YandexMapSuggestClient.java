@@ -26,8 +26,8 @@ import java.util.List;
 import ru.vvdev.yamap.utils.Callback;
 
 public class YandexMapSuggestClient implements MapSuggestClient {
-    private SearchManager searchManager;
-    private SuggestOptions suggestOptions = new SuggestOptions();
+    private final SearchManager searchManager;
+    private final SuggestOptions suggestOptions = new SuggestOptions();
     private SuggestSession suggestSession;
 
     /**
@@ -37,7 +37,7 @@ public class YandexMapSuggestClient implements MapSuggestClient {
      * в градусах. Получается, что координаты самой юго-западной точки, это
      * ширина = -90, долгота = -180, а самой северо-восточной - ширина = 90, долгота = 180
      */
-    private BoundingBox defaultGeometry = new BoundingBox(new Point(-90.0, -180.0), new Point(90.0, 180.0));
+    private final BoundingBox defaultGeometry = new BoundingBox(new Point(-90.0, -180.0), new Point(90.0, 180.0));
 
     public YandexMapSuggestClient(Context context) {
         searchManager = SearchFactory.getInstance().createSearchManager(SearchManagerType.COMBINED);
@@ -173,7 +173,7 @@ public class YandexMapSuggestClient implements MapSuggestClient {
             suggestType = SuggestType.UNSPECIFIED.value;
             ReadableArray suggestTypesArray = options.getArray(suggestTypesKey);
             for (int i = 0; i < suggestTypesArray.size(); i++) {
-                if(suggestTypesArray.getType(i) != ReadableType.Number){
+                if (suggestTypesArray.getType(i) != ReadableType.Number) {
                     onError.invoke(new IllegalStateException("suggest error: one or more " + suggestTypesKey + " is not an Number"));
                     return;
                 }

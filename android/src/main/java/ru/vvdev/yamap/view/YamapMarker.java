@@ -1,12 +1,10 @@
 package ru.vvdev.yamap.view;
 
 import android.animation.ValueAnimator;
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.PointF;
-import android.os.Looper;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
 
@@ -14,7 +12,6 @@ import androidx.annotation.NonNull;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactContext;
-import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.uimanager.events.RCTEventEmitter;
 import com.facebook.react.views.view.ReactViewGroup;
 import com.yandex.mapkit.geometry.Point;
@@ -26,35 +23,26 @@ import com.yandex.mapkit.map.RotationType;
 import com.yandex.runtime.image.ImageProvider;
 
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.logging.Handler;
+import java.util.Objects;
 
 import ru.vvdev.yamap.models.ReactMapObject;
-import ru.vvdev.yamap.utils.Callback;
-import ru.vvdev.yamap.utils.ImageLoader;
 
 public class YamapMarker extends ReactViewGroup implements MapObjectTapListener, ReactMapObject {
-    public Point point;
-    private int zIndex = 1;
-    private float scale = 1;
-    private Boolean visible = true;
-    private Boolean rotated = false;
-    private int YAMAP_FRAMES_PER_SECOND = 25;
-    private PointF markerAnchor = null;
-    private String iconSource;
-    private View _childView;
-    private PlacemarkMapObject mapObject;
-    private ArrayList<View> childs = new ArrayList<>();
+    //    private final int YAMAP_FRAMES_PER_SECOND = 25;
 
-    private OnLayoutChangeListener childLayoutListener = new OnLayoutChangeListener() {
-        @Override
-        public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
-            updateMarker();
-        }
-    };
+    private Point _point;
+
+    private int _zIndex = 1;
+    private float _scale = 1;
+    private Boolean _visible = true;
+    private Boolean _rotated = false;
+    private PointF _anchor = null;
+    private String _iconSource;
+    private View _childView;
+    private PlacemarkMapObject _mapObject;
+    private final ArrayList<View> _childs = new ArrayList<>();
+
+    private final OnLayoutChangeListener _onLayoutChangeListener = (v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> updateMarker();
 
     public YamapMarker(Context context) {
         super(context);
@@ -65,155 +53,177 @@ public class YamapMarker extends ReactViewGroup implements MapObjectTapListener,
     }
 
     // PROPS
-    public void setPoint(Point _point) {
-        point = _point;
+    public void setPoint(Point point) {
+        if (this._point == point) return;
+        this._point = point;
+
         updateMarker();
     }
 
-    public void setZIndex(int _zIndex) {
-        zIndex = _zIndex;
+    public Point getPoint() {
+        return _point;
+    }
+
+    public void setZIndex(int zIndex) {
+        if (_zIndex == zIndex) return;
+        _zIndex = zIndex;
+
         updateMarker();
     }
 
-    public void setScale(float _scale) {
-        scale = _scale;
+    public void setScale(float scale) {
+        if (_scale == scale) return;
+        _scale = scale;
+
         updateMarker();
     }
 
-    public void setRotated(Boolean _rotated) {
-        rotated = _rotated;
+    public void setRotated(Boolean rotated) {
+        if (_rotated == rotated) return;
+        _rotated = rotated;
+
         updateMarker();
     }
 
-    public void setVisible(Boolean _visible) {
-        visible = _visible;
+    public void setVisible(Boolean visible) {
+        if (_visible == visible) return;
+        _visible = visible;
+
         updateMarker();
     }
 
     public void setIconSource(String source) {
-        iconSource = source;
+        if (Objects.equals(_iconSource, source)) return;
+        _iconSource = source;
+
         updateMarker();
     }
 
     public void setAnchor(PointF anchor) {
-        markerAnchor = anchor;
+        if (_anchor == anchor) return;
+        _anchor = anchor;
+
         updateMarker();
     }
 
-    private void updateMarker() {
-        if (mapObject != null && mapObject.isValid()) {
-            final IconStyle iconStyle = new IconStyle();
-            iconStyle.setScale(scale);
-            iconStyle.setRotationType(rotated ? RotationType.ROTATE : RotationType.NO_ROTATION);
-            iconStyle.setVisible(visible);
-            if (markerAnchor != null) {
-                iconStyle.setAnchor(markerAnchor);
-            }
-            mapObject.setGeometry(point);
-            mapObject.setZIndex(zIndex);
-            mapObject.setIconStyle(iconStyle);
+    public void updateMarker() {
+        if (_mapObject == null || !_mapObject.isValid()) return;
 
-            if (_childView != null) {
-                try {
-                    Bitmap b = Bitmap.createBitmap(_childView.getWidth(), _childView.getHeight(), Bitmap.Config.ARGB_8888);
-                    Canvas c = new Canvas(b);
-                    _childView.draw(c);
-                    mapObject.setIcon(ImageProvider.fromBitmap(b));
-                    mapObject.setIconStyle(iconStyle);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-            if (childs.size() == 0) {
-                if (!iconSource.equals("")) {
-                    YamapView parent = (YamapView)getParent();
-                    if (parent!=null) {
-                        parent.setImage(iconSource, mapObject, iconStyle);
-                    }
-                }
+        final var iconStyle = new IconStyle();
+        iconStyle.setScale(_scale);
+        iconStyle.setRotationType(_rotated ? RotationType.ROTATE : RotationType.NO_ROTATION);
+        iconStyle.setVisible(_visible);
+
+        if (_anchor != null) {
+            iconStyle.setAnchor(_anchor);
+        }
+        _mapObject.setGeometry(_point);
+        _mapObject.setZIndex(_zIndex);
+        _mapObject.setIconStyle(iconStyle);
+
+        if (_childView != null) {
+            try {
+                var b = Bitmap.createBitmap(_childView.getWidth(), _childView.getHeight(), Bitmap.Config.ARGB_8888);
+                var c = new Canvas(b);
+                _childView.draw(c);
+                _mapObject.setIcon(ImageProvider.fromBitmap(b));
+                _mapObject.setIconStyle(iconStyle);
+            } catch (Exception ex) {
+                ex.printStackTrace();
             }
         }
-    }
 
-    public void setMapObject(MapObject obj) {
-        mapObject = (PlacemarkMapObject) obj;
-        mapObject.addTapListener(this);
-        updateMarker();
+        if (_childs.isEmpty() && !_iconSource.isEmpty()) {
+            var parentView = getParent();
+            if (parentView instanceof final BaseYamapView view) {
+                view.setImage(_iconSource, _mapObject, iconStyle);
+            }
+        }
     }
 
     public MapObject getMapObject() {
-        return mapObject;
+        return _mapObject;
+    }
+
+    public void setMapObject(MapObject obj) {
+        if (_mapObject == obj) return;
+
+        _mapObject = (PlacemarkMapObject) obj;
+        _mapObject.addTapListener(this);
+
+        updateMarker();
     }
 
     public void setChildView(View view) {
+        if (_childView == view) return;
+
         if (view == null) {
-            _childView.removeOnLayoutChangeListener(childLayoutListener);
+            _childView.removeOnLayoutChangeListener(_onLayoutChangeListener);
             _childView = null;
             updateMarker();
-            return;
+        } else {
+            _childView = view;
+            _childView.addOnLayoutChangeListener(_onLayoutChangeListener);
         }
-        _childView = view;
-        _childView.addOnLayoutChangeListener(childLayoutListener);
     }
 
     public void addChildView(View view, int index) {
-        childs.add(index, view);
-        setChildView(childs.get(0));
+        _childs.add(index, view);
+        setChildView(_childs.get(0));
     }
 
     public void removeChildView(int index) {
-        childs.remove(index);
-        setChildView(childs.size() > 0 ? childs.get(0) : null);
+        _childs.remove(index);
+        setChildView(!_childs.isEmpty() ? _childs.get(0) : null);
     }
 
     public void moveAnimationLoop(double lat, double lon) {
-        PlacemarkMapObject placemark = (PlacemarkMapObject) this.getMapObject();
+        var placemark = (PlacemarkMapObject) this.getMapObject();
         placemark.setGeometry(new Point(lat, lon));
     }
 
     public void rotateAnimationLoop(float delta) {
-        PlacemarkMapObject placemark = (PlacemarkMapObject) this.getMapObject();
+        var placemark = (PlacemarkMapObject) this.getMapObject();
         placemark.setDirection(delta);
     }
 
     public void animatedMoveTo(Point point, final float duration) {
-        PlacemarkMapObject placemark = (PlacemarkMapObject) this.getMapObject();
-        Point p = placemark.getGeometry();
-        final double startLat = p.getLatitude();
-        final double startLon = p.getLongitude();
-        final double deltaLat = point.getLatitude() - startLat;
-        final double deltaLon = point.getLongitude() - startLon;
-        ValueAnimator valueAnimator = ValueAnimator.ofFloat(0, 1);
+        var placemark = (PlacemarkMapObject) this.getMapObject();
+        var p = placemark.getGeometry();
+
+        final var startLat = p.getLatitude();
+        final var startLon = p.getLongitude();
+        final var deltaLat = point.getLatitude() - startLat;
+        final var deltaLon = point.getLongitude() - startLon;
+
+        var valueAnimator = ValueAnimator.ofFloat(0, 1);
         valueAnimator.setDuration((long) duration);
         valueAnimator.setInterpolator(new LinearInterpolator());
-        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override public void onAnimationUpdate(ValueAnimator animation) {
-                try {
-                    float v = animation.getAnimatedFraction();
-                    moveAnimationLoop(startLat + v*deltaLat, startLon + v*deltaLon);
-                } catch (Exception ex) {
-                    // I don't care atm..
-                }
+        valueAnimator.addUpdateListener(animation -> {
+            try {
+                var v = animation.getAnimatedFraction();
+                moveAnimationLoop(startLat + v * deltaLat, startLon + v * deltaLon);
+            } catch (Exception ex) {
+                ex.printStackTrace();
             }
         });
         valueAnimator.start();
     }
 
     public void animatedRotateTo(final float angle, float duration) {
-        PlacemarkMapObject placemark = (PlacemarkMapObject) this.getMapObject();
-        final float startDirection = placemark.getDirection();
-        final float delta = angle - placemark.getDirection();
-        ValueAnimator valueAnimator = ValueAnimator.ofFloat(0, 1);
+        var placemark = (PlacemarkMapObject) this.getMapObject();
+        final var startDirection = placemark.getDirection();
+        final var delta = angle - placemark.getDirection();
+
+        var valueAnimator = ValueAnimator.ofFloat(0, 1);
         valueAnimator.setDuration((long) duration);
         valueAnimator.setInterpolator(new LinearInterpolator());
-        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override public void onAnimationUpdate(ValueAnimator animation) {
-                try {
-                    float v = animation.getAnimatedFraction();
-                    rotateAnimationLoop(startDirection + v*delta);
-                } catch (Exception ex) {
-                    // I don't care atm..
-                }
+        valueAnimator.addUpdateListener(animation -> {
+            try {
+                var v = animation.getAnimatedFraction();
+                rotateAnimationLoop(startDirection + v * delta);
+            } catch (Exception ex) {
+                ex.printStackTrace();
             }
         });
         valueAnimator.start();
@@ -221,7 +231,7 @@ public class YamapMarker extends ReactViewGroup implements MapObjectTapListener,
 
     @Override
     public boolean onMapObjectTap(@NonNull MapObject mapObject, @NonNull Point point) {
-        WritableMap e = Arguments.createMap();
+        var e = Arguments.createMap();
         ((ReactContext) getContext()).getJSModule(RCTEventEmitter.class).receiveEvent(getId(), "onPress", e);
 
         return false;

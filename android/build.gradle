@@ -1,45 +1,29 @@
-import com.android.Version
-
-def DEFAULT_COMPILE_SDK_VERSION          = 33
-def DEFAULT_TARGET_SDK_VERSION           = 33
-def DEFAULT_MIN_SDK_VERSION              = 21
-def DEFAULT_GOOGLE_PLAY_SERVICES_VERSION = "21.0.1"
+def DEFAULT_COMPILE_SDK_VERSION = 33
+def DEFAULT_TARGET_SDK_VERSION = 33
+def DEFAULT_MIN_SDK_VERSION = 23
+def DEFAULT_GOOGLE_PLAY_SERVICES_VERSION = "21.3.0"
 
 buildscript {
+    ext {
+        agp_version = '7.4.2'
+    }
     repositories {
         google()
         mavenCentral()
     }
     dependencies {
-        classpath "com.android.tools.build:gradle:7.2.2"
+        classpath "com.android.tools.build:gradle:$agp_version"
     }
 }
 
 apply plugin: "com.android.library"
-
-static def supportsNamespace() {
-    def parsed = Version.ANDROID_GRADLE_PLUGIN_VERSION.tokenize('.')
-    def major = parsed[0].toInteger()
-    def minor = parsed[1].toInteger()
-
-    // Namespace support was added in 7.3.0
-    return (major == 7 && minor >= 3) || major >= 8
-}
 
 def safeExtGet(prop, fallback) {
     rootProject.ext.has(prop) ? rootProject.ext.get(prop) : fallback
 }
 
 android {
-    if (supportsNamespace()) {
-        namespace "ru.vvdev.yamap"
-
-        sourceSets {
-            main {
-                manifest.srcFile "src/main/AndroidManifestNew.xml"
-            }
-        }
-    }
+    namespace "ru.vvdev.yamap"
 
     compileSdk safeExtGet('compileSdkVersion', DEFAULT_COMPILE_SDK_VERSION)
 
@@ -50,6 +34,10 @@ android {
     lintOptions {
         abortOnError false
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
 }
 
 repositories {
@@ -58,10 +46,8 @@ repositories {
 }
 
 dependencies {
-    // For < 0.71, this will be from the local maven repo
-    // For > 0.71, this will be replaced by `com.facebook.react:react-android:$version` by react gradle plugin
     //noinspection GradleDynamicVersion
-    implementation "com.facebook.react:react-native:+"
+    implementation 'com.facebook.react:react-android:+'
 
     def googlePlayServicesVersion = safeExtGet('googlePlayServicesVersion', DEFAULT_GOOGLE_PLAY_SERVICES_VERSION)
     googlePlayServicesVersion = safeExtGet('playServicesVersion', googlePlayServicesVersion)

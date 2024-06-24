@@ -8,9 +8,9 @@ import java.util.List;
 
 public final class YandexSuggestRNArgsHelper {
     public WritableArray createSuggestsMapFrom(List<MapSuggestItem> data) {
-        final WritableArray result = Arguments.createArray();
+        final var result = Arguments.createArray();
 
-        for (int i = 0; i < data.size(); i++) {
+        for (var i = 0; i < data.size(); i++) {
             result.pushMap(createSuggestMapFrom(data.get(i)));
         }
 
@@ -18,7 +18,7 @@ public final class YandexSuggestRNArgsHelper {
     }
 
     private WritableMap createSuggestMapFrom(MapSuggestItem data) {
-        final WritableMap result = Arguments.createMap();
+        final var result = Arguments.createMap();
         result.putString("title", data.getTitle());
         result.putString("subtitle", data.getSubtitle());
         result.putString("uri", data.getUri());

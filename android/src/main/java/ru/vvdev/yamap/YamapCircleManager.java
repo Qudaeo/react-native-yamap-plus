@@ -16,7 +16,8 @@ import ru.vvdev.yamap.view.YamapCircle;
 public class YamapCircleManager extends ViewGroupManager<YamapCircle> {
     public static final String REACT_CLASS = "YamapCircle";
 
-    YamapCircleManager() { }
+    YamapCircleManager() {
+    }
 
     @Override
     public String getName() {

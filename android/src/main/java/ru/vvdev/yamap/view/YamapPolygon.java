@@ -42,7 +42,7 @@ public class YamapPolygon extends ViewGroup implements MapObjectTapListener, Rea
 
     // PROPS
     public void setPolygonPoints(ArrayList<Point> points) {
-        _points = (points !=  null) ? points :new ArrayList<Point>();
+        _points = (points != null) ? points : new ArrayList<Point>();
         updatePolygonGeometry();
         updatePolygon();
     }
@@ -93,14 +93,14 @@ public class YamapPolygon extends ViewGroup implements MapObjectTapListener, Rea
         }
     }
 
+    public MapObject getMapObject() {
+        return mapObject;
+    }
+
     public void setMapObject(MapObject obj) {
         mapObject = (PolygonMapObject) obj;
         mapObject.addTapListener(this);
         updatePolygon();
-    }
-
-    public MapObject getMapObject() {
-        return mapObject;
     }
 
     @Override

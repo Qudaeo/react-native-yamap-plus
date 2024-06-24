@@ -105,3 +105,8 @@ export type YandexLogoPadding = {
   horizontal?: number;
   vertical?: number;
 }
+
+export type ClusterMarker<T = any> = {
+  point: Point;
+  data: T;
+}

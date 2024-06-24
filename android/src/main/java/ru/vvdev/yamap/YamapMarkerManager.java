@@ -5,7 +5,6 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 
-import com.facebook.infer.annotation.Assertions;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.common.MapBuilder;
@@ -20,13 +19,14 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import ru.vvdev.yamap.view.YamapMarker;
-import ru.vvdev.yamap.view.YamapView;
 
 public class YamapMarkerManager extends ViewGroupManager<YamapMarker> {
     public static final String REACT_CLASS = "YamapMarker";
 
-    YamapMarkerManager() {}
+    YamapMarkerManager() {
+    }
 
+    @NonNull
     @Override
     public String getName() {
         return REACT_CLASS;
@@ -57,12 +57,12 @@ public class YamapMarkerManager extends ViewGroupManager<YamapMarker> {
     // PROPS
     @ReactProp(name = "point")
     public void setPoint(View view, ReadableMap markerPoint) {
-        if (markerPoint != null) {
-            double lon = markerPoint.getDouble("lon");
-            double lat = markerPoint.getDouble("lat");
-            Point point = new Point(lat, lon);
-            castToMarkerView(view).setPoint(point);
-        }
+        if (markerPoint == null) return;
+
+        var lon = markerPoint.getDouble("lon");
+        var lat = markerPoint.getDouble("lat");
+        var point = new Point(lat, lon);
+        castToMarkerView(view).setPoint(point);
     }
 
     @ReactProp(name = "zIndex")
@@ -87,9 +87,9 @@ public class YamapMarkerManager extends ViewGroupManager<YamapMarker> {
 
     @ReactProp(name = "source")
     public void setSource(View view, String source) {
-        if (source != null) {
-            castToMarkerView(view).setIconSource(source);
-        }
+        if (source == null) return;
+
+        castToMarkerView(view).setIconSource(source);
     }
 
     @ReactProp(name = "anchor")
@@ -110,29 +110,29 @@ public class YamapMarkerManager extends ViewGroupManager<YamapMarker> {
     }
 
     @Override
-    public void receiveCommand(
-            @NonNull YamapMarker view,
-            String commandType,
-            @Nullable ReadableArray args) {
+    public void receiveCommand(@NonNull YamapMarker view, String commandType, @Nullable ReadableArray args) {
         switch (commandType) {
             case "animatedMoveTo":
-                ReadableMap markerPoint = args.getMap(0);
-                int moveDuration = args.getInt(1);
-                float lon = (float) markerPoint.getDouble("lon");
-                float lat = (float) markerPoint.getDouble("lat");
-                Point point = new Point(lat, lon);
+                if (args == null) break;
+
+                var markerPoint = args.getMap(0);
+                var moveDuration = args.getInt(1);
+                var lon = (float) markerPoint.getDouble("lon");
+                var lat = (float) markerPoint.getDouble("lat");
+                var point = new Point(lat, lon);
                 castToMarkerView(view).animatedMoveTo(point, moveDuration);
-                return;
+                break;
+
             case "animatedRotateTo":
-                int angle = args.getInt(0);
-                int rotateDuration = args.getInt(1);
+                if (args == null) break;
+
+                var angle = args.getInt(0);
+                var rotateDuration = args.getInt(1);
                 castToMarkerView(view).animatedRotateTo(angle, rotateDuration);
-                return;
+                break;
+
             default:
-                throw new IllegalArgumentException(String.format(
-                        "Unsupported command %d received by %s.",
-                        commandType,
-                        getClass().getSimpleName()));
+                throw new IllegalArgumentException(String.format("Unsupported command %s received by %s.", commandType, getClass().getSimpleName()));
         }
     }
 }

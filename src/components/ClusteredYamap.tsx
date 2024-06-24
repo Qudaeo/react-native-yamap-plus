@@ -27,25 +27,26 @@ import {
   MapLoaded,
   InitialRegion,
   YandexLogoPosition,
-  YandexLogoPadding
+  YandexLogoPadding,
+  ClusterMarker
 } from '../interfaces';
 import { processColorProps } from '../utils';
 import { YaMap } from './Yamap';
+import { convertClusterMarkers } from '../utils/Convert';
 
 const { yamap: NativeYamapModule } = NativeModules;
 
 export interface ClusteredYaMapProps<T = any> extends ViewProps {
   userLocationIcon?: ImageSourcePropType;
   userLocationIconScale?: number;
-  clusteredMarkers: ReadonlyArray<{point: Point, data: T}>
+  clusteredMarkers: ReadonlyArray<ClusterMarker<T>>
   renderMarker: (info: {point: Point, data: ListRenderItemInfo<T>}, index: number) => React.ReactElement
   clusterColor?: string;
   showUserPosition?: boolean;
   nightMode?: boolean;
   mapStyle?: string;
   mapType?: MapType;
-  onCameraPositionChange?: (event: NativeSyntheticEvent<CameraPosition>) => void;
-  onCameraPositionChangeEnd?: (event: NativeSyntheticEvent<CameraPosition>) => void;
+  onCameraPositionChanged?: (event: NativeSyntheticEvent<CameraPosition>) => void;
   onMapPress?: (event: NativeSyntheticEvent<Point>) => void;
   onMapLongPress?: (event: NativeSyntheticEvent<Point>) => void;
   onMapLoaded?: (event: NativeSyntheticEvent<MapLoaded>) => void;
@@ -63,7 +64,11 @@ export interface ClusteredYaMapProps<T = any> extends ViewProps {
   logoPadding?: YandexLogoPadding;
 }
 
-const YaMapNativeComponent = requireNativeComponent<Omit<ClusteredYaMapProps, 'clusteredMarkers'> & {clusteredMarkers: Point[]}>('ClusteredYamapView');
+type YaMapNativeComponentProps<T = any> = Omit<ClusteredYaMapProps<T>, 'clusteredMarkers'> & {
+  clusteredMarkers: ReadonlyArray<number>;
+}
+
+const YaMapNativeComponent = requireNativeComponent<YaMapNativeComponentProps>('ClusteredYamapView');
 
 export class ClusteredYamap extends React.Component<ClusteredYaMapProps> {
   static defaultProps = {
@@ -247,7 +252,7 @@ export class ClusteredYamap extends React.Component<ClusteredYaMapProps> {
   private getProps() {
     const props = {
       ...this.props,
-      clusteredMarkers: this.props.clusteredMarkers.map(mark => mark.point),
+      clusteredMarkers: convertClusterMarkers(this.props.clusteredMarkers),
       children: this.props.clusteredMarkers.map(this.props.renderMarker),
       onRouteFound: this.processRoute,
       onCameraPositionReceived: this.processCameraPosition,

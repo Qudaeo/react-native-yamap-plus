@@ -1,46 +1,11 @@
 {
-  "name": "react-native-yamap-plus",
-  "version": "4.2.13",
+  "name": "@wirthus/react-native-yamap",
+  "version": "4.3.0",
   "description": "Yandex.MapKit and Yandex.Geocoder for react-native",
-  "main": "lib/commonjs/index",
   "module": "lib/module/index",
   "types": "lib/typescript/index.d.ts",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "prepare": "bob build",
-    "release": "release-it"
-  },
-  "homepage": "https://github.com/qudaeo/react-native-yamap-plus",
-  "keywords": [
-    "react-native",
-    "mapkit",
-    "yandex",
-    "yamap",
-    "polygon",
-    "polyline",
-    "marker",
-    "map",
-    "maps",
-    "react-native-maps",
-    "yandexmap",
-    "yandexmaps",
-    "geocoder"
-  ],
-  "author": "Nikita Sirotkin",
-  "license": "MIT",
-  "devDependencies": {
-    "@types/react": "*",
-    "@types/react-native": "*",
-    "react-native-builder-bob": "0.23.2",
-    "release-it": "17.3.0",
-    "typescript": "5.4.5"
-  },
-  "peerDependencies": {
-    "react": "*",
-    "react-native": "*"
-  },
-  "react-native": "src/index.ts",
   "source": "src/index.ts",
+  "react-native": "src/index.ts",
   "files": [
     "src",
     "lib",
@@ -61,11 +26,47 @@
     "!**/__mocks__",
     "!**/.*"
   ],
+  "homepage": "https://github.com/wirthus/react-native-yamap",
+  "keywords": [
+    "react-native",
+    "mapkit",
+    "yandex",
+    "yamap",
+    "polygon",
+    "polyline",
+    "marker",
+    "map",
+    "maps",
+    "react-native-maps",
+    "yandexmap",
+    "yandexmaps",
+    "geocoder"
+  ],
+  "author": "Nikita Sirotkin",
+  "license": "MIT",
+  "scripts": {
+    "clean": "rimraf lib",
+    "build": "bob build",
+    "release": "release-it",
+    "release:dryRun": "release-it --dry-run"
+  },
+  "devDependencies": {
+    "@types/react": "~18.2",
+    "react": "~18.2",
+    "react-native": "~0.74",
+    "react-native-builder-bob": "^0.23.2",
+    "release-it": "^17.4.0",
+    "rimraf": "^5.0.7",
+    "typescript": "^5.5.2"
+  },
+  "peerDependencies": {
+    "react": "*",
+    "react-native": "*"
+  },
   "react-native-builder-bob": {
     "source": "src",
     "output": "lib",
     "targets": [
-      "commonjs",
       "module",
       [
         "typescript",
@@ -78,5 +79,9 @@
   "eslintIgnore": [
     "node_modules/",
     "lib/"
-  ]
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "packageManager": "pnpm@9.4.0+sha512.f549b8a52c9d2b8536762f99c0722205efc5af913e77835dbccc3b0b0b2ca9e7dc8022b78062c17291c48e88749c70ce88eb5a74f1fa8c4bf5e18bb46c8bd83a"
 }

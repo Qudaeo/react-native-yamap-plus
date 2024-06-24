@@ -103,14 +103,14 @@ public class YamapPolyline extends ViewGroup implements MapObjectTapListener, Re
         }
     }
 
+    public MapObject getMapObject() {
+        return mapObject;
+    }
+
     public void setMapObject(MapObject obj) {
         mapObject = (PolylineMapObject) obj;
         mapObject.addTapListener(this);
         updatePolyline();
-    }
-
-    public MapObject getMapObject() {
-        return mapObject;
     }
 
     @Override

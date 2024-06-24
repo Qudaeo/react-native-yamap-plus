@@ -9,164 +9,216 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 
-import com.facebook.react.bridge.ReactContext;
-import com.facebook.react.bridge.WritableMap;
-import com.facebook.react.uimanager.events.RCTEventEmitter;
 import com.yandex.mapkit.geometry.Point;
-import com.yandex.mapkit.map.CameraPosition;
-import com.yandex.mapkit.map.CameraUpdateReason;
 import com.yandex.mapkit.map.Cluster;
 import com.yandex.mapkit.map.ClusterListener;
 import com.yandex.mapkit.map.ClusterTapListener;
 import com.yandex.mapkit.map.ClusterizedPlacemarkCollection;
 import com.yandex.mapkit.map.IconStyle;
-import com.yandex.mapkit.map.MapObject;
 import com.yandex.mapkit.map.PlacemarkMapObject;
 import com.yandex.runtime.image.ImageProvider;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
-public class ClusteredYamapView extends YamapView implements ClusterListener, ClusterTapListener {
-    private ClusterizedPlacemarkCollection clusterCollection;
-    private int clusterColor = 0;
-    private HashMap<String, PlacemarkMapObject> placemarksMap = new HashMap();
-    private ArrayList<Point> pointsList = new ArrayList<>();
+public class ClusteredYamapView extends BaseYamapView implements ClusterListener, ClusterTapListener {
+    static final double CLUSTER_RADIUS = 50;
+    static final int MIN_ZOOM = 12;
+
+    private ClusterizedPlacemarkCollection _clusterCollection = null;
+    private boolean _needRefreshPoints = false;
+    private int _clusterColor = 0;
+    private final HashMap<String, PlacemarkMapObject> _placemarksMap = new HashMap<>();
+    private ArrayList<Point> _pointsList = new ArrayList<>();
 
     public ClusteredYamapView(Context context) {
         super(context);
-        clusterCollection = getMap().getMapObjects().addClusterizedPlacemarkCollection(this);
+
+        _clusterCollection = getMapWindow().getMap().getMapObjects().addClusterizedPlacemarkCollection(this);
     }
 
-    public void setClusteredMarkers(ArrayList<Object> points) {
-        clusterCollection.clear();
-        placemarksMap.clear();
-        ArrayList<Point> pt = new ArrayList<>();
-        for (int i = 0; i<points.size(); i++) {
-            HashMap<String, Double> point = (HashMap<String, Double>) points.get(i);
-            pt.add(new Point(point.get("lat"), point.get("lon")));
+    @Override
+    public void onViewAttachedToWindow(@NonNull View view) {
+        super.onViewAttachedToWindow(view);
+
+        if (_needRefreshPoints) {
+            refreshPoints();
+            _needRefreshPoints = false;
         }
-        List<PlacemarkMapObject> placemarks = clusterCollection.addPlacemarks(pt, new TextImageProvider(""), new IconStyle());
-        pointsList = pt;
-        for (int i = 0; i<placemarks.size(); i++) {
-            PlacemarkMapObject placemark = placemarks.get(i);
-            placemarksMap.put("" + placemark.getGeometry().getLatitude() + placemark.getGeometry().getLongitude(), placemark);
-            Object child = getChildAt(i);
-            if (child instanceof YamapMarker) {
-                ((YamapMarker)child).setMapObject(placemark);
-            }
-        }
-        clusterCollection.clusterPlacemarks(50, 12);
+    }
+
+    @Override
+    public void onViewDetachedFromWindow(@NonNull View view) {
+        super.onViewDetachedFromWindow(view);
+
+        _clusterCollection.clear();
+        _needRefreshPoints = true;
+    }
+
+    public void setClusteredMarkers(ArrayList<Object> pointObjects) {
+        _pointsList = getPoints(pointObjects);
+
+        refreshPoints();
     }
 
     public void setClustersColor(int color) {
-        clusterColor = color;
-        updateUserMarkersColor();
-    }
+        if (_clusterColor == color) return;
+        _clusterColor = color;
 
-    private void updateUserMarkersColor() {
-        clusterCollection.clear();
-        List<PlacemarkMapObject> placemarks =  clusterCollection.addPlacemarks(pointsList, new TextImageProvider(Integer.toString(pointsList.size())), new IconStyle());
-        for (int i = 0; i<placemarks.size(); i++) {
-            PlacemarkMapObject placemark = placemarks.get(i);
-            placemarksMap.put("" + placemark.getGeometry().getLatitude() + placemark.getGeometry().getLongitude(), placemark);
-            Object child = getChildAt(i);
-            if (child instanceof YamapMarker) {
-                ((YamapMarker)child).setMapObject(placemark);
-            }
-        }
-        clusterCollection.clusterPlacemarks(50, 12);
+        updateUserMarkersColor();
     }
 
     @Override
     public void addFeature(View child, int index) {
-        YamapMarker marker = (YamapMarker) child;
-        PlacemarkMapObject placemark = placemarksMap.get("" + marker.point.getLatitude() + marker.point.getLongitude());
-        if (placemark!=null) {
+        var marker = (YamapMarker) child;
+        var placemark = _placemarksMap.get(getPointKey(marker.getPoint()));
+        if (placemark != null) {
             marker.setMapObject(placemark);
         }
     }
 
     @Override
     public void removeChild(int index) {
-        if (getChildAt(index) instanceof YamapMarker) {
-            final YamapMarker child = (YamapMarker) getChildAt(index);
-            if (child == null) return;
-            final MapObject mapObject = child.getMapObject();
+        var childView = getChildAt(index);
+        if (childView instanceof final YamapMarker child) {
+            final var mapObject = child.getMapObject();
             if (mapObject == null || !mapObject.isValid()) return;
-            clusterCollection.remove(mapObject);
-            placemarksMap.remove("" + child.point.getLatitude() + child.point.getLongitude());
+
+            _clusterCollection.remove(mapObject);
+            _placemarksMap.remove(getPointKey(child.getPoint()));
         }
     }
 
     @Override
     public void onClusterAdded(@NonNull Cluster cluster) {
-        cluster.getAppearance().setIcon(new TextImageProvider(Integer.toString(cluster.getSize())));
+        var text = Integer.toString(cluster.getSize());
+        var image = new TextImageProvider(text, _clusterColor);
+        cluster.getAppearance().setIcon(image);
         cluster.addClusterTapListener(this);
     }
 
     @Override
     public boolean onClusterTap(@NonNull Cluster cluster) {
-        ArrayList<Point> points = new ArrayList<>();
-        for (PlacemarkMapObject placemark : cluster.getPlacemarks()) {
+        var placemarks = cluster.getPlacemarks();
+        var points = new ArrayList<Point>(placemarks.size());
+        for (var placemark : cluster.getPlacemarks()) {
             points.add(placemark.getGeometry());
         }
+
         fitMarkers(points);
+
         return true;
     }
 
-    private class TextImageProvider extends ImageProvider {
-        private static final float FONT_SIZE = 45;
-        private static final float MARGIN_SIZE = 9;
-        private static final float STROKE_SIZE = 9;
+    private void refreshPoints() {
+        _clusterCollection.clear();
+        _placemarksMap.clear();
 
-        @Override
-        public String getId() {
-            return "text_" + text;
+        if (!_pointsList.isEmpty()) {
+            // var image = ImageProvider.fromResource(getContext(), R.drawable.ic_dollar_pin);
+            var image = new TextImageProvider("", _clusterColor);
+            var placemarks = _clusterCollection.addPlacemarks(_pointsList, image, new IconStyle());
+
+            for (var i = 0; i < placemarks.size(); i++) {
+                var placemark = placemarks.get(i);
+
+                var key = getPointKey(placemark.getGeometry());
+                _placemarksMap.put(key, placemark);
+
+                var child = getChildAt(i);
+                if (child instanceof final YamapMarker marker) {
+                    marker.setMapObject(placemark);
+                }
+            }
         }
 
-        private final String text;
+        _clusterCollection.clusterPlacemarks(CLUSTER_RADIUS, MIN_ZOOM);
+        _needRefreshPoints = false;
+    }
 
-        @Override
-        public Bitmap getImage() {
-            Paint textPaint = new Paint();
-            textPaint.setTextSize(FONT_SIZE);
-            textPaint.setTextAlign(Paint.Align.CENTER);
-            textPaint.setStyle(Paint.Style.FILL);
-            textPaint.setAntiAlias(true);
+    private void updateUserMarkersColor() {
+        refreshPoints();
+    }
 
-            float widthF = textPaint.measureText(text);
-            Paint.FontMetrics textMetrics = textPaint.getFontMetrics();
-            float heightF = Math.abs(textMetrics.bottom) + Math.abs(textMetrics.top);
-            float textRadius = (float) Math.sqrt(widthF * widthF + heightF * heightF) / 2;
-            float internalRadius = textRadius + MARGIN_SIZE;
-            float externalRadius = internalRadius + STROKE_SIZE;
-
-            int width = (int) (2 * externalRadius + 0.5);
-
-            Bitmap bitmap = Bitmap.createBitmap(width, width, Bitmap.Config.ARGB_8888);
-            Canvas canvas = new Canvas(bitmap);
-
-            Paint backgroundPaint = new Paint();
-            backgroundPaint.setAntiAlias(true);
-            backgroundPaint.setColor(clusterColor);
-            canvas.drawCircle(width / 2, width / 2, externalRadius, backgroundPaint);
-
-            backgroundPaint.setColor(Color.WHITE);
-            canvas.drawCircle(width / 2, width / 2, internalRadius, backgroundPaint);
-
-            canvas.drawText(
-                    text,
-                    width / 2,
-                    width / 2 - (textMetrics.ascent + textMetrics.descent) / 2,
-                    textPaint);
-
-            return bitmap;
+    private ArrayList<Point> getPoints(ArrayList<Object> pointObjects) {
+        if (pointObjects == null || pointObjects.isEmpty()) {
+            return new ArrayList<>(0);
         }
 
-        public TextImageProvider(String text) {
-            this.text = text;
+        if (pointObjects.size() % 2 != 0) {
+            throw new IllegalArgumentException("pointSize % 2 != 0");
         }
+
+        var points = new ArrayList<Point>(pointObjects.size());
+        for (var i = 0; i < pointObjects.size(); i += 2) {
+            var lat = (Double) pointObjects.get(i);
+            var lon = (Double) pointObjects.get(i + 1);
+
+            points.add(new Point(lat, lon));
+        }
+
+        return points;
+    }
+
+    private String getPointKey(Point point) {
+        return "" + point.getLatitude() + point.getLongitude();
+    }
+}
+
+class TextImageProvider extends ImageProvider {
+    private static final float FONT_SIZE = 45;
+    private static final float MARGIN_SIZE = 9;
+    private static final float STROKE_SIZE = 9;
+    private final String _text;
+    private final String _id;
+    private final int _color;
+
+    public TextImageProvider(String text, int color) {
+        this._text = text;
+        this._id = "text_" + _text;
+        this._color = color;
+    }
+
+    @Override
+    public String getId() {
+        return this._id;
+    }
+
+    @Override
+    public Bitmap getImage() {
+        var textPaint = new Paint();
+        textPaint.setTextSize(FONT_SIZE);
+        textPaint.setTextAlign(Paint.Align.CENTER);
+        textPaint.setStyle(Paint.Style.FILL);
+        textPaint.setAntiAlias(true);
+
+        var widthF = textPaint.measureText(_text);
+        var textMetrics = textPaint.getFontMetrics();
+        var heightF = Math.abs(textMetrics.bottom) + Math.abs(textMetrics.top);
+        var textRadius = (float) Math.sqrt(widthF * widthF + heightF * heightF) / 2;
+        var internalRadius = textRadius + MARGIN_SIZE;
+        var externalRadius = internalRadius + STROKE_SIZE;
+
+        final var width = (int) (2 * externalRadius + 0.5);
+        final var halfWidth = (float) width / 2;
+
+        var bitmap = Bitmap.createBitmap(width, width, Bitmap.Config.ARGB_8888);
+        var canvas = new Canvas(bitmap);
+
+        var backgroundPaint = new Paint();
+        backgroundPaint.setAntiAlias(true);
+        backgroundPaint.setColor(_color);
+        canvas.drawCircle(halfWidth, halfWidth, externalRadius, backgroundPaint);
+
+        backgroundPaint.setColor(Color.WHITE);
+        canvas.drawCircle(halfWidth, halfWidth, internalRadius, backgroundPaint);
+
+        canvas.drawText(
+                _text,
+                halfWidth,
+                halfWidth - (textMetrics.ascent + textMetrics.descent) / 2,
+                textPaint);
+
+        return bitmap;
     }
 }

@@ -85,14 +85,14 @@ public class YamapCircle extends ViewGroup implements MapObjectTapListener, Reac
         }
     }
 
+    public MapObject getMapObject() {
+        return mapObject;
+    }
+
     public void setMapObject(MapObject obj) {
         mapObject = (CircleMapObject) obj;
         mapObject.addTapListener(this);
         updateCircle();
-    }
-
-    public MapObject getMapObject() {
-        return mapObject;
     }
 
     @Override

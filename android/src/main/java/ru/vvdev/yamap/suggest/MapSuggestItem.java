@@ -3,48 +3,49 @@ package ru.vvdev.yamap.suggest;
 import javax.annotation.Nullable;
 
 public class MapSuggestItem {
-    private String searchText;
-    private String title;
+    private String _searchText;
+    private String _title;
+
     @Nullable
-    private String subtitle;
+    private String _subTitle;
+
     @Nullable
-    private String uri;
+    private String _uri;
 
     public MapSuggestItem() {
     }
 
     public String getSearchText() {
-        return searchText;
+        return _searchText;
     }
 
     public void setSearchText(String searchText) {
-        this.searchText = searchText;
+        _searchText = searchText;
     }
 
     public String getTitle() {
-        return title;
+        return _title;
     }
 
     public void setTitle(String title) {
-        this.title = title;
+        _title = title;
     }
 
     @Nullable
     public String getSubtitle() {
-        return subtitle;
+        return _subTitle;
     }
 
     public void setSubtitle(@Nullable String subtitle) {
-        this.subtitle = subtitle;
+        _subTitle = subtitle;
     }
-
 
     @Nullable
     public String getUri() {
-        return uri;
+        return _uri;
     }
 
     public void setUri(@Nullable String uri) {
-        this.uri = uri;
+        _uri = uri;
     }
 }
