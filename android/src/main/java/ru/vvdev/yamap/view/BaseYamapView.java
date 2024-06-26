@@ -83,7 +83,7 @@ import ru.vvdev.yamap.utils.RouteManager;
 public abstract class BaseYamapView extends MapView implements UserLocationObjectListener, CameraListener, InputListener, TrafficListener, MapLoadedListener, View.OnAttachStateChangeListener {
     static private final HashMap<String, ImageProvider> _icons = new HashMap<>();
 
-    private Map _map = null;
+    private final Map _map;
     private String _userLocationIcon = "";
     private float _userLocationIconScale = 1.f;
     private Bitmap _userLocationBitmap = null;
@@ -108,7 +108,7 @@ public abstract class BaseYamapView extends MapView implements UserLocationObjec
         _map.addInputListener(this);
         _map.setMapLoadedListener(this);
 
-        this.addOnAttachStateChangeListener(this);
+        addOnAttachStateChangeListener(this);
     }
 
     public void setImage(final String iconSource, final PlacemarkMapObject mapObject, final IconStyle iconStyle) {
@@ -150,15 +150,15 @@ public abstract class BaseYamapView extends MapView implements UserLocationObjec
         var cameraPosition = Arguments.createMap();
 
         var point = position.getTarget();
-        cameraPosition.putDouble("azimuth", position.getAzimuth());
-        cameraPosition.putDouble("tilt", position.getTilt());
-        cameraPosition.putDouble("zoom", position.getZoom());
 
         var target = Arguments.createMap();
         target.putDouble("lat", point.getLatitude());
         target.putDouble("lon", point.getLongitude());
 
         cameraPosition.putMap("point", target);
+        cameraPosition.putDouble("azimuth", position.getAzimuth());
+        cameraPosition.putDouble("tilt", position.getTilt());
+        cameraPosition.putDouble("zoom", position.getZoom());
         cameraPosition.putString("reason", reason.toString());
         cameraPosition.putBoolean("finished", finished);
 
@@ -357,8 +357,9 @@ public abstract class BaseYamapView extends MapView implements UserLocationObjec
     }
 
     public void fitAllMarkers() {
-        var points = new ArrayList<Point>();
-        for (var i = 0; i < getChildCount(); ++i) {
+        var size = getChildCount();
+        var points = new ArrayList<Point>(size);
+        for (var i = 0; i < size; ++i) {
             var obj = getChildAt(i);
             if (obj instanceof final YamapMarker marker) {
                 points.add(marker.getPoint());
@@ -764,12 +765,12 @@ public abstract class BaseYamapView extends MapView implements UserLocationObjec
 
     @Override
     public void onViewAttachedToWindow(@NonNull View view) {
-        MapKitFactory.getInstance().onStart();
+        onStart();
     }
 
     @Override
     public void onViewDetachedFromWindow(@NonNull View view) {
-        MapKitFactory.getInstance().onStop();
+        onStop();
     }
 
     // location listener implementation

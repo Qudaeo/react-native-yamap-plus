@@ -10,7 +10,7 @@ import com.yandex.mapkit.MapKitFactory;
 import ru.vvdev.yamap.view.YamapView;
 
 public class YamapViewManager extends BaseYamapViewManager<YamapView> {
-    public static final String REACT_CLASS = "YamapViewManager";
+    public static final String REACT_CLASS = "YamapView";
 
     @NonNull
     @Override
@@ -20,10 +20,7 @@ public class YamapViewManager extends BaseYamapViewManager<YamapView> {
 
     @Override
     protected YamapView createViewInstanceInternal(@NonNull ThemedReactContext context) {
-        var view = new YamapView(context);
-        MapKitFactory.getInstance().onStart();
-        view.onStart();
-        return view;
+        return new YamapView(context);
     }
 
     @Override

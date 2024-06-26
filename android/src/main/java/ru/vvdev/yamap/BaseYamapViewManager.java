@@ -20,110 +20,147 @@ import java.util.Map;
 import ru.vvdev.yamap.view.BaseYamapView;
 
 public abstract class BaseYamapViewManager<T extends BaseYamapView> extends ViewGroupManager<T> {
-    private static final int SET_CENTER = 1;
-    private static final int FIT_ALL_MARKERS = 2;
-    private static final int FIND_ROUTES = 3;
-    private static final int SET_ZOOM = 4;
-    private static final int GET_CAMERA_POSITION = 5;
-    private static final int GET_VISIBLE_REGION = 6;
-    private static final int SET_TRAFFIC_VISIBLE = 7;
-    private static final int FIT_MARKERS = 8;
-    private static final int GET_SCREEN_POINTS = 9;
-    private static final int GET_WORLD_POINTS = 10;
+    public enum Commands {
+        SET_CENTER(1),
+        FIT_ALL_MARKERS(2),
+        FIND_ROUTES(3),
+        SET_ZOOM(4),
+        GET_CAMERA_POSITION(5),
+        GET_VISIBLE_REGION(6),
+        SET_TRAFFIC_VISIBLE(7),
+        FIT_MARKERS(8),
+        GET_SCREEN_POINTS(9),
+        GET_WORLD_POINTS(10);
 
-    public static final int LAST_COMMAND_ID = GET_WORLD_POINTS;
+        private final int value;
+
+        Commands(int value) {
+            this.value = value;
+        }
+
+        public int getValue() {
+            return value;
+        }
+
+        public static Commands fromString(String command) {
+            switch (command) {
+                case "setCenter":
+                    return SET_CENTER;
+                case "fitAllMarkers":
+                    return FIT_ALL_MARKERS;
+                case "fitMarkers":
+                    return FIT_MARKERS;
+                case "findRoutes":
+                    return FIND_ROUTES;
+                case "setZoom":
+                    return SET_ZOOM;
+                case "getCameraPosition":
+                    return GET_CAMERA_POSITION;
+                case "getVisibleRegion":
+                    return GET_VISIBLE_REGION;
+                case "setTrafficVisible":
+                    return SET_TRAFFIC_VISIBLE;
+                case "getScreenPoints":
+                    return GET_SCREEN_POINTS;
+                case "getWorldPoints":
+                    return GET_WORLD_POINTS;
+                default:
+                    throw new IllegalArgumentException(String.format("Unsupported command %s received.", command));
+            }
+        }
+    }
+
+    public static final int LAST_COMMAND_ID = Commands.GET_WORLD_POINTS.getValue();
 
     @Override
     public Map<String, Object> getExportedCustomDirectEventTypeConstants() {
         return MapBuilder.<String, Object>builder().build();
     }
 
+    @Override
     public Map getExportedCustomBubblingEventTypeConstants() {
+        var v1 = "phasedRegistrationNames";
+        var v2 = "bubbled";
+
         return MapBuilder.builder()
-                .put("routes", MapBuilder.of("phasedRegistrationNames", MapBuilder.of("bubbled", "onRouteFound")))
-                .put("cameraPosition", MapBuilder.of("phasedRegistrationNames", MapBuilder.of("bubbled", "onCameraPositionReceived")))
-                .put("cameraPositionChanged", MapBuilder.of("phasedRegistrationNames", MapBuilder.of("bubbled", "onCameraPositionChanged")))
-                .put("visibleRegion", MapBuilder.of("phasedRegistrationNames", MapBuilder.of("bubbled", "onVisibleRegionReceived")))
-                .put("onMapPress", MapBuilder.of("phasedRegistrationNames", MapBuilder.of("bubbled", "onMapPress")))
-                .put("onMapLongPress", MapBuilder.of("phasedRegistrationNames", MapBuilder.of("bubbled", "onMapLongPress")))
-                .put("onMapLoaded", MapBuilder.of("phasedRegistrationNames", MapBuilder.of("bubbled", "onMapLoaded")))
-                .put("screenToWorldPoints", MapBuilder.of("phasedRegistrationNames", MapBuilder.of("bubbled", "onScreenToWorldPointsReceived")))
-                .put("worldToScreenPoints", MapBuilder.of("phasedRegistrationNames", MapBuilder.of("bubbled", "onWorldToScreenPointsReceived")))
+                .put("routes", MapBuilder.of(v1, MapBuilder.of(v2, "onRouteFound")))
+                .put("cameraPosition", MapBuilder.of(v1, MapBuilder.of(v2, "onCameraPositionReceived")))
+                .put("cameraPositionChanged", MapBuilder.of(v1, MapBuilder.of(v2, "onCameraPositionChanged")))
+                .put("visibleRegion", MapBuilder.of(v1, MapBuilder.of(v2, "onVisibleRegionReceived")))
+                .put("onMapPress", MapBuilder.of(v1, MapBuilder.of(v2, "onMapPress")))
+                .put("onMapLongPress", MapBuilder.of(v1, MapBuilder.of(v2, "onMapLongPress")))
+                .put("onMapLoaded", MapBuilder.of(v1, MapBuilder.of(v2, "onMapLoaded")))
+                .put("screenToWorldPoints", MapBuilder.of(v1, MapBuilder.of(v2, "onScreenToWorldPointsReceived")))
+                .put("worldToScreenPoints", MapBuilder.of(v1, MapBuilder.of(v2, "onWorldToScreenPointsReceived")))
                 .build();
     }
 
     @Override
     public Map<String, Integer> getCommandsMap() {
         Map<String, Integer> map = MapBuilder.newHashMap();
-        map.put("setCenter", SET_CENTER);
-        map.put("fitAllMarkers", FIT_ALL_MARKERS);
-        map.put("findRoutes", FIND_ROUTES);
-        map.put("setZoom", SET_ZOOM);
-        map.put("getCameraPosition", GET_CAMERA_POSITION);
-        map.put("getVisibleRegion", GET_VISIBLE_REGION);
-        map.put("setTrafficVisible", SET_TRAFFIC_VISIBLE);
-        map.put("fitMarkers", FIT_MARKERS);
-        map.put("getScreenPoints", GET_SCREEN_POINTS);
-        map.put("getWorldPoints", GET_WORLD_POINTS);
-
+        for (Commands command : Commands.values()) {
+            map.put(command.name(), command.getValue());
+        }
         return map;
     }
 
     @Override
     public void receiveCommand(@NonNull T view, String commandType, @Nullable ReadableArray args) {
-        switch (commandType) {
-            case "setCenter":
+        var command = Commands.fromString(commandType);
+        switch (command) {
+            case SET_CENTER:
                 if (args != null) {
                     setCenter(view, args.getMap(0), (float) args.getDouble(1), (float) args.getDouble(2), (float) args.getDouble(3), (float) args.getDouble(4), args.getInt(5));
                 }
                 break;
 
-            case "fitAllMarkers":
+            case FIT_ALL_MARKERS:
                 fitAllMarkers(view);
                 break;
 
-            case "fitMarkers":
+            case FIT_MARKERS:
                 if (args != null) {
                     fitMarkers(view, args.getArray(0));
                 }
                 break;
 
-            case "findRoutes":
+            case FIND_ROUTES:
                 if (args != null) {
                     findRoutes(view, args.getArray(0), args.getArray(1), args.getString(2));
                 }
                 break;
 
-            case "setZoom":
+            case SET_ZOOM:
                 if (args != null) {
                     view.setZoom((float) args.getDouble(0), (float) args.getDouble(1), args.getInt(2));
                 }
                 break;
 
-            case "getCameraPosition":
+            case GET_CAMERA_POSITION:
                 if (args != null) {
                     view.emitCameraPositionToJS(args.getString(0));
                 }
                 break;
 
-            case "getVisibleRegion":
+            case GET_VISIBLE_REGION:
                 if (args != null) {
                     view.emitVisibleRegionToJS(args.getString(0));
                 }
                 break;
-            case "setTrafficVisible":
+
+            case SET_TRAFFIC_VISIBLE:
                 if (args != null) {
                     view.setTrafficVisible(args.getBoolean(0));
                 }
                 break;
 
-            case "getScreenPoints":
+            case GET_SCREEN_POINTS:
                 if (args != null) {
                     view.emitWorldToScreenPoints(args.getArray(0), args.getString(1));
                 }
                 break;
 
-            case "getWorldPoints":
+            case GET_WORLD_POINTS:
                 if (args != null) {
                     view.emitScreenToWorldPoints(args.getArray(0), args.getString(1));
                 }

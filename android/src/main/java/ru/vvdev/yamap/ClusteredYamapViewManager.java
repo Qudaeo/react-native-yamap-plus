@@ -22,10 +22,7 @@ public class ClusteredYamapViewManager extends BaseYamapViewManager<ClusteredYam
 
     @Override
     protected ClusteredYamapView createViewInstanceInternal(@NonNull ThemedReactContext context) {
-        var view = new ClusteredYamapView(context);
-        MapKitFactory.getInstance().onStart();
-        view.onStart();
-        return view;
+        return new ClusteredYamapView(context);
     }
 
     @Override
