@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.animation.LinearInterpolator;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactContext;
@@ -27,32 +28,24 @@ import java.util.Objects;
 
 import ru.vvdev.yamap.models.ReactMapObject;
 
-public class YamapMarker extends ReactViewGroup implements MapObjectTapListener, ReactMapObject {
-    //    private final int YAMAP_FRAMES_PER_SECOND = 25;
-
+public class YamapMarker extends ReactViewGroup implements MapObjectTapListener, ReactMapObject, View.OnLayoutChangeListener {
     private Point _point;
 
     private int _zIndex = 1;
     private float _scale = 1;
     private Boolean _visible = true;
     private Boolean _rotated = false;
-    private PointF _anchor = null;
+    private PointF _anchor;
     private String _iconSource;
     private View _childView;
     private PlacemarkMapObject _mapObject;
-    private final ArrayList<View> _childs = new ArrayList<>();
 
-    private final OnLayoutChangeListener _onLayoutChangeListener = (v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> updateMarker();
+    private final ArrayList<View> _childs = new ArrayList<>();
 
     public YamapMarker(Context context) {
         super(context);
     }
 
-    @Override
-    protected void onLayout(boolean changed, int l, int t, int r, int b) {
-    }
-
-    // PROPS
     public void setPoint(Point point) {
         if (this._point == point) return;
         this._point = point;
@@ -117,6 +110,7 @@ public class YamapMarker extends ReactViewGroup implements MapObjectTapListener,
         if (_anchor != null) {
             iconStyle.setAnchor(_anchor);
         }
+
         _mapObject.setGeometry(_point);
         _mapObject.setZIndex(_zIndex);
         _mapObject.setIconStyle(iconStyle);
@@ -141,29 +135,39 @@ public class YamapMarker extends ReactViewGroup implements MapObjectTapListener,
         }
     }
 
-    public MapObject getMapObject() {
+    public @Nullable MapObject getMapObject() {
         return _mapObject;
     }
 
-    public void setMapObject(MapObject obj) {
+    public void setMapObject(@Nullable MapObject obj) {
         if (_mapObject == obj) return;
 
-        _mapObject = (PlacemarkMapObject) obj;
-        _mapObject.addTapListener(this);
+        if (_mapObject != null && _mapObject.isValid()) {
+            _mapObject.removeTapListener(this);
+        }
 
-        updateMarker();
+        if (obj != null) {
+            _mapObject = (PlacemarkMapObject) obj;
+            _mapObject.addTapListener(this);
+
+            updateMarker();
+        } else {
+            _mapObject = null;
+        }
     }
 
     public void setChildView(View view) {
         if (_childView == view) return;
 
-        if (view == null) {
-            _childView.removeOnLayoutChangeListener(_onLayoutChangeListener);
-            _childView = null;
+        if (_childView != null) {
+            _childView.removeOnLayoutChangeListener(this);
+        }
+
+        _childView = view;
+
+        if (_childView != null) {
+            _childView.addOnLayoutChangeListener(this);
             updateMarker();
-        } else {
-            _childView = view;
-            _childView.addOnLayoutChangeListener(_onLayoutChangeListener);
         }
     }
 
@@ -235,5 +239,10 @@ public class YamapMarker extends ReactViewGroup implements MapObjectTapListener,
         ((ReactContext) getContext()).getJSModule(RCTEventEmitter.class).receiveEvent(getId(), "onPress", e);
 
         return false;
+    }
+
+    @Override
+    public void onLayoutChange(View view, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+        updateMarker();
     }
 }

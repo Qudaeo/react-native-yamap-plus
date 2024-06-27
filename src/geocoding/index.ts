@@ -1,6 +1,7 @@
-import Query from './Query';
+import type { Point } from '../interfaces';
+
 import { GeocodingApiError } from './GeocodingApiError';
-import { Point } from '../interfaces';
+import Query from './Query';
 
 export type ObjectKind = 'house' | 'street' | 'metro' | 'district' | 'locality';
 export type Lang = 'ru_RU' | 'uk_UA' | 'be_BY' | 'en_RU' | 'en_US' | 'tr_TR';
@@ -11,7 +12,7 @@ export interface Address {
   country_code: string;
   formatted: string;
   postal_code: string;
-  Components: {kind: string, name: string}[];
+  Components: {kind: string; name: string}[];
 }
 
 export class Geocoder {

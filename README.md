@@ -60,19 +60,19 @@ dependencies {
 Для этого лучше всего зайти в корневой файл приложения, например `App.js`, и добавить инициализацию:
 
 ```js
-import YaMap from '@wirthus/react-native-yamap';
+import { YamapInstance } from '@wirthus/react-native-yamap';
 
-YaMap.init('API_KEY');
+YamapInstance.init('API_KEY');
 ```
 
 ### Изменение языка карт
 
 ```js
-import YaMap from '@wirthus/react-native-yamap';
+import { YamapInstance } from '@wirthus/react-native-yamap';
 
-const currentLocale = await YaMap.getLocale();
-YaMap.setLocale('en_US');  // 'ru_RU' или другие
-YaMap.resetLocale();
+const currentLocale = await YamapInstance.getLocale();
+YamapInstance.setLocale('en_US');  // 'ru_RU' или другие
+YamapInstance.resetLocale();
 ```
 
 -  **getLocale(): Promise\<string\>** - возвращает используемый язык карт;
@@ -92,11 +92,11 @@ YaMap.resetLocale();
 
 ```jsx
 import React from 'react';
-import YaMap from '@wirthus/react-native-yamap';
+import { Yamap } from '@wirthus/react-native-yamap';
 
 const Map = () => {
   return (
-    <YaMap
+    <Yamap
       userLocationIcon={{ uri: 'https://www.clipartmax.com/png/middle/180-1801760_pin-png.png' }}
       initialRegion={{
         lat: 50,
@@ -293,9 +293,9 @@ type YandexLogoPadding = {
 ```jsx
 import { Marker } from '@wirthus/react-native-yamap';
 
-<YaMap>
+<Yamap>
   <Marker point={{ lat: 50, lon: 50 }}/>
-</YaMap>
+</Yamap>
 ```
 
 #### Доступные `props` для примитива **Marker**:
@@ -321,9 +321,9 @@ import { Marker } from '@wirthus/react-native-yamap';
 ```jsx
 import { Circle } from '@wirthus/react-native-yamap';
 
-<YaMap>
+<Yamap>
   <Circle center={{ lat: 50, lon: 50 }} radius={300} />
-</YaMap>
+</Yamap>
 ```
 
 #### Доступные `props` для примитива **Circle**:
@@ -343,7 +343,7 @@ import { Circle } from '@wirthus/react-native-yamap';
 ```jsx
 import { Polyline } from '@wirthus/react-native-yamap';
 
-<YaMap>
+<Yamap>
   <Polyline
     points={[
       { lat: 50, lon: 50 },
@@ -351,7 +351,7 @@ import { Polyline } from '@wirthus/react-native-yamap';
       { lat: 20, lon: 20 },
     ]}
   />
-</YaMap>
+</Yamap>
 ```
 
 #### Доступные `props` для примитива **Polyline**:
@@ -374,7 +374,7 @@ import { Polyline } from '@wirthus/react-native-yamap';
 ```jsx
 import { Polygon } from '@wirthus/react-native-yamap';
 
-<YaMap>
+<Yamap>
   <Polygon
     points={[
       { lat: 50, lon: 50 },
@@ -382,7 +382,7 @@ import { Polygon } from '@wirthus/react-native-yamap';
       { lat: 20, lon: 20 },
     ]}
   />
-</YaMap>
+</Yamap>
 ```
 
 #### Доступные `props` для примитива **Polygon**:
@@ -399,7 +399,7 @@ import { Polygon } from '@wirthus/react-native-yamap';
 
 ## Запрос маршрутов
 
-Маршруты можно запросить используя метод `findRoutes` компонента `YaMap` (через ref).
+Маршруты можно запросить используя метод `findRoutes` компонента `Yamap` (через ref).
 
 `findRoutes(points: Point[], vehicles: Vehicles[], callback: (event: RoutesFoundEvent) => void)` - запрос маршрутов через точки `points` с использованием транспорта `vehicles`. При получении маршрутов будет вызван `callback` с информацией обо всех маршрутах.
 

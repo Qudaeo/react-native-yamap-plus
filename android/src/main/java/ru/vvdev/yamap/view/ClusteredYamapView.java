@@ -25,8 +25,7 @@ public class ClusteredYamapView extends BaseYamapView implements ClusterListener
     static final double CLUSTER_RADIUS = 50;
     static final int MIN_ZOOM = 12;
 
-    private ClusterizedPlacemarkCollection _clusterCollection = null;
-    private boolean _needRefreshPoints = false;
+    private final ClusterizedPlacemarkCollection _clusterCollection;
     private int _clusterColor = 0;
     private final HashMap<String, PlacemarkMapObject> _placemarksMap = new HashMap<>();
     private ArrayList<Point> _pointsList = new ArrayList<>();
@@ -40,19 +39,11 @@ public class ClusteredYamapView extends BaseYamapView implements ClusterListener
     @Override
     public void onViewAttachedToWindow(@NonNull View view) {
         super.onViewAttachedToWindow(view);
-
-        if (_needRefreshPoints) {
-            refreshPoints();
-            _needRefreshPoints = false;
-        }
     }
 
     @Override
     public void onViewDetachedFromWindow(@NonNull View view) {
         super.onViewDetachedFromWindow(view);
-
-        _clusterCollection.clear();
-        _needRefreshPoints = true;
     }
 
     public void setClusteredMarkers(ArrayList<Object> pointObjects) {
@@ -69,11 +60,14 @@ public class ClusteredYamapView extends BaseYamapView implements ClusterListener
     }
 
     @Override
-    public void addFeature(View child, int index) {
+    public void addFeature(@NonNull View child, int index) {
         var marker = (YamapMarker) child;
-        var placemark = _placemarksMap.get(getPointKey(marker.getPoint()));
-        if (placemark != null) {
+        if (!_placemarksMap.isEmpty()) {
+            var key = getPointKey(marker.getPoint());
+            var placemark = _placemarksMap.get(key);
             marker.setMapObject(placemark);
+        } else {
+            marker.setMapObject(null);
         }
     }
 
@@ -85,7 +79,10 @@ public class ClusteredYamapView extends BaseYamapView implements ClusterListener
             if (mapObject == null || !mapObject.isValid()) return;
 
             _clusterCollection.remove(mapObject);
-            _placemarksMap.remove(getPointKey(child.getPoint()));
+
+            if (!_placemarksMap.isEmpty()) {
+                _placemarksMap.remove(getPointKey(child.getPoint()));
+            }
         }
     }
 
@@ -133,7 +130,6 @@ public class ClusteredYamapView extends BaseYamapView implements ClusterListener
         }
 
         _clusterCollection.clusterPlacemarks(CLUSTER_RADIUS, MIN_ZOOM);
-        _needRefreshPoints = false;
     }
 
     private void updateUserMarkersColor() {

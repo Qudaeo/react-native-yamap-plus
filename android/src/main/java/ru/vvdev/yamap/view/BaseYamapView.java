@@ -211,11 +211,11 @@ public abstract class BaseYamapView extends MapView implements UserLocationObjec
 
     public void emitCameraPositionToJS(String id) {
         var position = _map.getCameraPosition();
-        var cameraPosition = positionToJSON(position, CameraUpdateReason.valueOf("APPLICATION"), true);
-        cameraPosition.putString("id", id);
+        var result = positionToJSON(position, CameraUpdateReason.valueOf("APPLICATION"), true);
+        result.putString("id", id);
 
         var reactContext = (ReactContext) getContext();
-        reactContext.getJSModule(RCTEventEmitter.class).receiveEvent(getId(), "cameraPosition", cameraPosition);
+        reactContext.getJSModule(RCTEventEmitter.class).receiveEvent(getId(), "cameraPosition", result);
     }
 
     public void emitVisibleRegionToJS(String id) {
@@ -737,8 +737,7 @@ public abstract class BaseYamapView extends MapView implements UserLocationObjec
         return String.format("#%06X", (0xFFFFFF & color));
     }
 
-    // CHILDREN
-    public void addFeature(View child, int index) {
+    public void addFeature(@NonNull View child, int index) {
         if (child instanceof final YamapPolygon _child) {
             var obj = _map.getMapObjects().addPolygon(_child.polygon);
             _child.setMapObject(obj);

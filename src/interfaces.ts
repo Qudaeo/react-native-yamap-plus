@@ -1,3 +1,5 @@
+import type { ReactElement } from 'react';
+
 export interface Point {
   lat: number;
   lon: number;
@@ -9,6 +11,11 @@ export interface BoundingBox {
 }
 
 export interface ScreenPoint {
+  x: number;
+  y: number;
+}
+
+export interface Anchor {
   x: number;
   y: number;
 }
@@ -76,12 +83,14 @@ export interface RoutesFoundEvent<T extends (DrivingInfo | MasstransitInfo)> {
 export type CameraUpdateReason = 'APPLICATION' | 'GESTURES';
 
 export interface CameraPosition {
-  azimuth: number;
-  finished: boolean;
   point: Point;
-  reason: CameraUpdateReason;
-  tilt: number;
   zoom: number;
+  azimuth: number;
+  tilt: number;
+
+  reason: CameraUpdateReason;
+
+  finished: boolean;
 }
 
 export type VisibleRegion = {
@@ -89,7 +98,7 @@ export type VisibleRegion = {
   bottomRight: Point;
   topLeft: Point;
   topRight: Point;
-}
+};
 
 export enum Animation {
   SMOOTH,
@@ -99,14 +108,17 @@ export enum Animation {
 export type YandexLogoPosition = {
   horizontal?: 'left' | 'center' | 'right';
   vertical?: 'top' | 'bottom';
-}
+};
 
 export type YandexLogoPadding = {
   horizontal?: number;
   vertical?: number;
-}
+};
 
 export type ClusterMarker<T = any> = {
   point: Point;
   data: T;
-}
+};
+
+export type ClusterRenderFunc<T = any> = (info: ClusterRenderItemInfo<T>, index: number) => ReactElement;
+export type ClusterRenderItemInfo<T> = ClusterMarker<T>;
