@@ -1,5 +1,7 @@
 ## React Native Yandex Maps (Яндекс Карты)
 
+#### Форк библиотеки [react-native-yamap](https://github.com/volga-volga/react-native-yamap), разработанной компанией [Волга-Волга](https://vvdev.ru/)
+
 #### Библиотека для интеграции MapKit SDK в React Native
 
 ## Установка
