@@ -75,6 +75,7 @@ export const ClusteredMapScreen = () => {
           scale={0.3}
           source={require('../assets/images/marker.png')}
           visible={mapLoaded}
+          anchor={{x: 0.5, y: 1}}
         />
       )}
       style={styles.container}

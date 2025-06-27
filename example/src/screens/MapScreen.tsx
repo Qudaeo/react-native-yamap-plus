@@ -71,6 +71,7 @@ export const MapScreen = () => {
         onPress={() => {
            console.log('marker onPress');
         }}
+        anchor={{x: 0.5, y: 1}}
       />
       <Circle
         center={{lat: 55.74, lon: 37.64}}

@@ -27,8 +27,8 @@ class PointUtil {
             if (jsPoint === null) return null
 
             return PointF(
-                jsPoint.getDouble("lat").toFloat(),
-                jsPoint.getDouble("lon").toFloat()
+                jsPoint.getDouble("x").toFloat(),
+                jsPoint.getDouble("y").toFloat()
             )
         }
 
