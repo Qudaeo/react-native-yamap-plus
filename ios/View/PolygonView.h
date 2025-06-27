@@ -1,11 +1,13 @@
 #ifndef PolygonView_h
 #define PolygonView_h
 
-#import <React/RCTComponent.h>
-
 #ifdef RCT_NEW_ARCH_ENABLED
 
 #import <React/RCTViewComponentView.h>
+
+#else
+
+#import <React/RCTComponent.h>
 
 #endif
 

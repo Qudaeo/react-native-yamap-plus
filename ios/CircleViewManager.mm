@@ -1,3 +1,5 @@
+#ifndef RCT_NEW_ARCH_ENABLED
+
 #import <React/RCTViewManager.h>
 
 #import "View/CircleView.h"
@@ -33,3 +35,5 @@ RCT_CUSTOM_VIEW_PROPERTY(center, YMKPoint, CircleView) {
 }
 
 @end
+
+#endif

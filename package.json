@@ -66,6 +66,7 @@
     },
     "ios": {
       "componentProvider": {
+        "CircleView": "CircleView",
         "PolygonView": "PolygonView",
         "PolylineView": "PolylineView"
       }

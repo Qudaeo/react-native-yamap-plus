@@ -86,6 +86,7 @@ export const MapScreen = () => {
       <Circle
         center={{lat: 55.74, lon: 37.64}}
         radius={500}
+        handled={true}
         strokeWidth={5}
         strokeColor={'red'}
         fillColor={'blue'}

@@ -23,7 +23,7 @@ class CircleView(context: Context?) : ViewGroup(context), MapObjectTapListener, 
     private var _fillColor = Color.BLACK
     private var _strokeColor = Color.BLACK
     private var _zIndex = 1f
-    private var _strokeWidth = 1f
+    private var _strokeWidth = 0f
     private var _center = Point(0.0, 0.0)
     private var _radius = 0f
 
