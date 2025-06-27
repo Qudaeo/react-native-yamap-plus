@@ -6,89 +6,126 @@
 
 #import <YandexMapsMobile/YMKIconStyle.h>
 
+#ifdef RCT_NEW_ARCH_ENABLED
+
+#import "../Util/NewArchUtils.h"
+
+#import <react/renderer/components/RNYamapPlusSpec/ComponentDescriptors.h>
+#import <react/renderer/components/RNYamapPlusSpec/EventEmitters.h>
+#import <react/renderer/components/RNYamapPlusSpec/Props.h>
+#import <react/renderer/components/RNYamapPlusSpec/RCTComponentViewHelpers.h>
+
+#import "RCTFabricComponentsPlugins.h"
+
+using namespace facebook::react;
+
+@interface MarkerView () <RCTMarkerViewViewProtocol, YMKMapObjectTapListener>
+
+@end
+
+#endif
+
 #define YAMAP_FRAMES_PER_SECOND 25
 
 @implementation MarkerView {
     YMKPoint* _point;
-    YMKPlacemarkMapObject* mapObject;
-    NSNumber* zIndex;
-    NSNumber* scale;
-    NSNumber* rotated;
-    NSString* source;
-    NSString* lastSource;
-    NSValue* anchor;
-    NSNumber* visible;
+    YMKPlacemarkMapObject *mapObject;
+    float zIndex;
+    NSNumber *scale;
+    NSNumber *rotationType;
+    NSString *source;
+    NSString *lastSource;
+    NSValue *anchor;
+    NSNumber *visible;
     BOOL handled;
-    NSMutableArray<UIView*>* _reactSubviews;
+    NSMutableArray<UIView*> *_reactSubviews;
     UIView* _childView;
 }
 
 - (instancetype)init {
-    self = [super init];
-    zIndex = [[NSNumber alloc] initWithInt:1];
-    scale = [[NSNumber alloc] initWithInt:1];
-    rotated = [[NSNumber alloc] initWithInt:0];
-    visible = [[NSNumber alloc] initWithInt:1];
-    handled = NO;
-    _reactSubviews = [[NSMutableArray alloc] init];
-    source = @"";
-    lastSource = @"";
+    if (self = [super init]) {
+
+#ifdef RCT_NEW_ARCH_ENABLED
+
+        static const auto defaultProps = std::make_shared<const MarkerViewProps>();
+        _props = defaultProps;
+
+#endif
+
+        zIndex = 1;
+        scale = [NSNumber numberWithInt:1];
+        rotationType = [NSNumber numberWithInt:0];
+        visible = [NSNumber numberWithInt:1];
+        handled = NO;
+        _reactSubviews = [[NSMutableArray alloc] init];
+        source = @"";
+        lastSource = @"";
+    }
 
     return self;
 }
 
-- (void)updateMarker {
-    if (mapObject != nil && mapObject.valid) {
-        [mapObject setGeometry:_point];
-        [mapObject setZIndex:[zIndex floatValue]];
-        YMKIconStyle* iconStyle = [[YMKIconStyle alloc] init];
-        [iconStyle setScale:scale];
-        [iconStyle setVisible:visible];
-        if (anchor) {
-          [iconStyle setAnchor:anchor];
-        }
-        [iconStyle setRotationType:rotated];
-        if ([_reactSubviews count] == 0) {
-            if (source != nil && ![source isEqualToString:@""] && ![source isEqual:lastSource]) {
-                [[ImageCacheManager instance] getWithSource:source completion:^(UIImage *image) {
-                    if ([self->mapObject isValid]) {
-                        [self->mapObject setIconWithImage:image];
-                        self->lastSource = self->source;
-                        [self updateMarker];
-                    }
-                }];
-            }
-        }
-        [mapObject setIconStyleWithStyle:iconStyle];
-    }
+#ifdef RCT_NEW_ARCH_ENABLED
+
++ (ComponentDescriptorProvider)componentDescriptorProvider
+{
+    return concreteComponentDescriptorProvider<MarkerViewComponentDescriptor>();
 }
 
+- (void)updateProps:(const Props::Shared &)props oldProps:(const Props::Shared &)oldProps {
+    const auto &oldViewProps = *std::static_pointer_cast<MarkerViewProps const>(_props);
+    const auto &newViewProps = *std::static_pointer_cast<MarkerViewProps const>(props);
 
-- (void)updateClusterMarker {
-    if (mapObject != nil && mapObject.valid) {
-        [mapObject setGeometry:_point];
-        [mapObject setZIndex:[zIndex floatValue]];
-        YMKIconStyle* iconStyle = [[YMKIconStyle alloc] init];
-        [iconStyle setScale:scale];
-        [iconStyle setVisible:visible];
-        if (anchor) {
-          [iconStyle setAnchor:anchor];
-        }
-        [iconStyle setRotationType:rotated];
-        if ([_reactSubviews count] == 0) {
-            if (source != nil && ![source isEqualToString:@""] && ![source isEqual:lastSource]) {
-                [[ImageCacheManager instance] getWithSource:source completion:^(UIImage *image) {
-                    if ([self->mapObject isValid]) {
-                        [self->mapObject setIconWithImage:image];
-                        self->lastSource = self->source;
-                        [self updateClusterMarker];
-                    }
-                }];
-            }
-        }
-        [mapObject setIconStyleWithStyle:iconStyle];
+    if (oldViewProps.point.lat != newViewProps.point.lat || oldViewProps.point.lon != newViewProps.point.lon) {
+        _point = [YMKPoint pointWithLatitude:newViewProps.point.lat longitude:newViewProps.point.lon];
     }
+
+    if (oldViewProps.source != newViewProps.source) {
+        source = [NSString stringWithCString:newViewProps.source.c_str() encoding:[NSString defaultCStringEncoding]];
+    }
+
+    if (oldViewProps.anchor.x != newViewProps.anchor.x || oldViewProps.anchor.x != newViewProps.anchor.x) {
+        anchor = [NSValue valueWithCGPoint:CGPointMake(newViewProps.anchor.x, newViewProps.anchor.y)];
+    }
+
+    if (oldViewProps.scale != newViewProps.scale) {
+        scale = [NSNumber numberWithFloat:newViewProps.scale];
+    }
+
+    if (oldViewProps.visible != newViewProps.visible) {
+        visible = [NSNumber numberWithInt:newViewProps.visible];
+    }
+
+    if (oldViewProps.rotated != newViewProps.rotated) {
+        rotationType = [NSNumber numberWithInt:newViewProps.rotated];
+    }
+
+    if (oldViewProps.zI != newViewProps.zI) {
+        zIndex = newViewProps.zI;
+    }
+
+    if (oldViewProps.handled != newViewProps.handled) {
+        handled = newViewProps.handled;
+    }
+
+    [self updateMarker];
 }
+
+- (void)handleCommand:(const NSString *)commandName args:(const NSArray *)args {
+    if ([commandName isEqual:@"animatedMoveTo"]) {
+        NSDictionary *coords = args[0][0][@"coords"];
+        NSNumber *duration = args[0][0][@"duration"];
+
+        [self animatedMoveTo:[YMKPoint pointWithLatitude:[coords[@"lat"] doubleValue] longitude:[coords[@"lon"] doubleValue]] withDuration:[duration floatValue]];
+    } else if ([commandName isEqual:@"animatedRotateTo"]) {
+        NSNumber *angle = args[0][0][@"angle"];
+        NSNumber *duration = args[0][0][@"duration"];
+
+        [self animatedRotateTo:[angle floatValue] withDuration:[duration floatValue]];
+    }
+ }
+
+#else
 
 - (void)setScale:(NSNumber*)_scale {
     scale = _scale;
@@ -123,6 +160,88 @@
     [self updateMarker];
 }
 
+- (void)setAnchor:(NSValue*)_anchor {
+    anchor = _anchor;
+}
+
+#endif
+
+- (BOOL)onMapObjectTapWithMapObject:(nonnull YMKMapObject*)_mapObject point:(nonnull YMKPoint*)point {
+
+#ifdef RCT_NEW_ARCH_ENABLED
+
+    std::dynamic_pointer_cast<const MarkerViewEventEmitter>(_eventEmitter)->onPress({});
+
+#else
+
+    if (self.onPress)
+        self.onPress(@{});
+
+#endif
+
+    return handled;
+}
+
+- (void)updateMarker {
+    if (mapObject != nil && [mapObject isValid]) {
+        [mapObject setGeometry:_point];
+        [mapObject setZIndex:zIndex];
+        YMKIconStyle* iconStyle = [[YMKIconStyle alloc] init];
+        [iconStyle setScale:scale];
+        [iconStyle setVisible:visible];
+        if (anchor) {
+          [iconStyle setAnchor:anchor];
+        }
+        [iconStyle setRotationType:rotationType];
+        if ([_reactSubviews count] == 0) {
+            if (source != nil && ![source isEqualToString:@""] && ![source isEqual:lastSource]) {
+                [[ImageCacheManager instance] getWithSource:source completion:^(UIImage *image) {
+                    if ([self->mapObject isValid]) {
+                        [self->mapObject setIconWithImage:image];
+                        self->lastSource = self->source;
+                        [self updateMarker];
+                    }
+                }];
+            }
+        }
+        [mapObject setIconStyleWithStyle:iconStyle];
+    }
+}
+
+- (void)updateClusterMarker {
+    if (mapObject != nil && [mapObject isValid]) {
+        [mapObject setGeometry:_point];
+        [mapObject setZIndex:zIndex];
+        YMKIconStyle* iconStyle = [[YMKIconStyle alloc] init];
+        [iconStyle setScale:scale];
+        [iconStyle setVisible:visible];
+        if (anchor) {
+          [iconStyle setAnchor:anchor];
+        }
+        [iconStyle setRotationType:rotationType];
+        if ([_reactSubviews count] == 0) {
+            if (source != nil && ![source isEqualToString:@""] && ![source isEqual:lastSource]) {
+                [[ImageCacheManager instance] getWithSource:source completion:^(UIImage *image) {
+                    if ([self->mapObject isValid]) {
+                        [self->mapObject setIconWithImage:image];
+                        self->lastSource = self->source;
+                        [self updateClusterMarker];
+                    }
+                }];
+            }
+        }
+        [mapObject setIconStyleWithStyle:iconStyle];
+    }
+}
+
+- (YMKPoint*)getPoint {
+    return _point;
+}
+
+- (YMKPlacemarkMapObject*)getMapObject {
+    return mapObject;
+}
+
 - (void)setMapObject:(YMKPlacemarkMapObject *)_mapObject {
     mapObject = _mapObject;
     [mapObject addTapListenerWithTapListener:self];
@@ -133,26 +252,6 @@
     mapObject = _mapObject;
     [mapObject addTapListenerWithTapListener:self];
     [self updateClusterMarker];
-}
-
-// object tap listener
-- (BOOL)onMapObjectTapWithMapObject:(nonnull YMKMapObject*)_mapObject point:(nonnull YMKPoint*)point {
-    if (self.onPress)
-        self.onPress(@{});
-
-    return handled;
-}
-
-- (YMKPoint*)getPoint {
-    return _point;
-}
-
-- (void)setAnchor:(NSValue*)_anchor {
-    anchor = _anchor;
-}
-
-- (YMKPlacemarkMapObject*)getMapObject {
-    return mapObject;
 }
 
 - (void)setChildView {
@@ -229,7 +328,7 @@
         double deltaLon = point.longitude - p.longitude;
         [self moveAnimationLoop: 0 withTotalFrames:[@(duration / YAMAP_FRAMES_PER_SECOND) integerValue] withDeltaLat:deltaLat withDeltaLon:deltaLon];
     } @catch (NSException *exception) {
-        NSLog(@"Reason: %@ ",exception.reason);
+        NSLog(@"Marker animatedMoveTo error: %@",exception.reason);
     }
 }
 
@@ -239,12 +338,8 @@
         double delta = angle - placemark.direction;
         [self rotateAnimationLoop: 0 withTotalFrames:[@(duration / YAMAP_FRAMES_PER_SECOND) integerValue] withDelta:delta];
     } @catch (NSException *exception) {
-        NSLog(@"Reason: %@ ",exception.reason);
+        NSLog(@"Marker animatedRotateTo error: %@",exception.reason);
     }
 }
-
-@synthesize reactTag;
-
-@synthesize rootTag;
 
 @end

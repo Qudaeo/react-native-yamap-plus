@@ -173,7 +173,7 @@ using namespace facebook::react;
 #endif
 
 - (void)updatePolygon {
-    if (mapObject != nil) {
+    if (mapObject != nil && [mapObject isValid]) {
         [mapObject setGeometry:polygon];
         [mapObject setZIndex:zIndex];
         [mapObject setFillColor:fillColor];

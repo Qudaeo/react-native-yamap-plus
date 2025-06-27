@@ -146,7 +146,7 @@ using namespace facebook::react;
 }
 
 - (void)updateCircle {
-    if (mapObject != nil) {
+    if (mapObject != nil && [mapObject isValid]) {
         [mapObject setGeometry:circle];
         [mapObject setZIndex:zIndex];
         [mapObject setFillColor:fillColor];

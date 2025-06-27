@@ -67,6 +67,7 @@
     "ios": {
       "componentProvider": {
         "CircleView": "CircleView",
+        "MarkerView": "MarkerView",
         "PolygonView": "PolygonView",
         "PolylineView": "PolylineView"
       }

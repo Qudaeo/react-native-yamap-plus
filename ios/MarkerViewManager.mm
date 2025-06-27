@@ -1,3 +1,5 @@
+#ifndef RCT_NEW_ARCH_ENABLED
+
 #import <React/RCTUIManager.h>
 
 #import "View/MarkerView.h"
@@ -59,3 +61,5 @@ RCT_EXPORT_METHOD(animatedRotateTo:(nonnull NSNumber*)reactTag argsArr:(NSArray*
 }
 
 @end
+
+#endif
