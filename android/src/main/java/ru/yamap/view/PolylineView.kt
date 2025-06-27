@@ -27,7 +27,7 @@ class PolylineView(context: Context?) : ViewGroup(context), MapObjectTapListener
     private var _gapLength = 0f
     private var _dashOffset = 0f
     private var _outlineWidth = 0f
-    private var _handled = true
+    private var _handled = false
 
     init {
         polyline = Polyline(ArrayList())

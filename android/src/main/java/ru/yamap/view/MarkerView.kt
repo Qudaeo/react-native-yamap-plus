@@ -31,7 +31,7 @@ class MarkerView(context: Context?) : ReactViewGroup(context), MapObjectTapListe
     private var _zIndex = 1f
     private var _scale = 1f
     private var _visible = true
-    private var _handled = true
+    private var _handled = false
     private var _rotated = false
     private var _markerAnchor: PointF? = null
     private var _iconSource: String? = null

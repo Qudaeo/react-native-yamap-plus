@@ -47,7 +47,7 @@ using namespace facebook::react;
         strokeColor = UIColor.blackColor;
         zIndex = 1;
         handled = NO;
-        strokeWidth = 1;
+        strokeWidth = 0;
         _points = [[NSMutableArray alloc] init];
         innerRings = [[NSMutableArray alloc] init];
         polygon = [YMKPolygon polygonWithOuterRing:[YMKLinearRing linearRingWithPoints:@[]] innerRings:@[]];

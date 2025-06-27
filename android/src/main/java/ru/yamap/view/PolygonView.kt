@@ -24,8 +24,8 @@ class PolygonView(context: Context?) : ViewGroup(context), MapObjectTapListener,
     private var _fillColor = Color.BLACK
     private var _strokeColor = Color.BLACK
     private var _zIndex = 1f
-    private var _strokeWidth = 1f
-    private var _handled = true
+    private var _strokeWidth = 0f
+    private var _handled = false
 
     init {
         polygon = Polygon(LinearRing(ArrayList()), ArrayList())
