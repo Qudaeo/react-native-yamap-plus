@@ -19,7 +19,7 @@ class CircleView(context: Context?) : ViewGroup(context), MapObjectTapListener, 
     var circle: Circle
 
     override var rnMapObject: MapObject? = null
-    private var _handled = true
+    private var _handled = false
     private var _fillColor = Color.BLACK
     private var _strokeColor = Color.BLACK
     private var _zIndex = 1f

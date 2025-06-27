@@ -20,7 +20,7 @@
     strokeColor = UIColor.blackColor;
     zIndex = [[NSNumber alloc] initWithInt:1];
     strokeWidth = [[NSNumber alloc] initWithInt:1];
-    handled = YES;
+    handled = NO;
     center = [YMKPoint pointWithLatitude:0 longitude:0];
     radius = 0.f;
     circle = [YMKCircle circleWithCenter:center radius:radius];

@@ -29,7 +29,7 @@
     scale = [[NSNumber alloc] initWithInt:1];
     rotated = [[NSNumber alloc] initWithInt:0];
     visible = [[NSNumber alloc] initWithInt:1];
-    handled = YES;
+    handled = NO;
     _reactSubviews = [[NSMutableArray alloc] init];
     source = @"";
     lastSource = @"";
