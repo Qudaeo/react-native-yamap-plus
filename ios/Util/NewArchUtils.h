@@ -9,7 +9,9 @@ using namespace facebook::react;
 
 @interface NewArchUtils : NSObject
 
-+ (BOOL)pointsEquals:(std::vector<PolylineViewPointsStruct>)points1 points2:(std::vector<PolylineViewPointsStruct>)points2;
++ (BOOL)polylinePointsEquals:(std::vector<PolylineViewPointsStruct>)points1 points2:(std::vector<PolylineViewPointsStruct>)points2;
++ (BOOL)polygonPointsEquals:(std::vector<PolygonViewPointsStruct>)points1 points2:(std::vector<PolygonViewPointsStruct>)points2;
++ (BOOL)polygonInnerRingsEquals:(std::vector<std::vector<PolygonViewInnerRingsStruct>>)innerRings1 innerRings2:(std::vector<std::vector<PolygonViewInnerRingsStruct>>)innerRings2;
 
 @end
 

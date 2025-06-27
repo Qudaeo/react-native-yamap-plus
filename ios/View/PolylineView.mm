@@ -74,7 +74,7 @@ using namespace facebook::react;
     const auto &oldViewProps = *std::static_pointer_cast<PolylineViewProps const>(_props);
     const auto &newViewProps = *std::static_pointer_cast<PolylineViewProps const>(props);
 
-    if (![NewArchUtils pointsEquals:oldViewProps.points points2:newViewProps.points]) {
+    if (![NewArchUtils polylinePointsEquals:oldViewProps.points points2:newViewProps.points]) {
         std::vector<PolylineViewPointsStruct> newPointsStruct = newViewProps.points;
         NSMutableArray<YMKPoint*> *newPointsArray = [[NSMutableArray alloc] init];
 

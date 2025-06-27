@@ -66,6 +66,7 @@
     },
     "ios": {
       "componentProvider": {
+        "PolygonView": "PolygonView",
         "PolylineView": "PolylineView"
       }
     }

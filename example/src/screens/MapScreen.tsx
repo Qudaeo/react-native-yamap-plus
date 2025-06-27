@@ -117,7 +117,7 @@ export const MapScreen = () => {
         ]}
         fillColor={'red'}
         strokeWidth={0}
-        handled={false}
+        handled={true}
         onPress={() => {
           console.log('polygon press');
         }}

@@ -1,3 +1,5 @@
+#ifndef RCT_NEW_ARCH_ENABLED
+
 #import <React/RCTViewManager.h>
 
 #import "View/PolygonView.h"
@@ -29,3 +31,5 @@ RCT_EXPORT_VIEW_PROPERTY(zI, NSNumber)
 RCT_EXPORT_VIEW_PROPERTY(handled, BOOL)
 
 @end
+
+#endif
