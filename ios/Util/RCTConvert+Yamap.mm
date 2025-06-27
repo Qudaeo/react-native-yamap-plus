@@ -86,8 +86,9 @@
     return pointJs;
 }
 
-+ (NSValue*)NSValue:(CGPoint)json {
-    return [NSValue valueWithCGPoint:json];
++ (NSValue*)NSValue:(id)json {
+    json = [self NSDictionary:json];
+    return [NSValue valueWithCGPoint:CGPointMake([json[@"x"] floatValue], [json[@"y"] floatValue])];
 }
 
 @end
