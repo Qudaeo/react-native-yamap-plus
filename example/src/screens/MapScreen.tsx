@@ -9,6 +9,16 @@ export const MapScreen = () => {
   const markerRef = useRef<MarkerRef | null>(null);
   const angleRef = useRef(0);
 
+  const [dashLength, setDashLength] = useState(15);
+
+  useEffect(() => {
+      const interval = setInterval(() => setDashLength(v => v === 15 ? 20 : 15), 500);
+
+      return () => {
+        clearInterval(interval)
+      }
+    }, []);
+
   useEffect(() => {
     if (mapLoaded) {
       // mapRef.current?.getCameraPosition(e => {
@@ -135,7 +145,7 @@ export const MapScreen = () => {
         outlineColor={'orange'}
         outlineWidth={2}
         gapLength={5}
-        dashLength={20}
+        dashLength={dashLength}
         handled={true}
         onPress={() => {
           console.log('polyline press');
