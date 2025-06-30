@@ -123,7 +123,14 @@ using namespace facebook::react;
 
         [self animatedRotateTo:[angle floatValue] withDuration:[duration floatValue]];
     }
- }
+}
+
+- (void)prepareForRecycle
+{
+  [super prepareForRecycle];
+  source = nil;
+  lastSource = nil;
+}
 
 #else
 
