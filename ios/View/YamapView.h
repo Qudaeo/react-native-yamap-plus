@@ -12,7 +12,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface YamapView: YMKMapView<YMKUserLocationObjectListener, YMKMapCameraListener, RCTComponent, YMKMapLoadedListener, YMKTrafficDelegate>
+@interface YamapView: YMKMapView<YMKUserLocationObjectListener, YMKMapCameraListener, YMKMapLoadedListener, YMKTrafficDelegate>
 
 @property (nonatomic, copy) RCTBubblingEventBlock onRouteFound;
 @property (nonatomic, copy) RCTBubblingEventBlock onCameraPositionReceived;

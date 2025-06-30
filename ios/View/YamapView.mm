@@ -831,11 +831,6 @@
     [self setNoninteractive:!interactive];
 }
 
-
-@synthesize reactTag;
-
-@synthesize rootTag;
-
 - (void)onTrafficLoading {
 }
 
