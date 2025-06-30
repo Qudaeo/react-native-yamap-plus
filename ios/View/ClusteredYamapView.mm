@@ -48,7 +48,7 @@
     placemarks = [[NSMutableArray alloc] init];
     clusterColor=nil;
     userClusters=NO;
-    clusterCollection = [self.mapWindow.map.mapObjects addClusterizedPlacemarkCollectionWithClusterListener:self];
+    clusterCollection = [[self getMapView].mapWindow.map.mapObjects addClusterizedPlacemarkCollectionWithClusterListener:self];
     initializedRegion = NO;
     mapLoaded = NO;
     return self;
@@ -201,7 +201,5 @@
     [self fitMarkers:lastKnownMarkers];
     return YES;
 }
-
-@synthesize reactTag;
 
 @end

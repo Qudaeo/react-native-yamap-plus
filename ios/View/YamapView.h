@@ -12,7 +12,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface YamapView: YMKMapView<YMKUserLocationObjectListener, YMKMapCameraListener, YMKMapLoadedListener, YMKTrafficDelegate>
+@interface YamapView: UIView<YMKUserLocationObjectListener, YMKMapCameraListener, YMKMapLoadedListener, YMKTrafficDelegate>
 
 @property (nonatomic, copy) RCTBubblingEventBlock onRouteFound;
 @property (nonatomic, copy) RCTBubblingEventBlock onCameraPositionReceived;
@@ -24,6 +24,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy) RCTBubblingEventBlock onMapLoaded;
 @property (nonatomic, copy) RCTBubblingEventBlock onWorldToScreenPointsReceived;
 @property (nonatomic, copy) RCTBubblingEventBlock onScreenToWorldPointsReceived;
+
+
+- (YMKMapView *)getMapView;
 
 // REF
 - (void)emitCameraPositionToJS:(NSString *_Nonnull)_id;
