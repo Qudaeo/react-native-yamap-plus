@@ -65,26 +65,11 @@ RCT_EXPORT_VIEW_PROPERTY(mapType, NSString)
 RCT_EXPORT_VIEW_PROPERTY(interactive, BOOL)
 RCT_EXPORT_VIEW_PROPERTY(logoPosition, NSDictionary)
 RCT_EXPORT_VIEW_PROPERTY(logoPadding, NSDictionary)
-
-RCT_CUSTOM_VIEW_PROPERTY(zoomGesturesEnabled, BOOL, ClusteredYamapView) {
-    view.mapWindow.map.zoomGesturesEnabled = [json boolValue];
-}
-
-RCT_CUSTOM_VIEW_PROPERTY(scrollGesturesEnabled, BOOL, ClusteredYamapView) {
-    view.mapWindow.map.scrollGesturesEnabled = [json boolValue];
-}
-
-RCT_CUSTOM_VIEW_PROPERTY(tiltGesturesEnabled, BOOL, ClusteredYamapView) {
-    view.mapWindow.map.tiltGesturesEnabled = [json boolValue];
-}
-
-RCT_CUSTOM_VIEW_PROPERTY(rotateGesturesEnabled, BOOL, ClusteredYamapView) {
-    view.mapWindow.map.rotateGesturesEnabled = [json boolValue];
-}
-
-RCT_CUSTOM_VIEW_PROPERTY(fastTapEnabled, BOOL, ClusteredYamapView) {
-    view.mapWindow.map.fastTapEnabled = [json boolValue];
-}
+RCT_EXPORT_VIEW_PROPERTY(zoomGesturesEnabled, BOOL)
+RCT_EXPORT_VIEW_PROPERTY(scrollGesturesEnabled, BOOL)
+RCT_EXPORT_VIEW_PROPERTY(tiltGesturesEnabled, BOOL)
+RCT_EXPORT_VIEW_PROPERTY(rotateGesturesEnabled, BOOL)
+RCT_EXPORT_VIEW_PROPERTY(fastTapEnabled, BOOL)
 
 // ref
 RCT_EXPORT_METHOD(fitAllMarkers:(nonnull NSNumber*) reactTag argsArr:(NSArray*)argsArr) {

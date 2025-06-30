@@ -655,6 +655,30 @@
     [self updateUserIcon];
 }
 
+- (void)setMapStyle:(NSString *)style {
+    [self.mapWindow.map setMapStyleWithStyle:style];
+}
+
+- (void)setZoomGesturesEnabled:(BOOL)value {
+    self.mapWindow.map.zoomGesturesEnabled = value;
+}
+
+- (void)setScrollGesturesEnabled:(BOOL)value {
+    self.mapWindow.map.scrollGesturesEnabled = value;
+}
+
+- (void)setTiltGesturesEnabled:(BOOL)value {
+    self.mapWindow.map.tiltGesturesEnabled = value;
+}
+
+- (void)setRotateGesturesEnabled:(BOOL)value {
+    self.mapWindow.map.rotateGesturesEnabled = value;
+}
+
+- (void)setFastTapEnabled:(BOOL)value {
+    self.mapWindow.map.fastTapEnabled = value;
+}
+
 - (void)updateUserIcon {
     if (userLocationView != nil) {
         if (userLocationImage) {

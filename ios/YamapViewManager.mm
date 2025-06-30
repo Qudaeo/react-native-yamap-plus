@@ -61,30 +61,12 @@ RCT_EXPORT_VIEW_PROPERTY(initialRegion, NSDictionary)
 RCT_EXPORT_VIEW_PROPERTY(interactive, BOOL)
 RCT_EXPORT_VIEW_PROPERTY(logoPosition, NSDictionary)
 RCT_EXPORT_VIEW_PROPERTY(logoPadding, NSDictionary)
-
-RCT_CUSTOM_VIEW_PROPERTY(mapStyle, NSString, YamapView) {
-    [view.mapWindow.map setMapStyleWithStyle:json];
-}
-
-RCT_CUSTOM_VIEW_PROPERTY(zoomGesturesEnabled, NSNumber, YamapView) {
-    view.mapWindow.map.zoomGesturesEnabled = [json boolValue];
-}
-
-RCT_CUSTOM_VIEW_PROPERTY(scrollGesturesEnabled, NSNumber, YamapView) {
-    view.mapWindow.map.scrollGesturesEnabled = [json boolValue];
-}
-
-RCT_CUSTOM_VIEW_PROPERTY(tiltGesturesEnabled, NSNumber, YamapView) {
-    view.mapWindow.map.tiltGesturesEnabled = [json boolValue];
-}
-
-RCT_CUSTOM_VIEW_PROPERTY(rotateGesturesEnabled, NSNumber, YamapView) {
-    view.mapWindow.map.rotateGesturesEnabled = [json boolValue];
-}
-
-RCT_CUSTOM_VIEW_PROPERTY(fastTapEnabled, NSNumber, YamapView) {
-    view.mapWindow.map.fastTapEnabled = [json boolValue];
-}
+RCT_EXPORT_VIEW_PROPERTY(mapStyle, NSString)
+RCT_EXPORT_VIEW_PROPERTY(zoomGesturesEnabled, BOOL)
+RCT_EXPORT_VIEW_PROPERTY(scrollGesturesEnabled, BOOL)
+RCT_EXPORT_VIEW_PROPERTY(tiltGesturesEnabled, BOOL)
+RCT_EXPORT_VIEW_PROPERTY(rotateGesturesEnabled, BOOL)
+RCT_EXPORT_VIEW_PROPERTY(fastTapEnabled, BOOL)
 
 // REF
 RCT_EXPORT_METHOD(fitAllMarkers:(nonnull NSNumber *)reactTag argsArr:(NSArray*)argsArr) {
