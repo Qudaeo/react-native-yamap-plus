@@ -99,6 +99,17 @@ using namespace facebook::react;
     [self updateCircle];
 }
 
+- (void)prepareForRecycle
+{
+  [super prepareForRecycle];
+    fillColor = UIColor.blackColor;
+    strokeColor = UIColor.blackColor;
+    zIndex = 1;
+    strokeWidth = 0;
+    handled = NO;
+    radius = 0;
+}
+
 #else
 
 - (void)setFillColor:(NSNumber*)color {

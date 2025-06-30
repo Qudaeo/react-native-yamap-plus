@@ -121,6 +121,17 @@ using namespace facebook::react;
     [self updatePolygon];
 }
 
+- (void)prepareForRecycle
+{
+  [super prepareForRecycle];
+  fillColor = UIColor.blackColor;
+  strokeColor = UIColor.blackColor;
+  zIndex = 1;
+  handled = NO;
+  strokeWidth = 0;
+  innerRings = [[NSMutableArray alloc] init];
+}
+
 #else
 
 - (void)setFillColor:(NSNumber*)color {

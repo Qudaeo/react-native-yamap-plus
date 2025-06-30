@@ -126,6 +126,20 @@ using namespace facebook::react;
     [self updatePolyline];
 }
 
+- (void)prepareForRecycle
+{
+  [super prepareForRecycle];
+  strokeColor = UIColor.blackColor;
+  outlineColor = UIColor.blackColor;
+  zIndex = 1;
+  strokeWidth = 1;
+  dashLength = 1;
+  gapLength = 0;
+  outlineWidth = 0;
+  dashOffset = 0;
+  handled = NO;
+}
+
 #else
 
 - (void)setStrokeColor:(NSNumber *)color {
