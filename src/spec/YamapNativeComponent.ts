@@ -61,7 +61,7 @@ export interface YamapNativeProps extends ViewProps {
   showUserPosition?: boolean;
   nightMode?: boolean;
   mapStyle?: string;
-  mapType?: WithDefault<'none' | 'raster' | 'vector', 'none'>;
+  mapType?: WithDefault<'none' | 'raster' | 'vector', 'vector'>;
   onCameraPositionChange?: DirectEventHandler<CameraPosition>;
   onCameraPositionChangeEnd?: DirectEventHandler<CameraPosition>;
   onMapPress?: BubblingEventHandler<Point>;
