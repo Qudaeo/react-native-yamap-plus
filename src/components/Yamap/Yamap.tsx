@@ -12,11 +12,7 @@ import {useYamap} from '../../hooks/useYamap';
 import YamapNativeComponent, {YamapNativeRef} from '../../spec/YamapNativeComponent';
 import {Commands} from '../../spec/commands/yamap';
 
-export const Yamap = forwardRef<YamapRef, YamapProps>(({
-    showUserPosition = true,
-    ...props
-  }, ref) => {
-
+export const Yamap = forwardRef<YamapRef, YamapProps>((props, ref) => {
   const nativeRef = useRef<YamapNativeRef | null>(null);
 
   useYamap(nativeRef, ref, Commands);
@@ -29,10 +25,9 @@ export const Yamap = forwardRef<YamapRef, YamapProps>(({
       onVisibleRegionReceived,
       onWorldToScreenPointsReceived,
       onScreenToWorldPointsReceived,
-      showUserPosition,
       userLocationIcon: getImageUri(props.userLocationIcon),
     }, ['userLocationAccuracyFillColor', 'userLocationAccuracyStrokeColor']),
-    [props, showUserPosition]
+    [props]
   );
 
   return (

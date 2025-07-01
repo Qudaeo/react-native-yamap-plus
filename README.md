@@ -191,7 +191,7 @@ type YandexLogoPadding = {
 
 | Название | Тип | Стандартное значение | Описание |
 |--|--|--|--|
-| showUserPosition | boolean | true | Отслеживание геоданных и отображение позиции пользователя |
+| showUserPosition | boolean | false | Отслеживание геоданных и отображение позиции пользователя |
 | followUser | boolean | true | слежение камеры за пользователем |
 | userLocationIcon | ImageSource | false | Иконка для позиции пользователя. Доступны те же значения что и у компонента Image из React Native |
 | userLocationIconScale | number | 1 | Масштабирование иконки пользователя |
