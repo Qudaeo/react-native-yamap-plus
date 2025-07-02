@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Handler
 import android.os.Looper
+import android.util.Base64
 import java.io.BufferedInputStream
 import java.io.IOException
 import java.net.URL
@@ -25,7 +26,14 @@ class ImageCacheManager {
                 bis.close()
                 `is`.close()
                 return bitmap
+            } else if (url.contains("data:image")) {
+                val pureBase64Encoded = url.substring(url.indexOf(",") + 1)
+                val decodedString = Base64.decode(pureBase64Encoded, Base64.DEFAULT)
+                val bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.size)
+
+                return  bitmap
             }
+
             val id = context.resources.getIdentifier(url, "drawable", context.packageName)
 
             return BitmapFactory.decodeResource(
