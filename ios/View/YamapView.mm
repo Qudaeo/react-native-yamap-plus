@@ -6,11 +6,32 @@
 #import <mach-o/arch.h>
 #endif
 
+#import "ClusteredYamapView.h"
 #import "CircleView.h"
 #import "MarkerView.h"
 #import "PolygonView.h"
 #import "PolylineView.h"
 #import "../Util/RCTConvert+Yamap.mm"
+#import "ImageCacheManager.h"
+
+#ifdef RCT_NEW_ARCH_ENABLED
+
+#import "../Util/NewArchUtils.h"
+
+#import <react/renderer/components/RNYamapPlusSpec/ComponentDescriptors.h>
+#import <react/renderer/components/RNYamapPlusSpec/EventEmitters.h>
+#import <react/renderer/components/RNYamapPlusSpec/Props.h>
+#import <react/renderer/components/RNYamapPlusSpec/RCTComponentViewHelpers.h>
+
+#import "RCTFabricComponentsPlugins.h"
+
+using namespace facebook::react;
+
+@interface YamapView () <YMKUserLocationObjectListener, YMKMapCameraListener, YMKMapLoadedListener, YMKTrafficDelegate, YMKClusterListener, YMKClusterTapListener>
+
+@end
+
+#endif
 
 #import <YandexMapsMobile/YMKMap.h>
 #import <YandexMapsMobile/YMKMapKitFactory.h>
@@ -27,6 +48,8 @@
 #import <YandexMapsMobile/YMKLogoPadding.h>
 #import <YandexMapsMobile/YMKIconStyle.h>
 #import <YandexMapsMobile/YMKMapLoadStatistics.h>
+#import <YandexMapsMobile/YMKCluster.h>
+#import <YandexMapsMobile/YMKClusterizedPlacemarkCollection.h>
 
 #define UIColorFromRGB(rgbValue) [UIColor colorWithRed:((float)((rgbValue & 0xFF0000) >> 16))/255.0 green:((float)((rgbValue & 0xFF00) >> 8))/255.0 blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]
 
@@ -56,11 +79,15 @@
     UIColor *userLocationAccuracyStrokeColor;
     float userLocationAccuracyStrokeWidth;
     Boolean initializedRegion;
+    UIColor *clusterColor;
+    NSMutableArray<YMKPlacemarkMapObject *> *clusterPlacemarks;
+    YMKClusterizedPlacemarkCollection *clusterCollection;
+    BOOL mapLoaded;
 }
 
 - (instancetype)initWithFrame:(CGRect)frame {
-#if TARGET_OS_SIMULATOR
     if (self = [super initWithFrame:frame]) {
+#if TARGET_OS_SIMULATOR
         const NXArchInfo *archInfo = NXGetLocalArchInfo();
         NSString *cpuArch = [NSString stringWithUTF8String:archInfo->description];
         mapView = [[YMKMapView alloc] initWithFrame:frame vulkanPreferred:[cpuArch hasPrefix:@"ARM64"]];
@@ -68,11 +95,19 @@
         mapView = [[YMKMapView alloc] initWithFrame:frame];
 #endif
 
+#ifdef RCT_NEW_ARCH_ENABLED
+
+        static const auto defaultProps = std::make_shared<const YamapViewProps>();
+        _props = defaultProps;
+
+#endif
+
         _reactSubviews = [[NSMutableArray alloc] init];
         masstransitRouter = [[YMKTransportFactory instance] createMasstransitRouter];
         drivingRouter = [[YMKDirectionsFactory instance] createDrivingRouterWithType: YMKDrivingRouterTypeCombined];
         pedestrianRouter = [[YMKTransportFactory instance] createPedestrianRouter];
-        transitOptions = [YMKTransitOptions transitOptionsWithAvoid:YMKFilterVehicleTypesNone timeOptions:[[YMKTimeOptions alloc] init]];    acceptVehicleTypes = [[NSMutableArray<NSString *> alloc] init];
+        transitOptions = [YMKTransitOptions transitOptionsWithAvoid:YMKFilterVehicleTypesNone timeOptions:[[YMKTimeOptions alloc] init]];
+        acceptVehicleTypes = [[NSMutableArray<NSString *> alloc] init];
         routeOptions = [YMKRouteOptions routeOptionsWithFitnessOptions:[YMKFitnessOptions fitnessOptionsWithAvoidSteep:false avoidStairs:false]];
         routes = [[NSMutableArray alloc] init];
         currentRouteInfo = [[NSMutableArray alloc] init];
@@ -94,12 +129,153 @@
         [mapView.mapWindow.map addInputListenerWithInputListener:(id<YMKMapInputListener>) self];
         [mapView.mapWindow.map setMapLoadedListenerWithMapLoadedListener:self];
         initializedRegion = NO;
-
+        clusterPlacemarks = [[NSMutableArray alloc] init];
+        clusterCollection = [mapView.mapWindow.map.mapObjects addClusterizedPlacemarkCollectionWithClusterListener:self];
+        clusterColor = UIColor.redColor;
+        mapLoaded = NO;
         [self addSubview:mapView];
     }
 
     return self;
 }
+
+#ifdef RCT_NEW_ARCH_ENABLED
+
++ (ComponentDescriptorProvider)componentDescriptorProvider
+{
+    return concreteComponentDescriptorProvider<YamapViewComponentDescriptor>();
+}
+
+- (void)updateProps:(const Props::Shared &)props oldProps:(const Props::Shared &)oldProps {
+    const auto &oldViewProps = *std::static_pointer_cast<YamapViewProps const>(_props);
+    const auto &newViewProps = *std::static_pointer_cast<YamapViewProps const>(props);
+
+    BOOL needUpdateUserIcon = false;
+
+    if (![NewArchUtils yamapInitialRegionsEquals:oldViewProps.initialRegion initialRegion2:newViewProps.initialRegion]) {
+        YMKPoint *center = [YMKPoint pointWithLatitude:newViewProps.initialRegion.lat longitude:newViewProps.initialRegion.lon];
+        YMKCameraPosition *cameraPosition = [YMKCameraPosition cameraPositionWithTarget:center zoom:newViewProps.initialRegion.zoom azimuth:newViewProps.initialRegion.azimuth tilt:newViewProps.initialRegion.tilt];
+        [mapView.mapWindow.map moveWithCameraPosition:cameraPosition];
+    }
+
+    if (oldViewProps.mapType != newViewProps.mapType) {
+        mapView.mapWindow.map.mapType = [self mapTypeWithJsEnum:newViewProps.mapType];
+    }
+
+    if (oldViewProps.nightMode != newViewProps.nightMode) {
+        [self setNightMode:newViewProps.nightMode];
+    }
+
+    if (oldViewProps.showUserPosition != newViewProps.showUserPosition) {
+        [self setShowUserPosition:newViewProps.showUserPosition];
+    }
+
+    if (oldViewProps.userLocationAccuracyFillColor != newViewProps.userLocationAccuracyFillColor) {
+        userLocationAccuracyFillColor = [RCTConvert UIColor:[NSNumber numberWithInt:newViewProps.userLocationAccuracyFillColor]];
+        needUpdateUserIcon = true;
+    }
+
+    if (oldViewProps.userLocationAccuracyStrokeColor != newViewProps.userLocationAccuracyStrokeColor) {
+        userLocationAccuracyStrokeColor = [RCTConvert UIColor:[NSNumber numberWithInt:newViewProps.userLocationAccuracyStrokeColor]];
+        needUpdateUserIcon = true;
+    }
+    
+    if (oldViewProps.userLocationAccuracyStrokeWidth != newViewProps.userLocationAccuracyStrokeWidth) {
+        userLocationAccuracyStrokeWidth = newViewProps.userLocationAccuracyStrokeWidth;
+        needUpdateUserIcon = true;
+    }
+
+    if (oldViewProps.userLocationIconScale != newViewProps.userLocationIconScale) {
+        userLocationImageScale = [NSNumber numberWithFloat:newViewProps.userLocationIconScale];
+        needUpdateUserIcon = true;
+    }
+
+    if (oldViewProps.userLocationIcon != newViewProps.userLocationIcon) {
+        needUpdateUserIcon = false;
+        [self setUserLocationIcon:[NSString stringWithCString:newViewProps.userLocationIcon.c_str() encoding:[NSString defaultCStringEncoding]]];
+    }
+
+    if (oldViewProps.mapStyle != newViewProps.mapStyle) {
+        [mapView.mapWindow.map setMapStyleWithStyle:[NSString stringWithCString:newViewProps.mapStyle.c_str() encoding:[NSString defaultCStringEncoding]]];
+    }
+    
+    if (oldViewProps.scrollGesturesDisabled != newViewProps.scrollGesturesDisabled) {
+        mapView.mapWindow.map.scrollGesturesEnabled = !newViewProps.scrollGesturesDisabled;
+    }
+
+    if (oldViewProps.zoomGesturesDisabled != newViewProps.zoomGesturesDisabled) {
+        mapView.mapWindow.map.zoomGesturesEnabled = !newViewProps.zoomGesturesDisabled;
+    }
+
+    if (oldViewProps.tiltGesturesDisabled != newViewProps.tiltGesturesDisabled) {
+        mapView.mapWindow.map.tiltGesturesEnabled = !newViewProps.tiltGesturesDisabled;
+    }
+
+    if (oldViewProps.rotateGesturesDisabled != newViewProps.rotateGesturesDisabled) {
+        mapView.mapWindow.map.rotateGesturesEnabled = !newViewProps.rotateGesturesDisabled;
+    }
+    
+    if (oldViewProps.fastTapDisabled != newViewProps.fastTapDisabled) {
+        mapView.mapWindow.map.fastTapEnabled = !newViewProps.fastTapDisabled;
+    }
+
+    if (oldViewProps.followUser != newViewProps.followUser) {
+        [self setFollowUser:newViewProps.followUser];
+    }
+
+    if (oldViewProps.interactiveDisabled != newViewProps.interactiveDisabled) {
+        [mapView setNoninteractive:newViewProps.interactiveDisabled];
+    }
+
+    if (oldViewProps.logoPosition.vertical != newViewProps.logoPosition.vertical || oldViewProps.logoPosition.horizontal != newViewProps.logoPosition.horizontal) {
+        YMKLogoHorizontalAlignment horizontalAlignment = YMKLogoHorizontalAlignmentRight;
+        YMKLogoVerticalAlignment verticalAlignment = YMKLogoVerticalAlignmentBottom;
+
+        if (newViewProps.logoPosition.horizontal == YamapViewHorizontal::Left) {
+            horizontalAlignment = YMKLogoHorizontalAlignmentLeft;
+        } else if (newViewProps.logoPosition.horizontal == YamapViewHorizontal::Center) {
+            horizontalAlignment = YMKLogoHorizontalAlignmentCenter;
+        }
+
+        if (newViewProps.logoPosition.vertical == YamapViewVertical::Top) {
+            verticalAlignment = YMKLogoVerticalAlignmentTop;
+        }
+
+        [mapView.mapWindow.map.logo setAlignmentWithAlignment:[YMKLogoAlignment alignmentWithHorizontalAlignment:horizontalAlignment verticalAlignment:verticalAlignment]];
+    }
+
+    if (oldViewProps.logoPadding.vertical != newViewProps.logoPadding.vertical || oldViewProps.logoPadding.horizontal != newViewProps.logoPadding.horizontal) {
+        [mapView.mapWindow.map.logo setPaddingWithPadding:[YMKLogoPadding paddingWithHorizontalPadding:newViewProps.logoPadding.horizontal verticalPadding:newViewProps.logoPadding.vertical]];
+    }
+
+    if (needUpdateUserIcon) {
+        [self updateUserIcon];
+    }
+
+    _props = std::static_pointer_cast<const ViewProps>(props);
+}
+
+- (void)prepareForRecycle
+{
+    [super prepareForRecycle];
+
+    [self removeAllSections];
+
+    static const auto defaultProps = std::make_shared<const YamapViewProps>();
+    _props = defaultProps;
+}
+
+- (YMKMapType)mapTypeWithJsEnum:(YamapViewMapType)jsMapType {
+    if (jsMapType == YamapViewMapType::None) {
+        return YMKMapTypeNone;
+    } else if (jsMapType == YamapViewMapType::Raster) {
+        return YMKMapTypeMap;
+    }
+
+    return YMKMapTypeVectorMap;
+}
+
+#endif
 
 - (NSDictionary*)convertDrivingRouteSection:(YMKDrivingRoute*)route withSection:(YMKDrivingSection*)section {
     int routeIndex = 0;
@@ -314,26 +490,17 @@
     masstransitSession = [masstransitRouter requestRoutesWithPoints:_points transitOptions:_transitOptions routeOptions:routeOptions routeHandler:_routeHandler];
 }
 
-- (UIImage*)resolveUIImage:(NSString*)uri {
-    UIImage *icon;
-
-    if ([uri rangeOfString:@"http://"].location == NSNotFound && [uri rangeOfString:@"https://"].location == NSNotFound) {
-        if ([uri rangeOfString:@"file://"].location != NSNotFound){
-            NSString *file = [uri substringFromIndex:8];
-            icon = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL fileURLWithPath:file]]];
-        } else {
-            icon = [UIImage imageNamed:uri];
-        }
-    } else {
-        icon = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:uri]]];
-    }
-
-    return icon;
-}
-
 - (void)onReceiveNativeEvent:(NSDictionary *)response {
+
+#ifdef RCT_NEW_ARCH_ENABLED
+
+#else
+
     if (self.onRouteFound)
         self.onRouteFound(response);
+
+#endif
+
 }
 
 - (void)removeAllSections {
@@ -457,9 +624,16 @@
     NSMutableDictionary *response = [NSMutableDictionary dictionaryWithDictionary:cameraPosition];
     [response setValue:_id forKey:@"id"];
 
+#ifdef RCT_NEW_ARCH_ENABLED
+
+#else
+
     if (self.onCameraPositionReceived) {
         self.onCameraPositionReceived(response);
     }
+
+#endif
+
 }
 
 - (void)emitVisibleRegionToJS:(NSString *)_id {
@@ -468,9 +642,16 @@
     NSMutableDictionary *response = [NSMutableDictionary dictionaryWithDictionary:visibleRegion];
     [response setValue:_id forKey:@"id"];
 
+#ifdef RCT_NEW_ARCH_ENABLED
+
+#else
+
     if (self.onVisibleRegionReceived) {
         self.onVisibleRegionReceived(response);
     }
+
+#endif
+
 }
 
 - (void)emitWorldToScreenPoint:(NSArray<YMKPoint *> *)worldPoints withId:(NSString *)_id {
@@ -485,9 +666,16 @@
     [response setValue:_id forKey:@"id"];
     [response setValue:screenPoints forKey:@"screenPoints"];
 
+#ifdef RCT_NEW_ARCH_ENABLED
+
+#else
+
     if (self.onWorldToScreenPointsReceived) {
         self.onWorldToScreenPointsReceived(response);
     }
+
+#endif
+
 }
 
 - (void)emitScreenToWorldPoint:(NSArray<YMKScreenPoint *> *)screenPoints withId:(NSString *)_id {
@@ -502,15 +690,27 @@
     [response setValue:_id forKey:@"id"];
     [response setValue:worldPoints forKey:@"worldPoints"];
 
+#ifdef RCT_NEW_ARCH_ENABLED
+
+#else
+
     if (self.onScreenToWorldPointsReceived) {
         self.onScreenToWorldPointsReceived(response);
     }
+
+#endif
+
 }
 
 - (void)onCameraPositionChangedWithMap:(nonnull YMKMap*)map
                         cameraPosition:(nonnull YMKCameraPosition*)cameraPosition
                     cameraUpdateReason:(YMKCameraUpdateReason)cameraUpdateReason
                               finished:(BOOL)finished {
+
+#ifdef RCT_NEW_ARCH_ENABLED
+
+#else
+
     if (self.onCameraPositionChange) {
         self.onCameraPositionChange([self cameraPositionToJSON:cameraPosition reason:cameraUpdateReason finished:finished]);
     }
@@ -518,6 +718,9 @@
     if (self.onCameraPositionChangeEnd && finished) {
         self.onCameraPositionChangeEnd([self cameraPositionToJSON:cameraPosition reason:cameraUpdateReason finished:finished]);
     }
+
+#endif
+
 }
 
 - (void)setNightMode:(BOOL)nightMode {
@@ -636,10 +839,14 @@
 }
 
 // PROPS
-- (void)setUserLocationIcon:(NSString *)iconSource {
-    userLocationImage = [self resolveUIImage:iconSource];
-    [self updateUserIcon];
+- (void)setUserLocationIcon:(NSString *)source {
+    [[ImageCacheManager instance] getWithSource:source completion:^(UIImage *image) {
+        self->userLocationImage = image;
+        [self updateUserIcon];
+    }];
 }
+
+#ifndef RCT_NEW_ARCH_ENABLED
 
 - (void)setUserLocationIconScale:(NSNumber *)iconScale {
     userLocationImageScale = iconScale;
@@ -665,48 +872,52 @@
     [mapView.mapWindow.map setMapStyleWithStyle:style];
 }
 
-- (void)setZoomGesturesEnabled:(BOOL)value {
-    mapView.mapWindow.map.zoomGesturesEnabled = value;
+- (void)setZoomGesturesDisabled:(BOOL)value {
+    mapView.mapWindow.map.zoomGesturesEnabled = !value;
 }
 
-- (void)setScrollGesturesEnabled:(BOOL)value {
-    mapView.mapWindow.map.scrollGesturesEnabled = value;
+- (void)setScrollGesturesDisabled:(BOOL)value {
+    mapView.mapWindow.map.scrollGesturesEnabled = !value;
 }
 
-- (void)setTiltGesturesEnabled:(BOOL)value {
-    mapView.mapWindow.map.tiltGesturesEnabled = value;
+- (void)setTiltGesturesDisabled:(BOOL)value {
+    mapView.mapWindow.map.tiltGesturesEnabled = !value;
 }
 
-- (void)setRotateGesturesEnabled:(BOOL)value {
-    mapView.mapWindow.map.rotateGesturesEnabled = value;
+- (void)setRotateGesturesDisabled:(BOOL)value {
+    mapView.mapWindow.map.rotateGesturesEnabled = !value;
 }
 
-- (void)setFastTapEnabled:(BOOL)value {
-    mapView.mapWindow.map.fastTapEnabled = value;
+- (void)setFastTapDisabled:(BOOL)value {
+    mapView.mapWindow.map.fastTapEnabled = !value;
 }
+
+#endif
 
 - (void)updateUserIcon {
-    if (userLocationView != nil) {
-        if (userLocationImage) {
-            YMKIconStyle *userIconStyle = [[YMKIconStyle alloc] init];
-            [userIconStyle setScale:userLocationImageScale];
-
-            [userLocationView.pin setIconWithImage:userLocationImage style:userIconStyle];
-            [userLocationView.arrow setIconWithImage:userLocationImage style:userIconStyle];
-        }
-
-        YMKCircleMapObject* circle = userLocationView.accuracyCircle;
-
-        if (userLocationAccuracyFillColor) {
-            [circle setFillColor:userLocationAccuracyFillColor];
-        }
-
-        if (userLocationAccuracyStrokeColor) {
-            [circle setStrokeColor:userLocationAccuracyStrokeColor];
-        }
-
-        [circle setStrokeWidth:userLocationAccuracyStrokeWidth];
+    if (userLocationView == nil) {
+        return;
     }
+
+    if (userLocationImage) {
+        YMKIconStyle *userIconStyle = [[YMKIconStyle alloc] init];
+        [userIconStyle setScale:userLocationImageScale];
+
+        [userLocationView.pin setIconWithImage:userLocationImage style:userIconStyle];
+        [userLocationView.arrow setIconWithImage:userLocationImage style:userIconStyle];
+    }
+
+    YMKCircleMapObject* circle = userLocationView.accuracyCircle;
+
+    if (userLocationAccuracyFillColor) {
+        [circle setFillColor:userLocationAccuracyFillColor];
+    }
+
+    if (userLocationAccuracyStrokeColor) {
+        [circle setStrokeColor:userLocationAccuracyStrokeColor];
+    }
+
+    [circle setStrokeWidth:userLocationAccuracyStrokeWidth];
 }
 
 - (void)onObjectAddedWithView:(nonnull YMKUserLocationView *)view {
@@ -724,6 +935,11 @@
 
 - (void)onMapTapWithMap:(nonnull YMKMap *)map
                   point:(nonnull YMKPoint *)point {
+
+#ifdef RCT_NEW_ARCH_ENABLED
+
+#else
+
     if (self.onMapPress) {
         NSDictionary *data = @{
             @"lat": [NSNumber numberWithDouble:point.latitude],
@@ -731,10 +947,18 @@
         };
         self.onMapPress(data);
     }
+
+#endif
+
 }
 
 - (void)onMapLongTapWithMap:(nonnull YMKMap *)map
                       point:(nonnull YMKPoint *)point {
+
+#ifdef RCT_NEW_ARCH_ENABLED
+
+#else
+
     if (self.onMapLongPress) {
         NSDictionary *data = @{
             @"lat": [NSNumber numberWithDouble:point.latitude],
@@ -742,6 +966,9 @@
         };
         self.onMapLongPress(data);
     }
+
+#endif
+
 }
 
 // UTILS
@@ -763,12 +990,16 @@
     return [NSString stringWithFormat:@"#%02lX%02lX%02lX", lroundf(r * 255), lroundf(g * 255), lroundf(b * 255)];
 }
 
-// CHILDREN
-- (void)addSubview:(UIView *)view {
-    [super addSubview:view];
+#ifndef RCT_NEW_ARCH_ENABLED
+
+- (void)insertReactSubview:(UIView<RCTComponent> *)subview atIndex:(NSInteger)index {
+    [self insertSubview:subview atIndex:index];
+    [super insertReactSubview:subview atIndex:index];
 }
 
-- (void)insertReactSubview:(UIView<RCTComponent> *)subview atIndex:(NSInteger)atIndex {
+#endif
+
+- (void)insertSubview:(UIView *)subview atIndex:(NSInteger)index {
     if ([subview isKindOfClass:[PolygonView class]]) {
         YMKMapObjectCollection *objects = mapView.mapWindow.map.mapObjects;
         PolygonView *polygon = (PolygonView *) subview;
@@ -780,12 +1011,19 @@
         YMKPolylineMapObject *obj = [objects addPolylineWithPolyline:[polyline getPolyline]];
         [polyline setMapObject:obj];
     } else if ([subview isKindOfClass:[MarkerView class]]) {
-        YMKMapObjectCollection *objects = mapView.mapWindow.map.mapObjects;
-        MarkerView *marker = (MarkerView *) subview;
-        YMKPlacemarkMapObject *obj = [objects addPlacemark];
-        [obj setIconWithImage:[[UIImage alloc] init]];
-        [obj setGeometry:[marker getPoint]];
-        [marker setMapObject:obj];
+        if ([self isKindOfClass:[ClusteredYamapView class]]) {
+            MarkerView *marker = (MarkerView*) subview;
+            if (index<[clusterPlacemarks count]) {
+                [marker setClusterMapObject:[clusterPlacemarks objectAtIndex:index]];
+            }
+        } else {
+            YMKMapObjectCollection *objects = mapView.mapWindow.map.mapObjects;
+            MarkerView *marker = (MarkerView *) subview;
+            YMKPlacemarkMapObject *obj = [objects addPlacemark];
+            [obj setIconWithImage:[[UIImage alloc] init]];
+            [obj setGeometry:[marker getPoint]];
+            [marker setMapObject:obj];
+        }
     } else if ([subview isKindOfClass:[CircleView class]]) {
         YMKMapObjectCollection *objects = mapView.mapWindow.map.mapObjects;
         CircleView *circle = (CircleView*) subview;
@@ -794,25 +1032,15 @@
     } else {
         NSArray<id<RCTComponent>> *childSubviews = [subview reactSubviews];
         for (int i = 0; i < childSubviews.count; i++) {
-            [self insertReactSubview:(UIView *)childSubviews[i] atIndex:atIndex];
+            [self insertSubview:(UIView *)childSubviews[i] atIndex:index];
         }
     }
 
-    [_reactSubviews insertObject:subview atIndex:atIndex];
-    [super insertReactSubview:subview atIndex:atIndex];
+    [_reactSubviews insertObject:subview atIndex:index];
+    [super insertSubview:subview atIndex:index];
 }
 
-- (void)insertMarkerReactSubview:(UIView<RCTComponent> *) subview atIndex:(NSInteger) atIndex {
-    [_reactSubviews insertObject:subview atIndex:atIndex];
-    [super insertReactSubview:subview atIndex:atIndex];
-}
-
-- (void)removeMarkerReactSubview:(UIView<RCTComponent> *) subview {
-    [_reactSubviews removeObject:subview];
-    [super removeReactSubview: subview];
-}
-
-- (void)removeReactSubview:(UIView<RCTComponent> *)subview {
+- (void)removeReactSubview:(UIView *)subview {
     if ([subview isKindOfClass:[PolygonView class]]) {
         YMKMapObjectCollection *objects = mapView.mapWindow.map.mapObjects;
         PolygonView *polygon = (PolygonView *) subview;
@@ -840,7 +1068,82 @@
     [super removeReactSubview: subview];
 }
 
+- (void)setClusterColor: (NSNumber*) color {
+    clusterColor = [RCTConvert UIColor:color];
+}
+
+- (void)setClusteredMarkers:(NSArray<YMKPoint*>*) markers {
+    [clusterPlacemarks removeAllObjects];
+    if (![clusterCollection isValid]) {
+        clusterCollection = [mapView.mapWindow.map.mapObjects addClusterizedPlacemarkCollectionWithClusterListener:self];
+    }
+    [clusterCollection clear];
+    NSArray<YMKPlacemarkMapObject *>* newPlacemarks = [clusterCollection addPlacemarksWithPoints:markers image:[self clusterImage:[NSNumber numberWithFloat:[markers count]]] style:[YMKIconStyle new]];
+    [clusterPlacemarks addObjectsFromArray:newPlacemarks];
+    for (int i=0; i<[clusterPlacemarks count]; i++) {
+        if (i<[_reactSubviews count]) {
+            UIView *subview = [_reactSubviews objectAtIndex:i];
+            if ([subview isKindOfClass:[MarkerView class]]) {
+                MarkerView *marker = (MarkerView*) subview;
+                [marker setClusterMapObject:[clusterPlacemarks objectAtIndex:i]];
+            }
+        }
+    }
+
+#ifdef RCT_NEW_ARCH_ENABLED
+
+    [self clusterPlacemarks];
+
+#else
+
+    if (mapLoaded) {
+        [self clusterPlacemarks];
+    }
+
+#endif
+
+}
+
+-(UIImage*)clusterImage:(NSNumber*) clusterSize {
+    float FONT_SIZE = 45;
+    float MARGIN_SIZE = 9;
+    float STROKE_SIZE = 9;
+    NSString *text = [clusterSize stringValue];
+    UIFont *font = [UIFont systemFontOfSize:FONT_SIZE];
+    CGSize size = [text sizeWithAttributes:@{NSFontAttributeName:font}];
+    float textRadius = sqrt(size.height * size.height + size.width * size.width) / 2;
+    float internalRadius = textRadius + MARGIN_SIZE;
+    float externalRadius = internalRadius + STROKE_SIZE;
+    // This function returns a newImage, based on image, that has been:
+    // - scaled to fit in (CGRect) rect
+    // - and cropped within a circle of radius: rectWidth/2
+
+    //Create the bitmap graphics context
+    UIGraphicsBeginImageContextWithOptions(CGSizeMake(externalRadius*2, externalRadius*2), NO, 1.0);
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    CGContextSetFillColorWithColor(context, [clusterColor CGColor]);
+    CGContextFillEllipseInRect(context, CGRectMake(0, 0, externalRadius*2, externalRadius*2));
+    CGContextSetFillColorWithColor(context, [UIColor.whiteColor CGColor]);
+    CGContextFillEllipseInRect(context, CGRectMake(STROKE_SIZE, STROKE_SIZE, internalRadius*2, internalRadius*2));
+    [text drawInRect:CGRectMake(externalRadius - size.width/2, externalRadius - size.height/2, size.width, size.height) withAttributes:@{NSFontAttributeName: font, NSForegroundColorAttributeName: UIColor.blackColor }];
+    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+
+    return newImage;
+}
+
+- (void) clusterPlacemarks {
+    if ([clusterPlacemarks count] > 0) {
+        [clusterCollection clusterPlacemarksWithClusterRadius:50 minZoom:12];
+    }
+}
+
 - (void)onMapLoadedWithStatistics:(YMKMapLoadStatistics*)statistics {
+
+#ifdef RCT_NEW_ARCH_ENABLED
+
+#else
+
     if (self.onMapLoaded) {
         NSDictionary *data = @{
             @"renderObjectCount": @(statistics.renderObjectCount),
@@ -855,10 +1158,16 @@
         };
         self.onMapLoaded(data);
     }
+
+    [self clusterPlacemarks];
+
+#endif
+
+    mapLoaded = YES;
 }
 
-- (void)setInteractive:(BOOL)interactive {
-    [mapView setNoninteractive:!interactive];
+- (void)setInteractiveDisabled:(BOOL)interactiveDisabled {
+    [mapView setNoninteractive:interactiveDisabled];
 }
 
 - (void)onTrafficLoading {
@@ -872,6 +1181,21 @@
 
 - (YMKMapView *)getMapView {
     return mapView;
+}
+
+- (void)onClusterAddedWithCluster:(nonnull YMKCluster *)cluster {
+    NSNumber *myNum = @([cluster size]);
+    [[cluster appearance] setIconWithImage:[self clusterImage:myNum]];
+    [cluster addClusterTapListenerWithClusterTapListener:self];
+}
+
+- (BOOL)onClusterTapWithCluster:(nonnull YMKCluster *)cluster {
+    NSMutableArray<YMKPoint*>* lastKnownMarkers = [[NSMutableArray alloc] init];
+    for (YMKPlacemarkMapObject *placemark in [cluster placemarks]) {
+        [lastKnownMarkers addObject:[placemark geometry]];
+    }
+    [self fitMarkers:lastKnownMarkers];
+    return YES;
 }
 
 @end

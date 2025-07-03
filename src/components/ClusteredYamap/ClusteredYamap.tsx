@@ -14,7 +14,6 @@ import {YamapRef} from '../Yamap/types';
 import {Commands} from '../../spec/commands/yamap';
 
 export const ClusteredYamap = forwardRef<YamapRef, ClusteredYamapProps>(({
-    showUserPosition = true,
     clusterColor = 'red',
     ...props
   }, ref) => {
@@ -34,10 +33,9 @@ export const ClusteredYamap = forwardRef<YamapRef, ClusteredYamapProps>(({
       userLocationIcon: getImageUri(props.userLocationIcon),
       clusterColor,
       clusteredMarkers: props.clusteredMarkers.map(mark => mark.point),
-      showUserPosition,
       children: props.clusteredMarkers.map(props.renderMarker),
     }, ['clusterColor', 'userLocationAccuracyFillColor', 'userLocationAccuracyStrokeColor']),
-    [clusterColor, props, showUserPosition]
+    [clusterColor, props]
   );
 
   return (

@@ -1,7 +1,15 @@
 #ifndef YamapView_h
 #define YamapView_h
 
+#ifdef RCT_NEW_ARCH_ENABLED
+
+#import <React/RCTViewComponentView.h>
+
+#else
+
 #import <React/RCTComponent.h>
+
+#endif
 
 #import <YandexMapsMobile/YMKMapView.h>
 #import <YandexMapsMobile/YMKUserLocation.h>
@@ -9,10 +17,18 @@
 #import <YandexMapsMobile/YMKMapCameraListener.h>
 #import <YandexMapsMobile/YMKMapLoadedListener.h>
 #import <YandexMapsMobile/YMKTrafficListener.h>
+#import <YandexMapsMobile/YMKClusterListener.h>
+#import <YandexMapsMobile/YMKClusterTapListener.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface YamapView: UIView<YMKUserLocationObjectListener, YMKMapCameraListener, YMKMapLoadedListener, YMKTrafficDelegate>
+#ifdef RCT_NEW_ARCH_ENABLED
+
+@interface YamapView: RCTViewComponentView
+
+#else
+
+@interface YamapView: UIView<YMKUserLocationObjectListener, YMKMapCameraListener, YMKMapLoadedListener, YMKTrafficDelegate, YMKClusterListener, YMKClusterTapListener>
 
 @property (nonatomic, copy) RCTBubblingEventBlock onRouteFound;
 @property (nonatomic, copy) RCTBubblingEventBlock onCameraPositionReceived;
@@ -25,8 +41,12 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy) RCTBubblingEventBlock onWorldToScreenPointsReceived;
 @property (nonatomic, copy) RCTBubblingEventBlock onScreenToWorldPointsReceived;
 
+#endif
 
 - (YMKMapView *)getMapView;
+
+- (void)setClusterColor: (NSNumber *) color;
+- (void)setClusteredMarkers:(NSArray<YMKPoint *> *) markers;
 
 // REF
 - (void)emitCameraPositionToJS:(NSString *_Nonnull)_id;
@@ -39,9 +59,6 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)setTrafficVisible:(BOOL)traffic;
 - (void)emitWorldToScreenPoint:(NSArray<YMKPoint *> *_Nonnull)points withId:(NSString*_Nonnull)_id;
 - (void)emitScreenToWorldPoint:(NSArray<YMKScreenPoint *> *_Nonnull)points withId:(NSString*_Nonnull)_id;
-
-- (void)insertMarkerReactSubview:(UIView *_Nullable)subview atIndex:(NSInteger)atIndex;
-- (void)removeMarkerReactSubview:(UIView *_Nullable)subview;
 
 @end
 

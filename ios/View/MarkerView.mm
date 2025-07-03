@@ -143,13 +143,13 @@ using namespace facebook::react;
     scale = _scale;
     [self updateMarker];
 }
-- (void)setRotated:(NSNumber*) _rotated {
-    rotated = _rotated;
+- (void)setRotated:(NSNumber*) rotated {
+    rotationType = rotated;
     [self updateMarker];
 }
 
-- (void)setZI:(NSNumber*)_zIndex {
-    zIndex = _zIndex;
+- (void)setZI:(NSNumber *)zI {
+    zIndex = [zI floatValue];
     [self updateMarker];
 }
 
@@ -256,13 +256,17 @@ using namespace facebook::react;
 
 - (void)setMapObject:(YMKPlacemarkMapObject *)_mapObject {
     mapObject = _mapObject;
-    [mapObject addTapListenerWithTapListener:self];
+    if ([mapObject isValid]) {
+        [mapObject addTapListenerWithTapListener:self];
+    }
     [self updateMarker];
 }
 
 - (void)setClusterMapObject:(YMKPlacemarkMapObject *)_mapObject {
     mapObject = _mapObject;
-    [mapObject addTapListenerWithTapListener:self];
+    if ([mapObject isValid]) {
+        [mapObject addTapListenerWithTapListener:self];
+    }
     [self updateClusterMarker];
 }
 

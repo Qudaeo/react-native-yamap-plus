@@ -64,6 +64,37 @@
     return true;
 }
 
++ (BOOL)yamapInitialRegionsEquals:(YamapViewInitialRegionStruct)initialRegion1 initialRegion2:(YamapViewInitialRegionStruct)initialRegion2 {
+    if (
+        initialRegion1.azimuth != initialRegion2.azimuth ||
+        initialRegion1.lat != initialRegion2.lat ||
+        initialRegion1.lon != initialRegion2.lon ||
+        initialRegion1.tilt != initialRegion2.tilt ||
+        initialRegion1.zoom != initialRegion2.zoom
+    ) {
+        return false;
+    }
+    
+    return true;
+}
+
++ (BOOL)yamapClusteredMarkersEquals:(std::vector<ClusteredYamapViewClusteredMarkersStruct>)markers1 markers2:(std::vector<ClusteredYamapViewClusteredMarkersStruct>)markers2 {
+    if (markers1.size() != markers2.size()) {
+        return false;
+    }
+    
+    for (int i = 0; i < markers1.size(); i++) {
+        ClusteredYamapViewClusteredMarkersStruct m1 = markers1.at(i);
+        ClusteredYamapViewClusteredMarkersStruct m2 = markers2.at(i);
+        
+        if (m1.lat != m2.lat || m1.lon != m2.lon) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
 @end
 
 #endif

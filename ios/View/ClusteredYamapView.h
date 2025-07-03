@@ -3,12 +3,9 @@
 
 #import <YamapView.h>
 
-#import <YandexMapsMobile/YMKClusterListener.h>
-#import <YandexMapsMobile/YMKClusterTapListener.h>
-
 NS_ASSUME_NONNULL_BEGIN
 
-@interface ClusteredYamapView: YamapView<YMKClusterListener, YMKClusterTapListener>
+@interface ClusteredYamapView: YamapView
 
 @end
 

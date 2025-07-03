@@ -66,10 +66,12 @@
     },
     "ios": {
       "componentProvider": {
+        "ClusteredYamapView": "ClusteredYamapView",
         "CircleView": "CircleView",
         "MarkerView": "MarkerView",
         "PolygonView": "PolygonView",
-        "PolylineView": "PolylineView"
+        "PolylineView": "PolylineView",
+        "YamapView": "YamapView"
       }
     }
   },

@@ -1,3 +1,5 @@
+#ifndef RCT_NEW_ARCH_ENABLED
+
 #import <React/RCTUIManager.h>
 
 #import "View/YamapView.h"
@@ -55,18 +57,19 @@ RCT_EXPORT_VIEW_PROPERTY(userLocationAccuracyStrokeWidth, NSNumber)
 RCT_EXPORT_VIEW_PROPERTY(userLocationIcon, NSString)
 RCT_EXPORT_VIEW_PROPERTY(userLocationIconScale, NSNumber)
 RCT_EXPORT_VIEW_PROPERTY(showUserPosition, BOOL)
+RCT_EXPORT_VIEW_PROPERTY(followUser, BOOL)
 RCT_EXPORT_VIEW_PROPERTY(nightMode, BOOL)
 RCT_EXPORT_VIEW_PROPERTY(mapType, NSString)
 RCT_EXPORT_VIEW_PROPERTY(initialRegion, NSDictionary)
-RCT_EXPORT_VIEW_PROPERTY(interactive, BOOL)
+RCT_EXPORT_VIEW_PROPERTY(interactiveDisabled, BOOL)
 RCT_EXPORT_VIEW_PROPERTY(logoPosition, NSDictionary)
 RCT_EXPORT_VIEW_PROPERTY(logoPadding, NSDictionary)
 RCT_EXPORT_VIEW_PROPERTY(mapStyle, NSString)
-RCT_EXPORT_VIEW_PROPERTY(zoomGesturesEnabled, BOOL)
-RCT_EXPORT_VIEW_PROPERTY(scrollGesturesEnabled, BOOL)
-RCT_EXPORT_VIEW_PROPERTY(tiltGesturesEnabled, BOOL)
-RCT_EXPORT_VIEW_PROPERTY(rotateGesturesEnabled, BOOL)
-RCT_EXPORT_VIEW_PROPERTY(fastTapEnabled, BOOL)
+RCT_EXPORT_VIEW_PROPERTY(zoomGesturesDisabled, BOOL)
+RCT_EXPORT_VIEW_PROPERTY(scrollGesturesDisabled, BOOL)
+RCT_EXPORT_VIEW_PROPERTY(tiltGesturesDisabled, BOOL)
+RCT_EXPORT_VIEW_PROPERTY(rotateGesturesDisabled, BOOL)
+RCT_EXPORT_VIEW_PROPERTY(fastTapDisabled, BOOL)
 
 // REF
 RCT_EXPORT_METHOD(fitAllMarkers:(nonnull NSNumber *)reactTag argsArr:(NSArray*)argsArr) {
@@ -171,3 +174,5 @@ RCT_EXPORT_METHOD(getWorldPoints:(nonnull NSNumber *)reactTag argsArr:(NSArray*)
 }
 
 @end
+
+#endif

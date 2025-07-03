@@ -70,17 +70,17 @@ export interface YamapNativeProps extends ViewProps {
   userLocationAccuracyFillColor?: Int32;
   userLocationAccuracyStrokeColor?: Int32;
   userLocationAccuracyStrokeWidth?: Float;
-  scrollGesturesEnabled?: boolean;
-  zoomGesturesEnabled?: boolean;
-  tiltGesturesEnabled?: boolean;
-  rotateGesturesEnabled?: boolean;
-  fastTapEnabled?: boolean;
+  scrollGesturesDisabled?: boolean;
+  zoomGesturesDisabled?: boolean;
+  tiltGesturesDisabled?: boolean;
+  rotateGesturesDisabled?: boolean;
+  fastTapDisabled?: boolean;
   initialRegion?: InitialRegion;
   followUser?: boolean;
   logoPosition?: YandexLogoPosition;
   logoPadding?: YandexLogoPadding;
   userLocationIcon: string | undefined;
-  interactive?: boolean;
+  interactiveDisabled?: boolean;
 
   onRouteFound: DirectEventHandler<undefined>;
   onCameraPositionReceived: DirectEventHandler<undefined>;

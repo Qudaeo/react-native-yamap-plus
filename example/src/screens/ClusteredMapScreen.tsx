@@ -34,7 +34,7 @@ export const ClusteredMapScreen = () => {
   return (
     <ClusteredYamap
       ref={clusteredMapRef}
-      clusterColor="red"
+      clusterColor="green"
       initialRegion={{lat: 56.754215, lon: 38.421242, zoom: 6}}
       onMapLoaded={(e) => {
         console.log('clustered onMapLoaded', e.nativeEvent);

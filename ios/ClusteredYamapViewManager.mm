@@ -1,3 +1,5 @@
+#ifndef RCT_NEW_ARCH_ENABLED
+
 #import <React/RCTUIManager.h>
 
 #import "View/ClusteredYamapView.h"
@@ -62,14 +64,14 @@ RCT_EXPORT_VIEW_PROPERTY(followUser, BOOL)
 RCT_EXPORT_VIEW_PROPERTY(nightMode, BOOL)
 RCT_EXPORT_VIEW_PROPERTY(mapStyle, NSString)
 RCT_EXPORT_VIEW_PROPERTY(mapType, NSString)
-RCT_EXPORT_VIEW_PROPERTY(interactive, BOOL)
+RCT_EXPORT_VIEW_PROPERTY(interactiveDisabled, BOOL)
 RCT_EXPORT_VIEW_PROPERTY(logoPosition, NSDictionary)
 RCT_EXPORT_VIEW_PROPERTY(logoPadding, NSDictionary)
-RCT_EXPORT_VIEW_PROPERTY(zoomGesturesEnabled, BOOL)
-RCT_EXPORT_VIEW_PROPERTY(scrollGesturesEnabled, BOOL)
-RCT_EXPORT_VIEW_PROPERTY(tiltGesturesEnabled, BOOL)
-RCT_EXPORT_VIEW_PROPERTY(rotateGesturesEnabled, BOOL)
-RCT_EXPORT_VIEW_PROPERTY(fastTapEnabled, BOOL)
+RCT_EXPORT_VIEW_PROPERTY(zoomGesturesDisabled, BOOL)
+RCT_EXPORT_VIEW_PROPERTY(scrollGesturesDisabled, BOOL)
+RCT_EXPORT_VIEW_PROPERTY(tiltGesturesDisabled, BOOL)
+RCT_EXPORT_VIEW_PROPERTY(rotateGesturesDisabled, BOOL)
+RCT_EXPORT_VIEW_PROPERTY(fastTapDisabled, BOOL)
 
 // ref
 RCT_EXPORT_METHOD(fitAllMarkers:(nonnull NSNumber*) reactTag argsArr:(NSArray*)argsArr) {
@@ -172,3 +174,5 @@ RCT_EXPORT_METHOD(setTrafficVisible:(nonnull NSNumber *)reactTag argsArr:(NSArra
 }
 
 @end
+
+#endif
