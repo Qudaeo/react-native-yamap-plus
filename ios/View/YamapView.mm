@@ -709,6 +709,52 @@ using namespace facebook::react;
 
 #ifdef RCT_NEW_ARCH_ENABLED
 
+    if ([self isKindOfClass:[ClusteredYamapView class]]) {
+        std::dynamic_pointer_cast<const ClusteredYamapViewEventEmitter>(_eventEmitter)->onCameraPositionChange({
+            .lat = cameraPosition.target.latitude,
+            .lon = cameraPosition.target.latitude,
+            .azimuth = cameraPosition.azimuth,
+            .finished = finished,
+            .reason = cameraUpdateReason == YMKCameraUpdateReasonGestures ? "GESTURES" : "APPLICATION",
+            .tilt = cameraPosition.tilt,
+            .zoom = cameraPosition.zoom,
+        });
+    } else {
+        std::dynamic_pointer_cast<const YamapViewEventEmitter>(_eventEmitter)->onCameraPositionChange({
+            .lat = cameraPosition.target.latitude,
+            .lon = cameraPosition.target.latitude,
+            .azimuth = cameraPosition.azimuth,
+            .finished = finished,
+            .reason = cameraUpdateReason == YMKCameraUpdateReasonGestures ? "GESTURES" : "APPLICATION",
+            .tilt = cameraPosition.tilt,
+            .zoom = cameraPosition.zoom,
+        });
+    }
+
+    if (finished) {
+        if ([self isKindOfClass:[ClusteredYamapView class]]) {
+            std::dynamic_pointer_cast<const ClusteredYamapViewEventEmitter>(_eventEmitter)->onCameraPositionChangeEnd({
+                .lat = cameraPosition.target.latitude,
+                .lon = cameraPosition.target.latitude,
+                .azimuth = cameraPosition.azimuth,
+                .finished = finished,
+                .reason = cameraUpdateReason == YMKCameraUpdateReasonGestures ? "GESTURES" : "APPLICATION",
+                .tilt = cameraPosition.tilt,
+                .zoom = cameraPosition.zoom,
+            });
+        } else {
+            std::dynamic_pointer_cast<const YamapViewEventEmitter>(_eventEmitter)->onCameraPositionChangeEnd({
+                .lat = cameraPosition.target.latitude,
+                .lon = cameraPosition.target.latitude,
+                .azimuth = cameraPosition.azimuth,
+                .finished = finished,
+                .reason = cameraUpdateReason == YMKCameraUpdateReasonGestures ? "GESTURES" : "APPLICATION",
+                .tilt = cameraPosition.tilt,
+                .zoom = cameraPosition.zoom,
+            });
+        }
+    }
+
 #else
 
     if (self.onCameraPositionChange) {

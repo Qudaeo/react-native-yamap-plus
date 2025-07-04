@@ -38,7 +38,7 @@ export interface CameraPosition {
   lat: Double;
   lon: Double;
   azimuth: Double;
-  finished: Double;
+  finished: boolean;
   reason: string;
   tilt: Double;
   zoom: Double;
