@@ -179,7 +179,7 @@ using namespace facebook::react;
         userLocationAccuracyStrokeColor = [RCTConvert UIColor:[NSNumber numberWithInt:newViewProps.userLocationAccuracyStrokeColor]];
         needUpdateUserIcon = true;
     }
-    
+
     if (oldViewProps.userLocationAccuracyStrokeWidth != newViewProps.userLocationAccuracyStrokeWidth) {
         userLocationAccuracyStrokeWidth = newViewProps.userLocationAccuracyStrokeWidth;
         needUpdateUserIcon = true;
@@ -198,7 +198,7 @@ using namespace facebook::react;
     if (oldViewProps.mapStyle != newViewProps.mapStyle) {
         [mapView.mapWindow.map setMapStyleWithStyle:[NSString stringWithCString:newViewProps.mapStyle.c_str() encoding:[NSString defaultCStringEncoding]]];
     }
-    
+
     if (oldViewProps.scrollGesturesDisabled != newViewProps.scrollGesturesDisabled) {
         mapView.mapWindow.map.scrollGesturesEnabled = !newViewProps.scrollGesturesDisabled;
     }
@@ -214,7 +214,7 @@ using namespace facebook::react;
     if (oldViewProps.rotateGesturesDisabled != newViewProps.rotateGesturesDisabled) {
         mapView.mapWindow.map.rotateGesturesEnabled = !newViewProps.rotateGesturesDisabled;
     }
-    
+
     if (oldViewProps.fastTapDisabled != newViewProps.fastTapDisabled) {
         mapView.mapWindow.map.fastTapEnabled = !newViewProps.fastTapDisabled;
     }
@@ -449,8 +449,6 @@ using namespace facebook::react;
             [response setValue:jsonRoutes forKey:@"routes"];
             [strongSelf onReceiveNativeEvent: response];
         }];
-
-        return;
     }
 
     YMKMasstransitSessionRouteHandler _routeHandler = ^(NSArray<YMKMasstransitRoute *> *routes, NSError *error) {
@@ -983,7 +981,7 @@ using namespace facebook::react;
                   point:(nonnull YMKPoint *)point {
 
 #ifdef RCT_NEW_ARCH_ENABLED
-    
+
     if ([self isKindOfClass:[ClusteredYamapView class]]) {
         std::dynamic_pointer_cast<const ClusteredYamapViewEventEmitter>(_eventEmitter)->onMapPress({.lat = point.latitude, .lon = point.longitude});
     } else {

@@ -1,5 +1,4 @@
-import {NativeSyntheticEvent} from 'react-native';
-import {CameraPosition} from './spec/YamapNativeComponent';
+import {CameraPosition, RoutesFoundState} from './spec/YamapNativeComponent';
 
 export interface Point {
   lat: number;
@@ -36,45 +35,13 @@ export const ALL_MASSTRANSIT_VEHICLES: Vehicles[] = [
   'funicular',
 ] as const;
 
-export interface DrivingInfo {
-  time: string;
-  timeWithTraffic: string;
-  distance: number;
+export interface RoutesFoundEvent {
+  nativeEvent: RoutesFoundState;
 }
-
-export interface MasstransitInfo {
-  time: string;
-  transferCount: number;
-  walkingDistance: number;
-}
-
-export interface RouteInfo<T extends (DrivingInfo | MasstransitInfo)> {
-  id: string;
-  sections: {
-    points: Point[];
-    sectionInfo: T;
-    routeInfo: T;
-    routeIndex: number;
-    stops: any[];
-    type: string;
-    transports?: any;
-    sectionColor?: string;
-  }[];
-}
-
-export interface RoutesFoundEvent<T extends (DrivingInfo | MasstransitInfo)> {
-  nativeEvent: {
-    status: 'success' | 'error';
-    id: string;
-    routes: RouteInfo<T>[];
-  };
-}
-
-export type RoutesFoundCallback<T extends (DrivingInfo | MasstransitInfo)> = (event: RoutesFoundEvent<T>) => void
 
 export type CameraPositionCallback = (position: CameraPosition) => void
 
-export type NativeSyntheticEventCallback<T extends any> = (event: NativeSyntheticEvent<T>) => void
+export type RoutesFoundCallback = (event: RoutesFoundEvent) => void
 
 export type VisibleRegion = {
   bottomLeft: Point;

@@ -2,8 +2,6 @@ import {ImageSourcePropType} from 'react-native';
 import {
   Animation,
   CameraPositionCallback,
-  DrivingInfo,
-  MasstransitInfo,
   Point,
   RoutesFoundCallback,
   ScreenPoint,
@@ -44,10 +42,7 @@ export type YamapRef = {
   findRoutes: (
     points: Point[],
     vehicles: Vehicles[],
-    callback:
-      RoutesFoundCallback<DrivingInfo> |
-      RoutesFoundCallback<MasstransitInfo> |
-      RoutesFoundCallback<DrivingInfo | MasstransitInfo>
+    callback: RoutesFoundCallback
   ) => void;
   setZoom: (zoom: number, duration?: number, animation?: Animation) => void;
   getCameraPosition: (callback: CameraPositionCallback) => void;
@@ -56,7 +51,7 @@ export type YamapRef = {
   getScreenPoints: (points: Point[], callback: ScreenPointsCallback) => void;
   getWorldPoints: (points: ScreenPoint[], callback: WorldPointsCallback) => void;
 
-  findMasstransitRoutes: (points: Point[], callback: RoutesFoundCallback<MasstransitInfo>) => void;
-  findPedestrianRoutes: (points: Point[], callback: RoutesFoundCallback<MasstransitInfo>) => void;
-  findDrivingRoutes: (points: Point[], callback: RoutesFoundCallback<DrivingInfo>) => void;
+  findMasstransitRoutes: (points: Point[], callback: RoutesFoundCallback) => void;
+  findPedestrianRoutes: (points: Point[], callback: RoutesFoundCallback) => void;
+  findDrivingRoutes: (points: Point[], callback: RoutesFoundCallback) => void;
 };

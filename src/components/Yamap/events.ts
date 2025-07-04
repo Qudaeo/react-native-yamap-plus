@@ -1,36 +1,29 @@
-import {
-  DrivingInfo,
-  MasstransitInfo,
-  NativeSyntheticEventCallback,
-  Point,
-  RoutesFoundEvent,
-  ScreenPoint,
-  VisibleRegion,
-} from '../../interfaces';
+import {NativeSyntheticEvent} from "react-native";
+import {Point, ScreenPoint, VisibleRegion} from '../../interfaces';
 import {CallbacksManager} from '../../utils';
-import {CameraPosition} from '../../spec/YamapNativeComponent';
+import {CameraPosition, RoutesFoundState} from '../../spec/YamapNativeComponent';
 
-export const onRouteFound: NativeSyntheticEventCallback<{ id: string } & RoutesFoundEvent<DrivingInfo | MasstransitInfo>> = (event) => {
+export const onRouteFound = (event: NativeSyntheticEvent<RoutesFoundState>) => {
   const { id, ...routes } = event.nativeEvent;
   CallbacksManager.call(id, routes);
 };
 
-export const onCameraPositionReceived: NativeSyntheticEventCallback<{ id: string } & CameraPosition> = (event) => {
+export const onCameraPositionReceived = (event: NativeSyntheticEvent<{ id: string } & CameraPosition>) => {
   const { id, ...point } = event.nativeEvent;
   CallbacksManager.call(id, point);
 };
 
-export const onVisibleRegionReceived: NativeSyntheticEventCallback<{ id: string } & VisibleRegion> = (event) => {
+export const onVisibleRegionReceived = (event: NativeSyntheticEvent<{ id: string } & VisibleRegion>) => {
   const { id, ...visibleRegion } = event.nativeEvent;
   CallbacksManager.call(id, visibleRegion);
 };
 
-export const onWorldToScreenPointsReceived: NativeSyntheticEventCallback<{ id: string } & ScreenPoint[]> = (event) => {
+export const onWorldToScreenPointsReceived = (event: NativeSyntheticEvent<{ id: string } & ScreenPoint[]>) => {
   const { id, ...screenPoints } = event.nativeEvent;
   CallbacksManager.call(id, screenPoints);
 };
 
-export const onScreenToWorldPointsReceived: NativeSyntheticEventCallback<{ id: string } & Point[]> = (event) => {
+export const onScreenToWorldPointsReceived = (event: NativeSyntheticEvent<{ id: string } & Point[]>) => {
   const { id, ...worldPoints } = event.nativeEvent;
   CallbacksManager.call(id, worldPoints);
 };
