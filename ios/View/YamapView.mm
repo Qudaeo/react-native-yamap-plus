@@ -937,6 +937,12 @@ using namespace facebook::react;
                   point:(nonnull YMKPoint *)point {
 
 #ifdef RCT_NEW_ARCH_ENABLED
+    
+    if ([self isKindOfClass:[ClusteredYamapView class]]) {
+        std::dynamic_pointer_cast<const ClusteredYamapViewEventEmitter>(_eventEmitter)->onMapPress({.lat = point.latitude, .lon = point.longitude});
+    } else {
+        std::dynamic_pointer_cast<const YamapViewEventEmitter>(_eventEmitter)->onMapPress({.lat = point.latitude, .lon = point.longitude});
+    }
 
 #else
 
@@ -956,6 +962,12 @@ using namespace facebook::react;
                       point:(nonnull YMKPoint *)point {
 
 #ifdef RCT_NEW_ARCH_ENABLED
+
+    if ([self isKindOfClass:[ClusteredYamapView class]]) {
+        std::dynamic_pointer_cast<const ClusteredYamapViewEventEmitter>(_eventEmitter)->onMapLongPress({.lat = point.latitude, .lon = point.longitude});
+    } else {
+        std::dynamic_pointer_cast<const YamapViewEventEmitter>(_eventEmitter)->onMapLongPress({.lat = point.latitude, .lon = point.longitude});
+    }
 
 #else
 
@@ -1141,6 +1153,32 @@ using namespace facebook::react;
 - (void)onMapLoadedWithStatistics:(YMKMapLoadStatistics*)statistics {
 
 #ifdef RCT_NEW_ARCH_ENABLED
+
+    if ([self isKindOfClass:[ClusteredYamapView class]]) {
+        std::dynamic_pointer_cast<const ClusteredYamapViewEventEmitter>(_eventEmitter)->onMapLoaded({
+            .renderObjectCount = [[NSNumber numberWithLong:statistics.renderObjectCount] doubleValue],
+            .curZoomModelsLoaded = statistics.curZoomModelsLoaded,
+            .curZoomPlacemarksLoaded = statistics.curZoomPlacemarksLoaded,
+            .curZoomLabelsLoaded = statistics.curZoomLabelsLoaded,
+            .curZoomGeometryLoaded = statistics.curZoomGeometryLoaded,
+            .tileMemoryUsage = [[NSNumber numberWithUnsignedLong:statistics.tileMemoryUsage] doubleValue],
+            .delayedGeometryLoaded = statistics.delayedGeometryLoaded,
+            .fullyAppeared = statistics.fullyAppeared,
+            .fullyLoaded = statistics.fullyLoaded,
+        });
+    } else {
+        std::dynamic_pointer_cast<const YamapViewEventEmitter>(_eventEmitter)->onMapLoaded({
+            .renderObjectCount = [[NSNumber numberWithLong:statistics.renderObjectCount] doubleValue],
+            .curZoomModelsLoaded = statistics.curZoomModelsLoaded,
+            .curZoomPlacemarksLoaded = statistics.curZoomPlacemarksLoaded,
+            .curZoomLabelsLoaded = statistics.curZoomLabelsLoaded,
+            .curZoomGeometryLoaded = statistics.curZoomGeometryLoaded,
+            .tileMemoryUsage = [[NSNumber numberWithUnsignedLong:statistics.tileMemoryUsage] doubleValue],
+            .delayedGeometryLoaded = statistics.delayedGeometryLoaded,
+            .fullyAppeared = statistics.fullyAppeared,
+            .fullyLoaded = statistics.fullyLoaded,
+        });
+    }
 
 #else
 
