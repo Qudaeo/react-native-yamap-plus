@@ -53,6 +53,7 @@ import com.yandex.mapkit.traffic.TrafficListener
 import com.yandex.mapkit.transport.TransportFactory
 import com.yandex.mapkit.transport.masstransit.FilterVehicleTypes
 import com.yandex.mapkit.transport.masstransit.Route
+import com.yandex.mapkit.transport.masstransit.RouteOptions
 import com.yandex.mapkit.transport.masstransit.Section
 import com.yandex.mapkit.transport.masstransit.Session
 import com.yandex.mapkit.transport.masstransit.TimeOptions
@@ -278,7 +279,7 @@ open class YamapView(context: Context?) : MapView(context), UserLocationObjectLi
             val _points = ArrayList<RequestPoint>()
             for (i in points.indices) {
                 val point = points[i]
-                val _p = RequestPoint(point, RequestPointType.WAYPOINT, null, null)
+                val _p = RequestPoint(point, RequestPointType.WAYPOINT, null, null, null)
                 _points.add(_p)
             }
 
@@ -293,7 +294,7 @@ open class YamapView(context: Context?) : MapView(context), UserLocationObjectLi
         val _points = ArrayList<RequestPoint>()
         for (i in points.indices) {
             val point = points[i]
-            _points.add(RequestPoint(point, RequestPointType.WAYPOINT, null, null))
+            _points.add(RequestPoint(point, RequestPointType.WAYPOINT, null, null, null))
         }
         val listener: Session.RouteListener = object : Session.RouteListener {
             override fun onMasstransitRoutes(routes: List<Route>) {
@@ -325,11 +326,11 @@ open class YamapView(context: Context?) : MapView(context), UserLocationObjectLi
             }
         }
         if (vehicles.size == 0) {
-            pedestrianRouter.requestRoutes(_points, TimeOptions(), true, listener)
+            pedestrianRouter.requestRoutes(_points, TimeOptions(), RouteOptions(), listener)
             return
         }
         val transitOptions = TransitOptions(FilterVehicleTypes.NONE.value, TimeOptions())
-        masstransitRouter.requestRoutes(_points, transitOptions, true, listener)
+        masstransitRouter.requestRoutes(_points, transitOptions, RouteOptions(), listener)
     }
 
     fun fitAllMarkers(duration: Float, animation: Int) {
@@ -556,10 +557,8 @@ open class YamapView(context: Context?) : MapView(context), UserLocationObjectLi
         if (show) {
             userLocationLayer!!.setObjectListener(this)
             userLocationLayer!!.isVisible = true
-            userLocationLayer!!.isHeadingEnabled = true
         } else {
             userLocationLayer!!.isVisible = false
-            userLocationLayer!!.isHeadingEnabled = false
             userLocationLayer!!.setObjectListener(null)
         }
     }

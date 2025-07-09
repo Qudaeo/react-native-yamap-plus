@@ -16,5 +16,5 @@ Pod::Spec.new do |s|
     s.static_framework = true
 
     s.dependency "React"
-    s.dependency "YandexMapsMobile", "4.15.0-full"
+    s.dependency "YandexMapsMobile", "4.17.0-full"
 end
