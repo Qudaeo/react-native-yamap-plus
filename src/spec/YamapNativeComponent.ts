@@ -80,7 +80,7 @@ export interface RoutesFoundState {
       routeIndex: Int32;
       stops: string[];
       type: string;
-      transports: {type: string};
+      transports: {type: string[]};
       sectionColor?: string;
     }[];
   }[];

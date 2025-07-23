@@ -218,6 +218,22 @@ using namespace facebook::react;
     _props = std::static_pointer_cast<const ViewProps>(props);
 }
 
+- (void)handleCommand:(const NSString *)commandName args:(const NSArray *)args {
+    if ([commandName isEqual:@"findRoutes"]) {
+        NSArray *pointsDict = args[0][0][@"points"];
+        NSMutableArray *requestPoints = [[NSMutableArray alloc] init];
+        for (int i = 0; i < [pointsDict count]; i++) {
+            YMKPoint *point = [YMKPoint pointWithLatitude:[[pointsDict objectAtIndex:i][@"lat"] doubleValue] longitude:[[pointsDict objectAtIndex:i][@"lon"] doubleValue]];
+            YMKRequestPoint *requestPoint = [YMKRequestPoint requestPointWithPoint:point type:YMKRequestPointTypeWaypoint pointContext:nil drivingArrivalPointId:nil indoorLevelId:nil];
+            [requestPoints addObject:requestPoint];
+        }
+        NSArray *vehicles = args[0][0][@"vehicles"];
+        NSString *id = args[0][0][@"id"];
+
+        [self findRoutes:requestPoints vehicles:vehicles withId:id];
+    }
+}
+
 - (void)prepareForRecycle
 {
     [super prepareForRecycle];
@@ -240,19 +256,26 @@ using namespace facebook::react;
 
 #endif
 
-#ifndef RCT_NEW_ARCH_ENABLED
-
 - (void)findRoutes:(NSArray<YMKRequestPoint *> *)_points vehicles:(NSArray<NSString *> *)vehicles withId:(NSString *)_id {
     if (transportUtils == nil) {
         transportUtils = [[TransportUtils alloc] init];
     }
 
+#ifdef RCT_NEW_ARCH_ENABLED
+
+    [transportUtils findRoutes:_points vehicles:vehicles withId:_id competition:^(YamapViewEventEmitter::OnRouteFound response) {
+        std::dynamic_pointer_cast<const YamapViewEventEmitter>(self->_eventEmitter)->onRouteFound(response);
+    }];
+
+#else
+
     [transportUtils findRoutes:_points vehicles:vehicles withId:_id competition:^(NSDictionary *response) {
         self.onRouteFound(response);
     }];
-}
 
 #endif
+
+}
 
 - (void)removeAllSections {
     [mapView.mapWindow.map.mapObjects clear];
