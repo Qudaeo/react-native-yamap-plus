@@ -10,7 +10,6 @@ export type ClusteredYamapProps<T = any> = OmitEx<ClusteredYamapNativeProps,
   'clusterColor' |
   'userLocationIcon' |
   'clusteredMarkers' |
-  'onRouteFound' |
   'onCameraPositionReceived' |
   'onVisibleRegionReceived' |
   'onWorldToScreenPointsReceived' |

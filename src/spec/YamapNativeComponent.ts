@@ -56,36 +56,6 @@ interface MapLoaded {
   fullyLoaded: Double;
 }
 
-export interface RoutesFoundState {
-  id: string;
-  status: 'success' | 'error';
-  routes: {
-    id: string;
-    sections: {
-      points: {lat: Double, lon: Double}[];
-      sectionInfo: {
-        time: string;
-        timeWithTraffic?: string;
-        distance?: Double;
-        transferCount?: Double;
-        walkingDistance?: Double;
-      };
-      routeInfo: {
-        time: string;
-        timeWithTraffic?: string;
-        distance?: Double;
-        transferCount?: Double;
-        walkingDistance?: Double;
-      };
-      routeIndex: Int32;
-      stops: string[];
-      type: string;
-      transports: {type: string[]};
-      sectionColor?: string;
-    }[];
-  }[];
-}
-
 export interface YamapNativeProps extends ViewProps {
   userLocationIconScale?: Float;
   showUserPosition?: boolean;
@@ -112,7 +82,6 @@ export interface YamapNativeProps extends ViewProps {
   userLocationIcon: string | undefined;
   interactiveDisabled?: boolean;
 
-  onRouteFound: DirectEventHandler<RoutesFoundState>;
   onCameraPositionReceived: DirectEventHandler<undefined>;
   onVisibleRegionReceived: DirectEventHandler<undefined>;
   onWorldToScreenPointsReceived: DirectEventHandler<undefined>;

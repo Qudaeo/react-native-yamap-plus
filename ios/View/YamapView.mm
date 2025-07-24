@@ -14,8 +14,6 @@
 #import "../Util/RCTConvert+Yamap.mm"
 #import "ImageCacheManager.h"
 
-#import "../Util/TransportUtils.h"
-
 #ifdef RCT_NEW_ARCH_ENABLED
 
 #import "../Util/NewArchUtils.h"
@@ -62,8 +60,6 @@ using namespace facebook::react;
     NSMutableArray<YMKPlacemarkMapObject *> *clusterPlacemarks;
     YMKClusterizedPlacemarkCollection *clusterCollection;
     BOOL mapLoaded;
-
-    TransportUtils *transportUtils;
 }
 
 - (instancetype)initWithFrame:(CGRect)frame {
@@ -255,27 +251,6 @@ using namespace facebook::react;
 }
 
 #endif
-
-- (void)findRoutes:(NSArray<YMKRequestPoint *> *)_points vehicles:(NSArray<NSString *> *)vehicles withId:(NSString *)_id {
-    if (transportUtils == nil) {
-        transportUtils = [[TransportUtils alloc] init];
-    }
-
-#ifdef RCT_NEW_ARCH_ENABLED
-
-    [transportUtils findRoutes:_points vehicles:vehicles withId:_id competition:^(YamapViewEventEmitter::OnRouteFound response) {
-        std::dynamic_pointer_cast<const YamapViewEventEmitter>(self->_eventEmitter)->onRouteFound(response);
-    }];
-
-#else
-
-    [transportUtils findRoutes:_points vehicles:vehicles withId:_id competition:^(NSDictionary *response) {
-        self.onRouteFound(response);
-    }];
-
-#endif
-
-}
 
 - (void)removeAllSections {
     [mapView.mapWindow.map.mapObjects clear];

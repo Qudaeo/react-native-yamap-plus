@@ -1,4 +1,4 @@
-import {CameraPosition, RoutesFoundState} from './spec/YamapNativeComponent';
+import {CameraPosition} from './spec/YamapNativeComponent';
 
 export interface Point {
   lat: number;
@@ -35,13 +35,7 @@ export const ALL_MASSTRANSIT_VEHICLES: Vehicles[] = [
   'funicular',
 ] as const;
 
-export interface RoutesFoundEvent {
-  nativeEvent: RoutesFoundState;
-}
-
 export type CameraPositionCallback = (position: CameraPosition) => void
-
-export type RoutesFoundCallback = (event: RoutesFoundEvent) => void
 
 export type VisibleRegion = {
   bottomLeft: Point;
@@ -86,4 +80,34 @@ export interface Address {
   formatted: string
   point: Point
   uri: string
+}
+
+export interface RoutesFoundState {
+  id: string;
+  status: 'success' | 'error';
+  routes: {
+    id: string;
+    sections: {
+      points: {lat: number, lon: number}[];
+      sectionInfo: {
+        time: string;
+        timeWithTraffic?: string;
+        distance?: number;
+        transferCount?: number;
+        walkingDistance?: number;
+      };
+      routeInfo: {
+        time: string;
+        timeWithTraffic?: string;
+        distance?: number;
+        transferCount?: number;
+        walkingDistance?: number;
+      };
+      routeIndex: number;
+      stops: string[];
+      type: string;
+      transports: {type: string[]};
+      sectionColor?: string;
+    }[];
+  }[];
 }

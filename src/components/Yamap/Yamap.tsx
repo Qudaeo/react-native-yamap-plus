@@ -3,7 +3,6 @@ import {getImageUri, processColorsToNative} from '../../utils';
 import {YamapProps, YamapRef} from './types';
 import {
   onCameraPositionReceived,
-  onRouteFound,
   onScreenToWorldPointsReceived,
   onVisibleRegionReceived,
   onWorldToScreenPointsReceived,
@@ -20,7 +19,6 @@ export const Yamap = forwardRef<YamapRef, YamapProps>((props, ref) => {
   const nativeProps = useMemo(() =>
     processColorsToNative({
       ...props,
-      onRouteFound,
       onCameraPositionReceived,
       onVisibleRegionReceived,
       onWorldToScreenPointsReceived,

@@ -40,7 +40,6 @@ RCT_EXPORT_MODULE(ClusteredYamapView)
 }
 
 // props
-RCT_EXPORT_VIEW_PROPERTY(onRouteFound, RCTBubblingEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onCameraPositionReceived, RCTBubblingEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onVisibleRegionReceived, RCTBubblingEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onCameraPositionChange, RCTBubblingEventBlock)
@@ -89,22 +88,6 @@ RCT_EXPORT_METHOD(fitMarkers:(nonnull NSNumber *)reactTag argsArr:(NSArray*)args
         NSDictionary* args = argsArr.firstObject;
         NSArray<YMKPoint *> *points = [RCTConvert YMKPointArray:args[@"points"]];
         [view fitMarkers: points];
-    }];
-}
-
-RCT_EXPORT_METHOD(findRoutes:(nonnull NSNumber*) reactTag argsArr:(NSArray*)argsArr) {
-    [self.bridge.uiManager addUIBlock:^(RCTUIManager *uiManager, NSDictionary<NSNumber *,UIView *> *viewRegistry) {
-        ClusteredYamapView *view = (ClusteredYamapView*) viewRegistry[reactTag];
-
-        NSDictionary* args = argsArr.firstObject;
-        NSArray<YMKPoint*>* points = [RCTConvert YMKPointArray:args[@"points"]];
-        NSMutableArray<YMKRequestPoint*>* requestPoints = [[NSMutableArray alloc] init];
-        for (int i = 0; i < [points count]; ++i) {
-            YMKRequestPoint * requestPoint = [YMKRequestPoint requestPointWithPoint:[points objectAtIndex:i] type:YMKRequestPointTypeWaypoint pointContext:nil drivingArrivalPointId:nil indoorLevelId:nil];
-            [requestPoints addObject:requestPoint];
-        }
-        NSArray<NSString*>* vehicles = [RCTConvert Vehicles:args[@"vehicles"]];
-        [view findRoutes: requestPoints vehicles: vehicles withId:args[@"id"]];
     }];
 }
 

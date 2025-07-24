@@ -1,8 +1,9 @@
-#ifndef RCT_NEW_ARCH_ENABLED
+#import "RTNTransportModule.h"
 
-#import "TransportUtils.h"
 #import "ColorUtil.h"
+#import "../Util/RCTConvert+Yamap.mm"
 
+#import <YandexMapsMobile/YMKTransport.h>
 #import <YandexMapsMobile/YMKDirections.h>
 #import <YandexMapsMobile/YMKTransitOptions.h>
 #import <YandexMapsMobile/YMKMasstransitRoute.h>
@@ -12,18 +13,18 @@
 
 #define UIColorFromRGB(rgbValue) [UIColor colorWithRed:((float)((rgbValue & 0xFF0000) >> 16))/255.0 green:((float)((rgbValue & 0xFF00) >> 8))/255.0 blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]
 
-@implementation TransportUtils {
-    YMKMasstransitSession *masstransitSession;
-    YMKMasstransitSession *walkSession;
-    YMKMasstransitRouter *masstransitRouter;
-    YMKDrivingRouter *drivingRouter;
-    YMKDrivingSession *drivingSession;
-    YMKPedestrianRouter *pedestrianRouter;
-    YMKTransitOptions *transitOptions;
-    YMKMasstransitSessionRouteHandler routeHandler;
-    YMKRouteOptions *routeOptions;
-    NSMutableDictionary *vehicleColors;
-}
+@implementation RTNTransportModule
+
+YMKMasstransitSession *masstransitSession;
+YMKMasstransitSession *walkSession;
+YMKMasstransitRouter *masstransitRouter;
+YMKDrivingRouter *drivingRouter;
+YMKDrivingSession *drivingSession;
+YMKPedestrianRouter *pedestrianRouter;
+YMKTransitOptions *transitOptions;
+YMKMasstransitSessionRouteHandler routeHandler;
+YMKRouteOptions *_routeOptions;
+NSMutableDictionary *vehicleColors;
 
 - (instancetype)init
 {
@@ -33,7 +34,7 @@
         drivingRouter = [[YMKDirectionsFactory instance] createDrivingRouterWithType: YMKDrivingRouterTypeCombined];
         pedestrianRouter = [[YMKTransportFactory instance] createPedestrianRouter];
         transitOptions = [YMKTransitOptions transitOptionsWithAvoid:YMKFilterVehicleTypesNone timeOptions:[[YMKTimeOptions alloc] init]];
-        routeOptions = [YMKRouteOptions routeOptionsWithFitnessOptions:[YMKFitnessOptions fitnessOptionsWithAvoidSteep:false avoidStairs:false]];
+        _routeOptions = [YMKRouteOptions routeOptionsWithFitnessOptions:[YMKFitnessOptions fitnessOptionsWithAvoidSteep:false avoidStairs:false]];
         vehicleColors = [[NSMutableDictionary alloc] init];
         [vehicleColors setObject:@"#59ACFF" forKey:@"bus"];
         [vehicleColors setObject:@"#7D60BD" forKey:@"minibus"];
@@ -47,19 +48,35 @@
     return self;
 }
 
-- (void)findRoutes:(NSArray<YMKRequestPoint *> *)_points vehicles:(NSArray<NSString *> *)vehicles withId:(NSString *)_id competition:(void (^)(NSDictionary *))completion {
+- (dispatch_queue_t)methodQueue {
+    return dispatch_get_main_queue();
+}
+
+- (std::shared_ptr<facebook::react::TurboModule>)getTurboModule:(const facebook::react::ObjCTurboModule::InitParams &)params { 
+    return std::make_shared<facebook::react::NativeTransportModuleSpecJSI>(params);
+}
+
+- (void)findRoutes:(nonnull NSArray *)points vehicles:(nonnull NSArray *)vehicles resolve:(nonnull RCTPromiseResolveBlock)resolve reject:(nonnull RCTPromiseRejectBlock)reject {
+    
+    NSArray<YMKPoint *> *_points = [RCTConvert YMKPointArray:points];
+    NSMutableArray<YMKRequestPoint *> *requestPoints = [[NSMutableArray alloc] init];
+
+    for (int i = 0; i < [_points count]; ++i) {
+        YMKRequestPoint *requestPoint = [YMKRequestPoint requestPointWithPoint:[_points objectAtIndex:i] type:YMKRequestPointTypeWaypoint pointContext:nil drivingArrivalPointId:nil indoorLevelId:nil];
+        [requestPoints addObject:requestPoint];
+    }
+    
     if ([vehicles count] == 1 && [[vehicles objectAtIndex:0] isEqualToString:@"car"]) {
         YMKDrivingOptions *drivingOptions = [[YMKDrivingOptions alloc] init];
         YMKDrivingVehicleOptions *vehicleOptions = [[YMKDrivingVehicleOptions alloc] init];
 
-        drivingSession = [drivingRouter requestRoutesWithPoints:_points drivingOptions:drivingOptions vehicleOptions:vehicleOptions routeHandler:^(NSArray<YMKDrivingRoute *> *routes, NSError *error) {
+        drivingSession = [drivingRouter requestRoutesWithPoints:requestPoints drivingOptions:drivingOptions vehicleOptions:vehicleOptions routeHandler:^(NSArray<YMKDrivingRoute *> *routes, NSError *error) {
             if (error != nil) {
-                completion(@{@"id": _id, @"status": @"error"});
+                reject(@"drivingRouter requestRoutesWithPoints error", error.userInfo.description, error);
                 return;
             }
 
             NSMutableDictionary* response = [[NSMutableDictionary alloc] init];
-            [response setValue:_id forKey:@"id"];
             [response setValue:@"status" forKey:@"success"];
             NSMutableArray* jsonRoutes = [[NSMutableArray alloc] init];
 
@@ -78,17 +95,17 @@
             }
 
             [response setValue:jsonRoutes forKey:@"routes"];
-            completion(response);
+            resolve(response);
         }];
+        return;
     }
 
     YMKMasstransitSessionRouteHandler _routeHandler = ^(NSArray<YMKMasstransitRoute *> *routes, NSError *error) {
         if (error != nil) {
-            completion(@{@"id": _id, @"status": @"error"});
+            reject(@"_routeHandler error", error.userInfo.description, error);
             return;
         }
         NSMutableDictionary* response = [[NSMutableDictionary alloc] init];
-        [response setValue:_id forKey:@"id"];
         [response setValue:@"success" forKey:@"status"];
         NSMutableArray *jsonRoutes = [[NSMutableArray alloc] init];
         for (int i = 0; i < [routes count]; ++i) {
@@ -106,17 +123,19 @@
             [jsonRoutes addObject:jsonRoute];
         }
         [response setValue:jsonRoutes forKey:@"routes"];
-        completion(response);
+        resolve(response);
+        return;
     };
 
     if ([vehicles count] == 0) {
-        walkSession = [pedestrianRouter requestRoutesWithPoints:_points timeOptions:[[YMKTimeOptions alloc] init] routeOptions:routeOptions routeHandler:_routeHandler];
+        walkSession = [pedestrianRouter requestRoutesWithPoints:points timeOptions:[[YMKTimeOptions alloc] init] routeOptions:_routeOptions routeHandler:_routeHandler];
         return;
     }
 
     YMKTransitOptions *_transitOptions = [YMKTransitOptions transitOptionsWithAvoid:YMKFilterVehicleTypesNone timeOptions:[[YMKTimeOptions alloc] init]];
-    masstransitSession = [masstransitRouter requestRoutesWithPoints:_points transitOptions:_transitOptions routeOptions:routeOptions routeHandler:_routeHandler];
+    masstransitSession = [masstransitRouter requestRoutesWithPoints:requestPoints transitOptions:_transitOptions routeOptions:_routeOptions routeHandler:_routeHandler];
 }
+
 
 - (NSDictionary*)convertDrivingRouteSection:(YMKDrivingRoute*)route withSection:(YMKDrivingSection*)section {
     int routeIndex = 0;
@@ -252,6 +271,7 @@
     return routeMetadata;
 }
 
-@end
 
-#endif
+RCT_EXPORT_MODULE()
+
+@end

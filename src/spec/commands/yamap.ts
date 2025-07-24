@@ -2,7 +2,7 @@ import codegenNativeCommands from 'react-native/Libraries/Utilities/codegenNativ
 import {Double} from 'react-native/Libraries/Types/CodegenTypes';
 import {YamapComponentType} from '../YamapNativeComponent';
 import {ClusteredYamapComponentType} from '../ClusteredYamapNativeComponent';
-import {Animation, Point, ScreenPoint, Vehicles} from '../../interfaces';
+import {Animation, Point, ScreenPoint} from '../../interfaces';
 
 export interface YamapNativeCommands {
   setCenter: (
@@ -18,14 +18,6 @@ export interface YamapNativeCommands {
   ) => void;
   fitAllMarkers: (viewRef: React.ElementRef<YamapComponentType | ClusteredYamapComponentType>, args: Array<Readonly<{}>>) => void;
   fitMarkers: (viewRef: React.ElementRef<YamapComponentType | ClusteredYamapComponentType>, points: Array<Readonly<{points: Point[]}>>) => void;
-  findRoutes: (
-    viewRef: React.ElementRef<YamapComponentType | ClusteredYamapComponentType>,
-    args: Array<Readonly<{
-      points: Point[],
-      vehicles: Vehicles[],
-      id: string
-    }>>
-  ) => void;
   setZoom: (
     viewRef: React.ElementRef<YamapComponentType | ClusteredYamapComponentType>,
     args: Array<Readonly<{
@@ -51,28 +43,6 @@ export interface YamapNativeCommands {
       id: string
     }>>
   ) => void;
-
-  findMasstransitRoutes: (
-    viewRef: React.ElementRef<YamapComponentType | ClusteredYamapComponentType>,
-    args: Array<Readonly<{
-      points: Point[]
-      id: string
-    }>>
-  ) => void;
-  findPedestrianRoutes: (
-    viewRef: React.ElementRef<YamapComponentType | ClusteredYamapComponentType>,
-    args: Array<Readonly<{
-      points: Point[]
-      id: string
-    }>>
-  ) => void;
-  findDrivingRoutes: (
-    viewRef: React.ElementRef<YamapComponentType | ClusteredYamapComponentType>,
-    args: Array<Readonly<{
-      points: Point[]
-      id: string
-    }>>
-  ) => void;
 }
 
 export const Commands = codegenNativeCommands<YamapNativeCommands>({
@@ -80,15 +50,11 @@ export const Commands = codegenNativeCommands<YamapNativeCommands>({
     'setCenter',
     'fitAllMarkers',
     'fitMarkers',
-    'findRoutes',
     'setZoom',
     'getCameraPosition',
     'getVisibleRegion',
     'setTrafficVisible',
     'getScreenPoints',
     'getWorldPoints',
-    'findMasstransitRoutes',
-    'findPedestrianRoutes',
-    'findDrivingRoutes',
   ],
 });
