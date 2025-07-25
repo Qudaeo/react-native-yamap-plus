@@ -61,24 +61,24 @@ class YamapViewManager : ViewGroupManager<YamapView>(), YamapViewManagerInterfac
         implementation.setNightMode(view, nightMode)
     }
 
-    override fun setScrollGesturesEnabled(view: YamapView, scrollGesturesEnabled: Boolean) {
-        implementation.setScrollGesturesEnabled(view, scrollGesturesEnabled)
+    override fun setScrollGesturesDisabled(view: YamapView, value: Boolean) {
+        implementation.setScrollGesturesDisabled(view, value)
     }
 
-    override fun setRotateGesturesEnabled(view: YamapView, rotateGesturesEnabled: Boolean) {
-        implementation.setRotateGesturesEnabled(view, rotateGesturesEnabled)
+    override fun setRotateGesturesDisabled(view: YamapView, value: Boolean) {
+        implementation.setRotateGesturesDisabled(view, value)
     }
 
-    override fun setZoomGesturesEnabled(view: YamapView, zoomGesturesEnabled: Boolean) {
-        implementation.setZoomGesturesEnabled(view, zoomGesturesEnabled)
+    override fun setZoomGesturesDisabled(view: YamapView, value: Boolean) {
+        implementation.setZoomGesturesDisabled(view, value)
     }
 
-    override fun setTiltGesturesEnabled(view: YamapView, tiltGesturesEnabled: Boolean) {
-        implementation.setTiltGesturesEnabled(view, tiltGesturesEnabled)
+    override fun setTiltGesturesDisabled(view: YamapView, value: Boolean) {
+        implementation.setTiltGesturesDisabled(view, value)
     }
 
-    override fun setFastTapEnabled(view: YamapView, fastTapEnabled: Boolean) {
-        implementation.setFastTapEnabled(view, fastTapEnabled)
+    override fun setFastTapDisabled(view: YamapView, value: Boolean) {
+        implementation.setFastTapDisabled(view, value)
     }
 
     override fun setMapStyle(view: YamapView, style: String?) {
@@ -93,8 +93,8 @@ class YamapViewManager : ViewGroupManager<YamapView>(), YamapViewManagerInterfac
         implementation.setInitialRegion(view, params)
     }
 
-    override fun setInteractive(view: YamapView, interactive: Boolean) {
-        implementation.setInteractive(view, interactive)
+    override fun setInteractiveDisabled(view: YamapView, value: Boolean) {
+        implementation.setInteractiveDisabled(view, value)
     }
 
     override fun setLogoPosition(view: YamapView, params: ReadableMap?) {

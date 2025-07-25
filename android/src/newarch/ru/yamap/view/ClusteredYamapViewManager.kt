@@ -76,24 +76,24 @@ class ClusteredYamapViewManager : ViewGroupManager<ClusteredYamapView>(),
         implementation.setNightMode(view, nightMode)
     }
 
-    override fun setScrollGesturesEnabled(view: ClusteredYamapView, scrollGesturesEnabled: Boolean) {
-        implementation.setScrollGesturesEnabled(view, scrollGesturesEnabled)
+    override fun setScrollGesturesDisabled(view: ClusteredYamapView, value: Boolean) {
+        implementation.setScrollGesturesDisabled(view, value)
     }
 
-    override fun setRotateGesturesEnabled(view: ClusteredYamapView, rotateGesturesEnabled: Boolean) {
-        implementation.setRotateGesturesEnabled(view, rotateGesturesEnabled)
+    override fun setRotateGesturesDisabled(view: ClusteredYamapView, value: Boolean) {
+        implementation.setRotateGesturesDisabled(view, value)
     }
 
-    override fun setZoomGesturesEnabled(view: ClusteredYamapView, zoomGesturesEnabled: Boolean) {
-        implementation.setZoomGesturesEnabled(view, zoomGesturesEnabled)
+    override fun setZoomGesturesDisabled(view: ClusteredYamapView, value: Boolean) {
+        implementation.setZoomGesturesDisabled(view, value)
     }
 
-    override fun setTiltGesturesEnabled(view: ClusteredYamapView, tiltGesturesEnabled: Boolean) {
-        implementation.setTiltGesturesEnabled(view, tiltGesturesEnabled)
+    override fun setTiltGesturesDisabled(view: ClusteredYamapView, value: Boolean) {
+        implementation.setTiltGesturesDisabled(view, value)
     }
 
-    override fun setFastTapEnabled(view: ClusteredYamapView, fastTapEnabled: Boolean) {
-        implementation.setFastTapEnabled(view, fastTapEnabled)
+    override fun setFastTapDisabled(view: ClusteredYamapView, value: Boolean) {
+        implementation.setFastTapDisabled(view, value)
     }
 
     override fun setMapStyle(view: ClusteredYamapView, style: String?) {
@@ -108,8 +108,8 @@ class ClusteredYamapViewManager : ViewGroupManager<ClusteredYamapView>(),
         implementation.setInitialRegion(view, params)
     }
 
-    override fun setInteractive(view: ClusteredYamapView, interactive: Boolean) {
-        implementation.setInteractive(view, interactive)
+    override fun setInteractiveDisabled(view: ClusteredYamapView, value: Boolean) {
+        implementation.setInteractiveDisabled(view, value)
     }
 
     override fun setLogoPosition(view: ClusteredYamapView, params: ReadableMap?) {

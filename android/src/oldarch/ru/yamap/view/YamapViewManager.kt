@@ -63,29 +63,29 @@ class YamapViewManager : ViewGroupManager<YamapView>() {
         implementation.setNightMode(view, nightMode)
     }
 
-    @ReactProp(name = "scrollGesturesEnabled")
-    fun setScrollGesturesEnabled(view: YamapView, scrollGesturesEnabled: Boolean) {
-        implementation.setScrollGesturesEnabled(view, scrollGesturesEnabled)
+    @ReactProp(name = "scrollGesturesDisabled")
+    fun setScrollGesturesDisabled(view: YamapView, value: Boolean) {
+        implementation.setScrollGesturesDisabled(view, value)
     }
 
-    @ReactProp(name = "rotateGesturesEnabled")
-    fun setRotateGesturesEnabled(view: YamapView, rotateGesturesEnabled: Boolean) {
-        implementation.setRotateGesturesEnabled(view, rotateGesturesEnabled)
+    @ReactProp(name = "rotateGesturesDisabled")
+    fun setRotateGesturesDisabled(view: YamapView, value: Boolean) {
+        implementation.setRotateGesturesDisabled(view, value)
     }
 
-    @ReactProp(name = "zoomGesturesEnabled")
-    fun setZoomGesturesEnabled(view: YamapView, zoomGesturesEnabled: Boolean) {
-        implementation.setZoomGesturesEnabled(view, zoomGesturesEnabled)
+    @ReactProp(name = "zoomGesturesDisabled")
+    fun setZoomGesturesDisabled(view: YamapView, value: Boolean) {
+        implementation.setZoomGesturesDisabled(view, value)
     }
 
-    @ReactProp(name = "tiltGesturesEnabled")
-    fun setTiltGesturesEnabled(view: YamapView, tiltGesturesEnabled: Boolean) {
-        implementation.setTiltGesturesEnabled(view, tiltGesturesEnabled)
+    @ReactProp(name = "tiltGesturesDisabled")
+    fun setTiltGesturesDisabled(view: YamapView, value: Boolean) {
+        implementation.setTiltGesturesDisabled(view, value)
     }
 
-    @ReactProp(name = "fastTapEnabled")
-    fun setFastTapEnabled(view: YamapView, fastTapEnabled: Boolean) {
-        implementation.setFastTapEnabled(view, fastTapEnabled)
+    @ReactProp(name = "fastTapDisabled")
+    fun setFastTapDisabled(view: YamapView, value: Boolean) {
+        implementation.setFastTapDisabled(view, value)
     }
 
     @ReactProp(name = "mapStyle")
@@ -103,9 +103,9 @@ class YamapViewManager : ViewGroupManager<YamapView>() {
         implementation.setInitialRegion(view, params)
     }
 
-    @ReactProp(name = "interactive")
-    fun setInteractive(view: YamapView, interactive: Boolean) {
-        implementation.setInteractive(view, interactive)
+    @ReactProp(name = "interactiveDisabled")
+    fun setInteractiveDisabled(view: YamapView, value: Boolean) {
+        implementation.setInteractiveDisabled(view, value)
     }
 
     @ReactProp(name = "logoPosition")

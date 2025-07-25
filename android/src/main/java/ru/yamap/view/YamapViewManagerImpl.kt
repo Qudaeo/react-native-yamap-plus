@@ -34,12 +34,6 @@ class YamapViewManagerImpl() {
             )
             "fitAllMarkers" -> fitAllMarkers(view)
             "fitMarkers" -> fitMarkers(view, args.getArray("points"))
-            "findRoutes" -> findRoutes(
-                view,
-                args.getArray("points"),
-                args.getArray("vehicles"),
-                args.getString("id")
-            )
             "setZoom" -> view.setZoom(
                 args.getDouble("zoom").toFloat(),
                 args.getDouble("duration").toFloat(),
@@ -102,27 +96,6 @@ class YamapViewManagerImpl() {
         }
     }
 
-    private fun findRoutes(
-        view: YamapView,
-        jsPoints: ReadableArray?,
-        jsVehicles: ReadableArray?,
-        id: String?
-    ) {
-        if (jsPoints != null) {
-            val points = PointUtil.jsPointsToPoints(jsPoints)
-
-            val vehicles = ArrayList<String>()
-
-            if (jsVehicles != null) {
-                for (i in 0 until jsVehicles.size()) {
-                    jsVehicles.getString(i)?.let { vehicles.add(it) }
-                }
-            }
-
-            view.findRoutes(points, vehicles, id)
-        }
-    }
-
     // PROPS
     fun setUserLocationIcon(view: YamapView, icon: String?) {
         icon?.let {
@@ -154,24 +127,24 @@ class YamapViewManagerImpl() {
         view.setNightMode(nightMode)
     }
 
-    fun setScrollGesturesEnabled(view: YamapView, scrollGesturesEnabled: Boolean) {
-        view.setScrollGesturesEnabled(scrollGesturesEnabled)
+    fun setScrollGesturesDisabled(view: YamapView, value: Boolean) {
+        view.setScrollGesturesDisabled(value)
     }
 
-    fun setRotateGesturesEnabled(view: YamapView, rotateGesturesEnabled: Boolean) {
-        view.setRotateGesturesEnabled(rotateGesturesEnabled)
+    fun setRotateGesturesDisabled(view: YamapView, value: Boolean) {
+        view.setRotateGesturesDisabled(value)
     }
 
-    fun setZoomGesturesEnabled(view: YamapView, zoomGesturesEnabled: Boolean) {
-        view.setZoomGesturesEnabled(zoomGesturesEnabled)
+    fun setZoomGesturesDisabled(view: YamapView, value: Boolean) {
+        view.setZoomGesturesDisabled(value)
     }
 
-    fun setTiltGesturesEnabled(view: YamapView, tiltGesturesEnabled: Boolean) {
-        view.setTiltGesturesEnabled(tiltGesturesEnabled)
+    fun setTiltGesturesDisabled(view: YamapView, value: Boolean) {
+        view.setTiltGesturesDisabled(value)
     }
 
-    fun setFastTapEnabled(view: YamapView, fastTapEnabled: Boolean) {
-        view.setFastTapEnabled(fastTapEnabled)
+    fun setFastTapDisabled(view: YamapView, value: Boolean) {
+        view.setFastTapDisabled(value)
     }
 
     fun setMapStyle(view: YamapView, style: String?) {
@@ -192,8 +165,8 @@ class YamapViewManagerImpl() {
         }
     }
 
-    fun setInteractive(view: YamapView, interactive: Boolean) {
-        view.setInteractive(interactive)
+    fun setInteractiveDisabled(view: YamapView, value: Boolean) {
+        view.setInteractiveDisabled(value)
     }
 
     fun setLogoPosition(view: YamapView, params: ReadableMap?) {
@@ -244,14 +217,13 @@ class YamapViewManagerImpl() {
         val commandsMap = mapOf(
             "setCenter" to 1,
             "fitAllMarkers" to 2,
-            "findRoutes" to 3,
-            "setZoom" to 4,
-            "getCameraPosition" to 5,
-            "getVisibleRegion" to 6,
-            "setTrafficVisible" to 7,
-            "fitMarkers" to 8,
-            "getScreenPoints" to 9,
-            "getWorldPoints" to 10,
+            "setZoom" to 3,
+            "getCameraPosition" to 4,
+            "getVisibleRegion" to 5,
+            "setTrafficVisible" to 6,
+            "fitMarkers" to 7,
+            "getScreenPoints" to 8,
+            "getWorldPoints" to 9,
         )
     }
 }

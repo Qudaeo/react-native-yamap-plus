@@ -81,29 +81,29 @@ class ClusteredYamapViewManager : ViewGroupManager<ClusteredYamapView>() {
         implementation.setNightMode(view, nightMode)
     }
 
-    @ReactProp(name = "scrollGesturesEnabled")
-    fun setScrollGesturesEnabled(view: ClusteredYamapView, scrollGesturesEnabled: Boolean) {
-        implementation.setScrollGesturesEnabled(view, scrollGesturesEnabled)
+    @ReactProp(name = "scrollGesturesDisabled")
+    fun setScrollGesturesDisabled(view: ClusteredYamapView, value: Boolean) {
+        implementation.setScrollGesturesDisabled(view, value)
     }
 
-    @ReactProp(name = "rotateGesturesEnabled")
-    fun setRotateGesturesEnabled(view: ClusteredYamapView, rotateGesturesEnabled: Boolean) {
-        implementation.setRotateGesturesEnabled(view, rotateGesturesEnabled)
+    @ReactProp(name = "rotateGesturesDisabled")
+    fun setRotateGesturesDisabled(view: ClusteredYamapView, value: Boolean) {
+        implementation.setRotateGesturesDisabled(view, value)
     }
 
-    @ReactProp(name = "zoomGesturesEnabled")
-    fun setZoomGesturesEnabled(view: ClusteredYamapView, zoomGesturesEnabled: Boolean) {
-        implementation.setZoomGesturesEnabled(view, zoomGesturesEnabled)
+    @ReactProp(name = "zoomGesturesDisabled")
+    fun setZoomGesturesDisabled(view: ClusteredYamapView, value: Boolean) {
+        implementation.setZoomGesturesDisabled(view, value)
     }
 
-    @ReactProp(name = "tiltGesturesEnabled")
-    fun setTiltGesturesEnabled(view: ClusteredYamapView, tiltGesturesEnabled: Boolean) {
-        implementation.setTiltGesturesEnabled(view, tiltGesturesEnabled)
+    @ReactProp(name = "tiltGesturesDisabled")
+    fun setTiltGesturesDisabled(view: ClusteredYamapView, value: Boolean) {
+        implementation.setTiltGesturesDisabled(view, value)
     }
 
-    @ReactProp(name = "fastTapEnabled")
-    fun setFastTapEnabled(view: ClusteredYamapView, fastTapEnabled: Boolean) {
-        implementation.setFastTapEnabled(view, fastTapEnabled)
+    @ReactProp(name = "fastTapDisabled")
+    fun setFastTapDisabled(view: ClusteredYamapView, value: Boolean) {
+        implementation.setFastTapDisabled(view, value)
     }
 
     @ReactProp(name = "mapStyle")
@@ -121,9 +121,9 @@ class ClusteredYamapViewManager : ViewGroupManager<ClusteredYamapView>() {
         implementation.setInitialRegion(view, params)
     }
 
-    @ReactProp(name = "interactive")
-    fun setInteractive(view: ClusteredYamapView, interactive: Boolean) {
-        implementation.setInteractive(view, interactive)
+    @ReactProp(name = "interactiveDisabled")
+    fun setInteractiveDisabled(view: ClusteredYamapView, value: Boolean) {
+        implementation.setInteractiveDisabled(view, value)
     }
 
     @ReactProp(name = "logoPosition")
