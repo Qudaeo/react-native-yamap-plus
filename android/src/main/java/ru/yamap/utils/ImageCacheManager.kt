@@ -14,7 +14,7 @@ class ImageCacheManager {
         private val imageCache = mutableMapOf<String, Bitmap?>()
 
         @Throws(IOException::class)
-        private fun getBitmap(context: Context, url: String): Bitmap {
+        fun getBitmapSync(context: Context, url: String): Bitmap {
             if (url.contains("http://") || url.contains("https://")) {
                 val aURL = URL(url)
                 val conn = aURL.openConnection()
@@ -38,7 +38,7 @@ class ImageCacheManager {
             object : Thread() {
                 override fun run() {
                     try {
-                        val bitmap = getBitmap(context, url)
+                        val bitmap = getBitmapSync(context, url)
                         Handler(Looper.getMainLooper()).post { cb.invoke(bitmap) }
                     } catch (e: Exception) {
                         e.printStackTrace()

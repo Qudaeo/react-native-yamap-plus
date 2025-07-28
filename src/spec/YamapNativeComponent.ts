@@ -44,7 +44,7 @@ export interface CameraPosition {
   zoom: Double;
 }
 
-interface MapLoaded {
+export interface MapLoaded {
   renderObjectCount: Double;
   curZoomModelsLoaded: Double;
   curZoomPlacemarksLoaded: Double;

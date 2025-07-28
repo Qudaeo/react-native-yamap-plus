@@ -37,6 +37,36 @@ class ClusteredYamapViewManager : ViewGroupManager<ClusteredYamapView>() {
         clusteredImplementation.setClusterColor(view, color)
     }
 
+    @ReactProp(name = "clusterIcon")
+    fun setClusterIcon(view: ClusteredYamapView, source: String?) {
+        clusteredImplementation.setClusterIcon(view, source)
+    }
+
+    @ReactProp(name = "clusterSize")
+    fun setClusterSize(view: ClusteredYamapView, size: ReadableMap?) {
+        clusteredImplementation.setClusterSize(view, size)
+    }
+
+    @ReactProp(name = "clusterTextSize")
+    fun setClusterTextSize(view: ClusteredYamapView, size: Float) {
+        clusteredImplementation.setClusterTextSize(view, size)
+    }
+
+    @ReactProp(name = "clusterTextYOffset")
+    fun setClusterTextYOffset(view: ClusteredYamapView, offset: Int) {
+        clusteredImplementation.setClusterTextYOffset(view, offset)
+    }
+
+    @ReactProp(name = "clusterTextXOffset")
+    fun setClusterTextXOffset(view: ClusteredYamapView, offset: Int) {
+        clusteredImplementation.setClusterTextXOffset(view, offset)
+    }
+
+    @ReactProp(name = "clusterTextColor")
+    fun setClusterTextColor(view: ClusteredYamapView, color: Int) {
+        clusteredImplementation.setClusterTextColor(view, color)
+    }
+
     override fun createViewInstance(context: ThemedReactContext) =
         clusteredImplementation.createViewInstance(context)
 

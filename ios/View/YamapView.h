@@ -47,6 +47,12 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)setClusterColor: (NSNumber *) color;
 - (void)setClusteredMarkers:(NSArray<YMKPoint *> *) markers;
+- (void)setClusterIcon:(NSString *)iconSource;
+- (void)setClusterSize:(NSDictionary *)sizes;
+- (void)setClusterTextColor:(NSNumber *)color;
+- (void)setClusterTextSize:(double)size;
+- (void)setClusterTextXOffset:(double)size;
+- (void)setClusterTextYOffset:(double)size;
 
 // REF
 - (void)emitCameraPositionToJS:(NSString *_Nonnull)_id;

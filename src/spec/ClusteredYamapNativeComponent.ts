@@ -11,7 +11,7 @@ import {NativeMethods, ViewProps} from 'react-native';
 import {Component} from 'react';
 import {YamapNativeCommands} from './commands/yamap';
 
-interface MapLoaded {
+export interface MapLoaded {
   renderObjectCount: Double;
   curZoomModelsLoaded: Double;
   curZoomPlacemarksLoaded: Double;
@@ -56,6 +56,11 @@ export interface CameraPosition {
   zoom: Double;
 }
 
+export interface YandexClusterSizes {
+  width?: Double;
+  height?: Double;
+}
+
 export interface ClusteredYamapNativeProps extends ViewProps {
   userLocationIconScale?: Float;
   showUserPosition?: boolean;
@@ -89,6 +94,12 @@ export interface ClusteredYamapNativeProps extends ViewProps {
 
   clusteredMarkers: Point[];
   clusterColor?: Int32;
+  clusterIcon?: string | undefined;
+  clusterSize?: YandexClusterSizes;
+  clusterTextSize?: Float;
+  clusterTextYOffset?: Int32;
+  clusterTextXOffset?: Int32;
+  clusterTextColor?: Int32;
 }
 
 export type ClusteredYamapNativeRef = Component<ClusteredYamapNativeProps, {}, any> & Readonly<NativeMethods>

@@ -57,6 +57,13 @@ using namespace facebook::react;
     float userLocationAccuracyStrokeWidth;
     Boolean initializedRegion;
     UIColor *clusterColor;
+    UIImage* clusImage;
+    CGFloat clusterWidth;
+    CGFloat clusterHeight;
+    UIColor* clusterTextColor;
+    double clusterTextSize;
+    double clusterTextYOffset;
+    double clusterTextXOffset;
     NSMutableArray<YMKPlacemarkMapObject *> *clusterPlacemarks;
     YMKClusterizedPlacemarkCollection *clusterCollection;
     BOOL mapLoaded;
@@ -92,6 +99,12 @@ using namespace facebook::react;
         clusterCollection = [mapView.mapWindow.map.mapObjects addClusterizedPlacemarkCollectionWithClusterListener:self];
         clusterColor = UIColor.redColor;
         mapLoaded = NO;
+        clusterWidth = 32;
+        clusterHeight = 32;
+        clusterTextColor = UIColor.blackColor;
+        clusterTextSize = 45;
+        clusterTextYOffset = 0;
+        clusterTextXOffset = 0;
         [self addSubview:mapView];
     }
 
@@ -860,13 +873,41 @@ using namespace facebook::react;
     clusterColor = [RCTConvert UIColor:color];
 }
 
+- (void)setClusterIcon:(NSString *)source {
+    [[ImageCacheManager instance] getWithSource:source completion:^(UIImage *image) {
+        self->clusImage = image;
+    }];
+}
+
+- (void)setClusterSize:(NSDictionary *)sizes {
+    clusterWidth = [sizes valueForKey:@"width"] != nil ? [RCTConvert NSUInteger:sizes[@"width"]] : 0;
+    clusterHeight = [sizes valueForKey:@"height"] != nil ? [RCTConvert NSUInteger:sizes[@"height"]] : 0;
+}
+
+- (void)setClusterTextColor:(NSNumber *)color {
+    clusterTextColor = [RCTConvert UIColor:color];
+}
+
+- (void)setClusterTextSize:(double)size {
+    clusterTextSize = size;
+}
+
+- (void)setClusterTextYOffset:(double)offset {
+    clusterTextYOffset = offset;
+}
+
+- (void)setClusterTextXOffset:(double)offset {
+    clusterTextXOffset = offset;
+}
+
 - (void)setClusteredMarkers:(NSArray<YMKPoint*>*) markers {
     [clusterPlacemarks removeAllObjects];
     if (![clusterCollection isValid]) {
         clusterCollection = [mapView.mapWindow.map.mapObjects addClusterizedPlacemarkCollectionWithClusterListener:self];
     }
     [clusterCollection clear];
-    NSArray<YMKPlacemarkMapObject *>* newPlacemarks = [clusterCollection addPlacemarksWithPoints:markers image:[self clusterImage:[NSNumber numberWithFloat:[markers count]]] style:[YMKIconStyle new]];
+    UIImage *image = [self clusterImage:[NSNumber numberWithFloat:[markers count]]];
+    NSArray<YMKPlacemarkMapObject *>* newPlacemarks = [clusterCollection addPlacemarksWithPoints:markers image:image style:[YMKIconStyle new]];
     [clusterPlacemarks addObjectsFromArray:newPlacemarks];
     for (int i=0; i<[clusterPlacemarks count]; i++) {
         if (i<[_reactSubviews count]) {
@@ -893,27 +934,36 @@ using namespace facebook::react;
 }
 
 -(UIImage*)clusterImage:(NSNumber*) clusterSize {
-    float FONT_SIZE = 45;
-    float MARGIN_SIZE = 9;
-    float STROKE_SIZE = 9;
     NSString *text = [clusterSize stringValue];
-    UIFont *font = [UIFont systemFontOfSize:FONT_SIZE];
+    UIFont *font = [UIFont systemFontOfSize:clusterTextSize];
     CGSize size = [text sizeWithAttributes:@{NSFontAttributeName:font}];
-    float textRadius = sqrt(size.height * size.height + size.width * size.width) / 2;
-    float internalRadius = textRadius + MARGIN_SIZE;
-    float externalRadius = internalRadius + STROKE_SIZE;
+
     // This function returns a newImage, based on image, that has been:
     // - scaled to fit in (CGRect) rect
     // - and cropped within a circle of radius: rectWidth/2
 
     //Create the bitmap graphics context
-    UIGraphicsBeginImageContextWithOptions(CGSizeMake(externalRadius*2, externalRadius*2), NO, 1.0);
-    CGContextRef context = UIGraphicsGetCurrentContext();
-    CGContextSetFillColorWithColor(context, [clusterColor CGColor]);
-    CGContextFillEllipseInRect(context, CGRectMake(0, 0, externalRadius*2, externalRadius*2));
-    CGContextSetFillColorWithColor(context, [UIColor.whiteColor CGColor]);
-    CGContextFillEllipseInRect(context, CGRectMake(STROKE_SIZE, STROKE_SIZE, internalRadius*2, internalRadius*2));
-    [text drawInRect:CGRectMake(externalRadius - size.width/2, externalRadius - size.height/2, size.width, size.height) withAttributes:@{NSFontAttributeName: font, NSForegroundColorAttributeName: UIColor.blackColor }];
+    if(clusImage && clusterWidth != 0 && clusterHeight != 0) {
+        UIGraphicsBeginImageContextWithOptions(CGSizeMake(clusterWidth, clusterHeight), NO, 1.0);
+        [clusImage drawInRect:CGRectMake(0, 0, clusterWidth, clusterHeight)];
+        [text drawInRect:CGRectMake(clusterWidth / 2  - size.width/2 + clusterTextXOffset, clusterHeight / 2 - size.height/2 + clusterTextYOffset, size.width, size.height) withAttributes:@{NSFontAttributeName: font, NSForegroundColorAttributeName: clusterTextColor }];
+    } else {
+        float MARGIN_SIZE = 9;
+        float STROKE_SIZE = 9;
+
+        float textRadius = sqrt(size.height * size.height + size.width * size.width) / 2;
+        float internalRadius = textRadius + MARGIN_SIZE;
+        float externalRadius = internalRadius + STROKE_SIZE;
+
+        UIGraphicsBeginImageContextWithOptions(CGSizeMake(externalRadius*2, externalRadius*2), NO, 1.0);
+        CGContextRef context = UIGraphicsGetCurrentContext();
+        CGContextSetFillColorWithColor(context, [clusterColor CGColor]);
+        CGContextFillEllipseInRect(context, CGRectMake(0, 0, externalRadius*2, externalRadius*2));
+        CGContextSetFillColorWithColor(context, [UIColor.whiteColor CGColor]);
+        CGContextFillEllipseInRect(context, CGRectMake(STROKE_SIZE, STROKE_SIZE, internalRadius*2, internalRadius*2));
+        [text drawInRect:CGRectMake(externalRadius - size.width/2, externalRadius - size.height/2, size.width, size.height) withAttributes:@{NSFontAttributeName: font, NSForegroundColorAttributeName: UIColor.blackColor }];
+    }
+
     UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
 

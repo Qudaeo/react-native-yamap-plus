@@ -17,10 +17,7 @@
 
 YMKMasstransitSession *masstransitSession;
 YMKMasstransitSession *walkSession;
-YMKMasstransitRouter *masstransitRouter;
-YMKDrivingRouter *drivingRouter;
 YMKDrivingSession *drivingSession;
-YMKPedestrianRouter *pedestrianRouter;
 YMKTransitOptions *transitOptions;
 YMKMasstransitSessionRouteHandler routeHandler;
 YMKRouteOptions *_routeOptions;
@@ -30,9 +27,6 @@ NSMutableDictionary *vehicleColors;
 {
     self = [super init];
     if (self) {
-        masstransitRouter = [[YMKTransportFactory instance] createMasstransitRouter];
-        drivingRouter = [[YMKDirectionsFactory instance] createDrivingRouterWithType: YMKDrivingRouterTypeCombined];
-        pedestrianRouter = [[YMKTransportFactory instance] createPedestrianRouter];
         transitOptions = [YMKTransitOptions transitOptionsWithAvoid:YMKFilterVehicleTypesNone timeOptions:[[YMKTimeOptions alloc] init]];
         _routeOptions = [YMKRouteOptions routeOptionsWithFitnessOptions:[YMKFitnessOptions fitnessOptionsWithAvoidSteep:false avoidStairs:false]];
         vehicleColors = [[NSMutableDictionary alloc] init];
@@ -52,11 +46,7 @@ NSMutableDictionary *vehicleColors;
     return dispatch_get_main_queue();
 }
 
-- (std::shared_ptr<facebook::react::TurboModule>)getTurboModule:(const facebook::react::ObjCTurboModule::InitParams &)params { 
-    return std::make_shared<facebook::react::NativeTransportModuleSpecJSI>(params);
-}
-
-- (void)findRoutes:(nonnull NSArray *)points vehicles:(nonnull NSArray *)vehicles resolve:(nonnull RCTPromiseResolveBlock)resolve reject:(nonnull RCTPromiseRejectBlock)reject {
+- (void)findRoutesImpl:(nonnull NSArray *)points vehicles:(nonnull NSArray *)vehicles resolve:(nonnull RCTPromiseResolveBlock)resolve reject:(nonnull RCTPromiseRejectBlock)reject {
     
     NSArray<YMKPoint *> *_points = [RCTConvert YMKPointArray:points];
     NSMutableArray<YMKRequestPoint *> *requestPoints = [[NSMutableArray alloc] init];
@@ -70,6 +60,7 @@ NSMutableDictionary *vehicleColors;
         YMKDrivingOptions *drivingOptions = [[YMKDrivingOptions alloc] init];
         YMKDrivingVehicleOptions *vehicleOptions = [[YMKDrivingVehicleOptions alloc] init];
 
+        YMKDrivingRouter *drivingRouter = [[YMKDirectionsFactory instance] createDrivingRouterWithType: YMKDrivingRouterTypeCombined];
         drivingSession = [drivingRouter requestRoutesWithPoints:requestPoints drivingOptions:drivingOptions vehicleOptions:vehicleOptions routeHandler:^(NSArray<YMKDrivingRoute *> *routes, NSError *error) {
             if (error != nil) {
                 reject(@"drivingRouter requestRoutesWithPoints error", error.userInfo.description, error);
@@ -128,11 +119,13 @@ NSMutableDictionary *vehicleColors;
     };
 
     if ([vehicles count] == 0) {
+        YMKPedestrianRouter *pedestrianRouter = [[YMKTransportFactory instance] createPedestrianRouter];
         walkSession = [pedestrianRouter requestRoutesWithPoints:points timeOptions:[[YMKTimeOptions alloc] init] routeOptions:_routeOptions routeHandler:_routeHandler];
         return;
     }
 
     YMKTransitOptions *_transitOptions = [YMKTransitOptions transitOptionsWithAvoid:YMKFilterVehicleTypesNone timeOptions:[[YMKTimeOptions alloc] init]];
+    YMKMasstransitRouter *masstransitRouter = [[YMKTransportFactory instance] createMasstransitRouter];
     masstransitSession = [masstransitRouter requestRoutesWithPoints:requestPoints transitOptions:_transitOptions routeOptions:_routeOptions routeHandler:_routeHandler];
 }
 
@@ -270,6 +263,28 @@ NSMutableDictionary *vehicleColors;
 
     return routeMetadata;
 }
+
+#ifdef RCT_NEW_ARCH_ENABLED
+
+// New architecture
+
+- (std::shared_ptr<facebook::react::TurboModule>)getTurboModule:(const facebook::react::ObjCTurboModule::InitParams &)params {
+    return std::make_shared<facebook::react::NativeTransportModuleSpecJSI>(params);
+}
+
+- (void)findRoutes:(nonnull NSArray *)points vehicles:(nonnull NSArray *)vehicles resolve:(nonnull RCTPromiseResolveBlock)resolve reject:(nonnull RCTPromiseRejectBlock)reject {
+    [self findRoutesImpl:points vehicles:vehicles resolve:resolve reject:reject];
+}
+
+#else
+
+// Old architecture
+
+RCT_EXPORT_METHOD(findRoutes:(nonnull NSArray *)points vehicles:(nonnull NSArray *)vehicles resolve:(nonnull RCTPromiseResolveBlock)resolve reject:(nonnull RCTPromiseRejectBlock)reject) {
+    [self findRoutesImpl:points vehicles:vehicles resolve:resolve reject:reject];
+}
+
+#endif
 
 
 RCT_EXPORT_MODULE()

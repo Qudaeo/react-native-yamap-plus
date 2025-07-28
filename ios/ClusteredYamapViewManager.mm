@@ -71,6 +71,12 @@ RCT_EXPORT_VIEW_PROPERTY(scrollGesturesDisabled, BOOL)
 RCT_EXPORT_VIEW_PROPERTY(tiltGesturesDisabled, BOOL)
 RCT_EXPORT_VIEW_PROPERTY(rotateGesturesDisabled, BOOL)
 RCT_EXPORT_VIEW_PROPERTY(fastTapDisabled, BOOL)
+RCT_EXPORT_VIEW_PROPERTY(clusterIcon, NSString)
+RCT_EXPORT_VIEW_PROPERTY(clusterSize, NSDictionary)
+RCT_EXPORT_VIEW_PROPERTY(clusterTextColor, NSNumber)
+RCT_EXPORT_VIEW_PROPERTY(clusterTextSize, NSNumber)
+RCT_EXPORT_VIEW_PROPERTY(clusterTextXOffset, NSNumber)
+RCT_EXPORT_VIEW_PROPERTY(clusterTextYOffset, NSNumber)
 
 // ref
 RCT_EXPORT_METHOD(fitAllMarkers:(nonnull NSNumber*) reactTag argsArr:(NSArray*)argsArr) {
