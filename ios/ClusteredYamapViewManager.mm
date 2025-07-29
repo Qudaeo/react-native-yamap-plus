@@ -71,7 +71,9 @@ RCT_EXPORT_VIEW_PROPERTY(scrollGesturesDisabled, BOOL)
 RCT_EXPORT_VIEW_PROPERTY(tiltGesturesDisabled, BOOL)
 RCT_EXPORT_VIEW_PROPERTY(rotateGesturesDisabled, BOOL)
 RCT_EXPORT_VIEW_PROPERTY(fastTapDisabled, BOOL)
-RCT_EXPORT_VIEW_PROPERTY(clusterIcon, NSString)
+RCT_CUSTOM_VIEW_PROPERTY(clusterIcon, NSString, ClusteredYamapView) {
+    [view setClusterIcon:json points:nil];
+}
 RCT_EXPORT_VIEW_PROPERTY(clusterSize, NSDictionary)
 RCT_EXPORT_VIEW_PROPERTY(clusterTextColor, NSNumber)
 RCT_EXPORT_VIEW_PROPERTY(clusterTextSize, NSNumber)

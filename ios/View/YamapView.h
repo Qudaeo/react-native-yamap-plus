@@ -47,7 +47,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)setClusterColor: (NSNumber *) color;
 - (void)setClusteredMarkers:(NSArray<YMKPoint *> *) markers;
-- (void)setClusterIcon:(NSString *)iconSource;
+- (void)setClusterIcon:(NSString *)iconSource points:(NSArray<YMKPoint *> * _Nullable)points;
 - (void)setClusterSize:(NSDictionary *)sizes;
 - (void)setClusterTextColor:(NSNumber *)color;
 - (void)setClusterTextSize:(double)size;

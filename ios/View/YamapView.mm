@@ -228,7 +228,14 @@ using namespace facebook::react;
 }
 
 - (void)handleCommand:(const NSString *)commandName args:(const NSArray *)args {
-    if ([commandName isEqual:@"fitMarkers"]) {
+    if ([commandName isEqual:@"setCenter"]) {
+        //      center: Point,
+        //      zoom?: number,
+        //      azimuth?: number,
+        //      tilt?: number,
+        //      duration?: number,
+        //      animation?: Animation
+    } else if ([commandName isEqual:@"fitMarkers"]) {
         NSArray *points = [RCTConvert YMKPointArray:args[0][0][@"points"]];
         NSNumber *duration = args[0][0][@"duration"];
         NSNumber *animation = args[0][0][@"animation"];
@@ -240,6 +247,16 @@ using namespace facebook::react;
     } else if ([commandName isEqual:@"setTrafficVisible"]) {
         BOOL isVisible = [args[0][0][@"isVisible"] boolValue];
         [self setTrafficVisible:isVisible];
+    } else if ([commandName isEqual:@"setZoom"]) {
+
+    } else if ([commandName isEqual:@"getCameraPosition"]) {
+
+    } else if ([commandName isEqual:@"getVisibleRegion"]) {
+
+    } else if ([commandName isEqual:@"getScreenPoints"]) {
+
+    } else if ([commandName isEqual:@"getWorldPoints"]) {
+
     }
 }
 
@@ -611,9 +628,9 @@ using namespace facebook::react;
     if ([points count] == 0) {
         return;
     }
-    
+
     YMKAnimation *anim = [YMKAnimation animationWithType:animation == 0 ? YMKAnimationTypeSmooth : YMKAnimationTypeLinear duration:duration];
-    
+
     if ([points count] == 1) {
         YMKPoint *center = [points objectAtIndex:0];
         [mapView.mapWindow.map moveWithCameraPosition:[YMKCameraPosition cameraPositionWithTarget:center zoom:15 azimuth:0 tilt:0] animation:anim cameraCallback:^(BOOL completed){}];
@@ -876,9 +893,12 @@ using namespace facebook::react;
     clusterColor = [RCTConvert UIColor:color];
 }
 
-- (void)setClusterIcon:(NSString *)source {
+- (void)setClusterIcon:(NSString *)source points:(NSArray<YMKPoint *> * _Nullable)points {
     [[ImageCacheManager instance] getWithSource:source completion:^(UIImage *image) {
         self->clusImage = image;
+        if (points != nil) {
+            [self setClusteredMarkers:points];
+        }
     }];
 }
 
@@ -964,7 +984,7 @@ using namespace facebook::react;
         CGContextFillEllipseInRect(context, CGRectMake(0, 0, externalRadius*2, externalRadius*2));
         CGContextSetFillColorWithColor(context, [UIColor.whiteColor CGColor]);
         CGContextFillEllipseInRect(context, CGRectMake(STROKE_SIZE, STROKE_SIZE, internalRadius*2, internalRadius*2));
-        [text drawInRect:CGRectMake(externalRadius - size.width/2, externalRadius - size.height/2, size.width, size.height) withAttributes:@{NSFontAttributeName: font, NSForegroundColorAttributeName: UIColor.blackColor }];
+        [text drawInRect:CGRectMake(externalRadius - size.width/2, externalRadius - size.height/2, size.width, size.height) withAttributes:@{NSFontAttributeName: font, NSForegroundColorAttributeName: clusterTextColor }];
     }
 
     UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();

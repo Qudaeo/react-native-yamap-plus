@@ -53,10 +53,6 @@ using namespace facebook::react;
         [super setClusterColor:[NSNumber numberWithInt:newViewProps.clusterColor]];
     }
 
-    if (oldViewProps.clusterIcon != newViewProps.clusterIcon) {
-        [super setClusterIcon:[NSString stringWithCString:newViewProps.clusterIcon.c_str() encoding:[NSString defaultCStringEncoding]]];
-    }
-
     if (oldViewProps.clusterSize.width != newViewProps.clusterSize.width || oldViewProps.clusterSize.height != newViewProps.clusterSize.height) {
         NSMutableDictionary *sizes = [[NSMutableDictionary alloc] init];
         [sizes setValue:[NSNumber numberWithDouble:newViewProps.clusterSize.width] forKey:@"width"];
@@ -75,18 +71,20 @@ using namespace facebook::react;
     if (oldViewProps.clusterTextYOffset != newViewProps.clusterTextYOffset) {
         [super setClusterTextYOffset:newViewProps.clusterTextYOffset];
     }
-    
+
     if (oldViewProps.clusterTextXOffset != newViewProps.clusterTextXOffset) {
         [super setClusterTextXOffset:newViewProps.clusterTextXOffset];
     }
 
-    if (![NewArchUtils yamapClusteredMarkersEquals:oldViewProps.clusteredMarkers markers2:newViewProps.clusteredMarkers]) {
-        NSMutableArray<YMKPoint *> *points = [[NSMutableArray alloc] init];
-        for (int i = 0; i < newViewProps.clusteredMarkers.size(); i++) {
-            ClusteredYamapViewClusteredMarkersStruct pointStruct = newViewProps.clusteredMarkers.at(i);
-            [points addObject:[YMKPoint pointWithLatitude:pointStruct.lat longitude:pointStruct.lon]];
-        }
+    NSMutableArray<YMKPoint *> *points = [[NSMutableArray alloc] init];
+    for (int i = 0; i < newViewProps.clusteredMarkers.size(); i++) {
+        ClusteredYamapViewClusteredMarkersStruct pointStruct = newViewProps.clusteredMarkers.at(i);
+        [points addObject:[YMKPoint pointWithLatitude:pointStruct.lat longitude:pointStruct.lon]];
+    }
 
+    if (oldViewProps.clusterIcon != newViewProps.clusterIcon) {
+        [super setClusterIcon:[NSString stringWithCString:newViewProps.clusterIcon.c_str() encoding:[NSString defaultCStringEncoding]] points:points];
+    } else if (![NewArchUtils yamapClusteredMarkersEquals:oldViewProps.clusteredMarkers markers2:newViewProps.clusteredMarkers]) {
         [super setClusteredMarkers:points];
     }
 
