@@ -67,6 +67,14 @@ export type VisibleRegion = {
   };
 }
 
+export type ScreenPointResponse = {
+  id: string;
+  screenPoints: {
+    x: Double;
+    y: Double;
+  }[]
+}
+
 export interface MapLoaded {
   renderObjectCount: Double;
   curZoomModelsLoaded: Double;
@@ -107,7 +115,7 @@ export interface YamapNativeProps extends ViewProps {
 
   onCameraPositionReceived: DirectEventHandler<CameraPosition>;
   onVisibleRegionReceived: DirectEventHandler<VisibleRegion>;
-  onWorldToScreenPointsReceived: DirectEventHandler<undefined>;
+  onWorldToScreenPointsReceived: DirectEventHandler<ScreenPointResponse>;
   onScreenToWorldPointsReceived: DirectEventHandler<undefined>;
 }
 

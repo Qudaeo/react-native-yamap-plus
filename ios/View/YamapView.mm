@@ -329,6 +329,40 @@ using namespace facebook::react;
             });
         }
     } else if ([commandName isEqual:@"getScreenPoints"]) {
+        std::string id = std::string([args[0][0][@"id"] UTF8String]);
+        NSArray *worldPoints = args[0][0][@"points"];
+        
+        if ([self isKindOfClass:[ClusteredYamapView class]]) {
+            std::vector<ClusteredYamapViewEventEmitter::OnWorldToScreenPointsReceivedScreenPoints> screenPoints;
+            for (int i = 0; i < [worldPoints count]; ++i) {
+                NSDictionary *worldPoint = [worldPoints objectAtIndex:i];
+                YMKScreenPoint *screenPoint = [mapView.mapWindow worldToScreenWithWorldPoint:[RCTConvert YMKPoint:worldPoint]];
+                screenPoints.push_back({
+                    .x = screenPoint.x,
+                    .y = screenPoint.y
+                });
+            }
+            
+            std::dynamic_pointer_cast<const ClusteredYamapViewEventEmitter>(_eventEmitter)->onWorldToScreenPointsReceived({
+                .id = id,
+                .screenPoints = screenPoints
+            });
+        } else {
+            std::vector<YamapViewEventEmitter::OnWorldToScreenPointsReceivedScreenPoints> screenPoints;
+            for (int i = 0; i < [worldPoints count]; ++i) {
+                NSDictionary *worldPoint = [worldPoints objectAtIndex:i];
+                YMKScreenPoint *screenPoint = [mapView.mapWindow worldToScreenWithWorldPoint:[RCTConvert YMKPoint:worldPoint]];
+                screenPoints.push_back({
+                    .x = screenPoint.x,
+                    .y = screenPoint.y
+                });
+            }
+            
+            std::dynamic_pointer_cast<const YamapViewEventEmitter>(_eventEmitter)->onWorldToScreenPointsReceived({
+                .id = id,
+                .screenPoints = screenPoints
+            });
+        }
 
     } else if ([commandName isEqual:@"getWorldPoints"]) {
 

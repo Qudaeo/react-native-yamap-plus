@@ -79,6 +79,14 @@ export type VisibleRegion = {
   };
 }
 
+export type ScreenPointResponse = {
+  id: string;
+  screenPoints: {
+    x: Double;
+    y: Double;
+  }[]
+}
+
 export interface YandexClusterSizes {
   width?: Double;
   height?: Double;
@@ -112,7 +120,7 @@ export interface ClusteredYamapNativeProps extends ViewProps {
 
   onCameraPositionReceived: DirectEventHandler<CameraPosition>;
   onVisibleRegionReceived: DirectEventHandler<VisibleRegion>;
-  onWorldToScreenPointsReceived: DirectEventHandler<undefined>;
+  onWorldToScreenPointsReceived: DirectEventHandler<ScreenPointResponse>;
   onScreenToWorldPointsReceived: DirectEventHandler<undefined>;
 
   clusteredMarkers: Point[];
