@@ -284,7 +284,50 @@ using namespace facebook::react;
             });
         }
     } else if ([commandName isEqual:@"getVisibleRegion"]) {
+        std::string id = std::string([args[0][0][@"id"] UTF8String]);
+        YMKVisibleRegion *region = mapView.mapWindow.map.visibleRegion;
 
+        if ([self isKindOfClass:[ClusteredYamapView class]]) {
+            std::dynamic_pointer_cast<const ClusteredYamapViewEventEmitter>(_eventEmitter)->onVisibleRegionReceived({
+                .id = id,
+                .bottomLeft = {
+                  .lat = region.bottomLeft.latitude,
+                  .lon = region.bottomLeft.longitude
+                },
+                .bottomRight = {
+                  .lat = region.bottomRight.latitude,
+                  .lon = region.bottomRight.longitude
+                },
+                .topLeft = {
+                  .lat = region.topLeft.latitude,
+                  .lon = region.topLeft.longitude
+                },
+                .topRight = {
+                  .lat = region.topRight.latitude,
+                  .lon = region.topRight.longitude
+                }
+            });
+        } else {
+            std::dynamic_pointer_cast<const YamapViewEventEmitter>(_eventEmitter)->onVisibleRegionReceived({
+                .id = id,
+                .bottomLeft = {
+                  .lat = region.bottomLeft.latitude,
+                  .lon = region.bottomLeft.longitude
+                },
+                .bottomRight = {
+                  .lat = region.bottomRight.latitude,
+                  .lon = region.bottomRight.longitude
+                },
+                .topLeft = {
+                  .lat = region.topLeft.latitude,
+                  .lon = region.topLeft.longitude
+                },
+                .topRight = {
+                  .lat = region.topRight.latitude,
+                  .lon = region.topRight.longitude
+                }
+            });
+        }
     } else if ([commandName isEqual:@"getScreenPoints"]) {
 
     } else if ([commandName isEqual:@"getWorldPoints"]) {

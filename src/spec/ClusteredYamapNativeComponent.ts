@@ -47,7 +47,7 @@ interface Point {
 }
 
 export interface CameraPosition {
-  id?: string;
+  id: string;
   point: {
     lat: Double;
     lon: Double;
@@ -57,6 +57,26 @@ export interface CameraPosition {
   reason: string;
   tilt: Double;
   zoom: Double;
+}
+
+export type VisibleRegion = {
+  id: string;
+  bottomLeft: {
+    lat: Double;
+    lon: Double;
+  };
+  bottomRight: {
+    lat: Double;
+    lon: Double;
+  };
+  topLeft: {
+    lat: Double;
+    lon: Double;
+  };
+  topRight: {
+    lat: Double;
+    lon: Double;
+  };
 }
 
 export interface YandexClusterSizes {
@@ -91,7 +111,7 @@ export interface ClusteredYamapNativeProps extends ViewProps {
   interactiveDisabled?: boolean;
 
   onCameraPositionReceived: DirectEventHandler<CameraPosition>;
-  onVisibleRegionReceived: DirectEventHandler<undefined>;
+  onVisibleRegionReceived: DirectEventHandler<VisibleRegion>;
   onWorldToScreenPointsReceived: DirectEventHandler<undefined>;
   onScreenToWorldPointsReceived: DirectEventHandler<undefined>;
 
