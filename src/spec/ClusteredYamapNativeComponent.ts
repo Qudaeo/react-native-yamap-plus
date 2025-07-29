@@ -79,11 +79,19 @@ export type VisibleRegion = {
   };
 }
 
-export type ScreenPointResponse = {
+export type ScreenPointsResponse = {
   id: string;
   screenPoints: {
     x: Double;
     y: Double;
+  }[]
+}
+
+export type WorldPointsResponse = {
+  id: string;
+  worldPoints: {
+    lat: Double;
+    lon: Double;
   }[]
 }
 
@@ -120,8 +128,8 @@ export interface ClusteredYamapNativeProps extends ViewProps {
 
   onCameraPositionReceived: DirectEventHandler<CameraPosition>;
   onVisibleRegionReceived: DirectEventHandler<VisibleRegion>;
-  onWorldToScreenPointsReceived: DirectEventHandler<ScreenPointResponse>;
-  onScreenToWorldPointsReceived: DirectEventHandler<undefined>;
+  onWorldToScreenPointsReceived: DirectEventHandler<ScreenPointsResponse>;
+  onScreenToWorldPointsReceived: DirectEventHandler<WorldPointsResponse>;
 
   clusteredMarkers: Point[];
   clusterColor?: Int32;

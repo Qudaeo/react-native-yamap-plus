@@ -363,9 +363,41 @@ using namespace facebook::react;
                 .screenPoints = screenPoints
             });
         }
-
     } else if ([commandName isEqual:@"getWorldPoints"]) {
-
+        std::string id = std::string([args[0][0][@"id"] UTF8String]);
+        NSArray *screenPoints = args[0][0][@"points"];
+        
+        if ([self isKindOfClass:[ClusteredYamapView class]]) {
+            std::vector<ClusteredYamapViewEventEmitter::OnScreenToWorldPointsReceivedWorldPoints> worldPoints;
+            for (int i = 0; i < [screenPoints count]; ++i) {
+                NSDictionary *screenPoint = [screenPoints objectAtIndex:i];
+                YMKPoint *worldPoint = [mapView.mapWindow screenToWorldWithScreenPoint:[RCTConvert YMKScreenPoint:screenPoint]];
+                worldPoints.push_back({
+                    .lat = worldPoint.latitude,
+                    .lon = worldPoint.longitude
+                });
+            }
+            
+            std::dynamic_pointer_cast<const ClusteredYamapViewEventEmitter>(_eventEmitter)->onScreenToWorldPointsReceived({
+                .id = id,
+                .worldPoints = worldPoints
+            });
+        } else {
+            std::vector<YamapViewEventEmitter::OnScreenToWorldPointsReceivedWorldPoints> worldPoints;
+            for (int i = 0; i < [screenPoints count]; ++i) {
+                NSDictionary *screenPoint = [screenPoints objectAtIndex:i];
+                YMKPoint *worldPoint = [mapView.mapWindow screenToWorldWithScreenPoint:[RCTConvert YMKScreenPoint:screenPoint]];
+                worldPoints.push_back({
+                    .lat = worldPoint.latitude,
+                    .lon = worldPoint.longitude
+                });
+            }
+            
+            std::dynamic_pointer_cast<const YamapViewEventEmitter>(_eventEmitter)->onScreenToWorldPointsReceived({
+                .id = id,
+                .worldPoints = worldPoints
+            });
+        }
     }
 }
 

@@ -67,11 +67,19 @@ export type VisibleRegion = {
   };
 }
 
-export type ScreenPointResponse = {
+export type ScreenPointsResponse = {
   id: string;
   screenPoints: {
     x: Double;
     y: Double;
+  }[]
+}
+
+export type WorldPointsResponse = {
+  id: string;
+  worldPoints: {
+    lat: Double;
+    lon: Double;
   }[]
 }
 
@@ -115,8 +123,8 @@ export interface YamapNativeProps extends ViewProps {
 
   onCameraPositionReceived: DirectEventHandler<CameraPosition>;
   onVisibleRegionReceived: DirectEventHandler<VisibleRegion>;
-  onWorldToScreenPointsReceived: DirectEventHandler<ScreenPointResponse>;
-  onScreenToWorldPointsReceived: DirectEventHandler<undefined>;
+  onWorldToScreenPointsReceived: DirectEventHandler<ScreenPointsResponse>;
+  onScreenToWorldPointsReceived: DirectEventHandler<WorldPointsResponse>;
 }
 
 export type YamapNativeRef = Component<YamapNativeProps, {}, any> & Readonly<NativeMethods>
