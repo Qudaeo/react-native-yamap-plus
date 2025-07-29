@@ -26,18 +26,18 @@ export const ClusteredMapScreen = () => {
 
   const onMapLoaded: DirectEventHandler<MapLoaded> = (event) => {
     console.log('clustered onMapLoaded', event.nativeEvent);
-    clusteredMapRef.current?.getCameraPosition(e => {
-      console.log('clustered getCameraPosition', e);
-    });
-    clusteredMapRef.current?.getVisibleRegion(e => {
-      console.log('clustered getVisibleRegion', e);
-    });
-    clusteredMapRef.current?.getWorldPoints([{x: 100, y: 100}], e => {
-      console.log('clustered getWorldPoints', e);
-    });
-    clusteredMapRef.current?.getScreenPoints([{lat: 55.75124399961543, lon: 37.618422999999986}], e => {
-      console.log('clustered getScreenPoints', e);
-    });
+    // clusteredMapRef.current?.getCameraPosition(e => {
+    //   console.log('clustered getCameraPosition', e);
+    // });
+    // clusteredMapRef.current?.getVisibleRegion(e => {
+    //   console.log('clustered getVisibleRegion', e);
+    // });
+    // clusteredMapRef.current?.getWorldPoints([{x: 100, y: 100}], e => {
+    //   console.log('clustered getWorldPoints', e);
+    // });
+    // clusteredMapRef.current?.getScreenPoints([{lat: 55.75124399961543, lon: 37.618422999999986}], e => {
+    //   console.log('clustered getScreenPoints', e);
+    // });
     // setTimeout(() => clusteredMapRef.current?.setTrafficVisible(true), 3000);
     // setTimeout(() => clusteredMapRef.current?.setCenter({lat: 56, lon: 38}), 3000);
     // setTimeout(() => clusteredMapRef.current?.fitAllMarkers(), 3000);

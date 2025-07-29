@@ -229,12 +229,14 @@ using namespace facebook::react;
 
 - (void)handleCommand:(const NSString *)commandName args:(const NSArray *)args {
     if ([commandName isEqual:@"setCenter"]) {
-        //      center: Point,
-        //      zoom?: number,
-        //      azimuth?: number,
-        //      tilt?: number,
-        //      duration?: number,
-        //      animation?: Animation
+        NSNumber *duration = args[0][0][@"duration"];
+        NSNumber *animation = args[0][0][@"animation"];
+        NSNumber *zoom = args[0][0][@"zoom"];
+        NSNumber *azimuth = args[0][0][@"azimuth"];
+        NSNumber *tilt = args[0][0][@"tilt"];
+        YMKPoint *center = [RCTConvert YMKPoint:args[0][0][@"center"]];
+        YMKCameraPosition *cameraPosition = [YMKCameraPosition cameraPositionWithTarget:center zoom:[zoom floatValue] azimuth:[azimuth floatValue] tilt:[tilt floatValue]];
+        [self setCenter:cameraPosition withDuration:[duration floatValue] withAnimation:[animation intValue]];
     } else if ([commandName isEqual:@"fitMarkers"]) {
         NSArray *points = [RCTConvert YMKPointArray:args[0][0][@"points"]];
         NSNumber *duration = args[0][0][@"duration"];
