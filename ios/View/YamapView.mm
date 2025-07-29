@@ -250,7 +250,10 @@ using namespace facebook::react;
         BOOL isVisible = [args[0][0][@"isVisible"] boolValue];
         [self setTrafficVisible:isVisible];
     } else if ([commandName isEqual:@"setZoom"]) {
-
+        NSNumber *zoom = args[0][0][@"zoom"];
+        NSNumber *duration = args[0][0][@"duration"];
+        NSNumber *animation = args[0][0][@"animation"];
+        [self setZoom:[zoom floatValue] withDuration:[duration floatValue] withAnimation:[animation intValue]];
     } else if ([commandName isEqual:@"getCameraPosition"]) {
 
     } else if ([commandName isEqual:@"getVisibleRegion"]) {
