@@ -255,7 +255,34 @@ using namespace facebook::react;
         NSNumber *animation = args[0][0][@"animation"];
         [self setZoom:[zoom floatValue] withDuration:[duration floatValue] withAnimation:[animation intValue]];
     } else if ([commandName isEqual:@"getCameraPosition"]) {
+        std::string id = std::string([args[0][0][@"id"] UTF8String]);
+        YMKCameraPosition *position = mapView.mapWindow.map.cameraPosition;
 
+        if ([self isKindOfClass:[ClusteredYamapView class]]) {
+            std::dynamic_pointer_cast<const ClusteredYamapViewEventEmitter>(_eventEmitter)->onCameraPositionReceived({
+                .id = id,
+                .point = {
+                    .lat = position.target.latitude,
+                    .lon = position.target.latitude,
+                },
+                .azimuth = position.azimuth,
+                .reason = "APPLICATION",
+                .tilt = position.tilt,
+                .zoom = position.zoom
+            });
+        } else {
+            std::dynamic_pointer_cast<const YamapViewEventEmitter>(_eventEmitter)->onCameraPositionReceived({
+                .id = id,
+                .point = {
+                    .lat = position.target.latitude,
+                    .lon = position.target.latitude,
+                },
+                .azimuth = position.azimuth,
+                .reason = "APPLICATION",
+                .tilt = position.tilt,
+                .zoom = position.zoom
+            });
+        }
     } else if ([commandName isEqual:@"getVisibleRegion"]) {
 
     } else if ([commandName isEqual:@"getScreenPoints"]) {
@@ -495,8 +522,10 @@ using namespace facebook::react;
 
     if ([self isKindOfClass:[ClusteredYamapView class]]) {
         std::dynamic_pointer_cast<const ClusteredYamapViewEventEmitter>(_eventEmitter)->onCameraPositionChange({
-            .lat = cameraPosition.target.latitude,
-            .lon = cameraPosition.target.latitude,
+            .point = {
+                .lat = cameraPosition.target.latitude,
+                .lon = cameraPosition.target.latitude,
+            },
             .azimuth = cameraPosition.azimuth,
             .finished = finished,
             .reason = cameraUpdateReason == YMKCameraUpdateReasonGestures ? "GESTURES" : "APPLICATION",
@@ -505,8 +534,10 @@ using namespace facebook::react;
         });
     } else {
         std::dynamic_pointer_cast<const YamapViewEventEmitter>(_eventEmitter)->onCameraPositionChange({
-            .lat = cameraPosition.target.latitude,
-            .lon = cameraPosition.target.latitude,
+            .point = {
+                .lat = cameraPosition.target.latitude,
+                .lon = cameraPosition.target.latitude,
+            },
             .azimuth = cameraPosition.azimuth,
             .finished = finished,
             .reason = cameraUpdateReason == YMKCameraUpdateReasonGestures ? "GESTURES" : "APPLICATION",
@@ -518,8 +549,10 @@ using namespace facebook::react;
     if (finished) {
         if ([self isKindOfClass:[ClusteredYamapView class]]) {
             std::dynamic_pointer_cast<const ClusteredYamapViewEventEmitter>(_eventEmitter)->onCameraPositionChangeEnd({
-                .lat = cameraPosition.target.latitude,
-                .lon = cameraPosition.target.latitude,
+                .point = {
+                    .lat = cameraPosition.target.latitude,
+                    .lon = cameraPosition.target.latitude,
+                },
                 .azimuth = cameraPosition.azimuth,
                 .finished = finished,
                 .reason = cameraUpdateReason == YMKCameraUpdateReasonGestures ? "GESTURES" : "APPLICATION",
@@ -528,8 +561,10 @@ using namespace facebook::react;
             });
         } else {
             std::dynamic_pointer_cast<const YamapViewEventEmitter>(_eventEmitter)->onCameraPositionChangeEnd({
-                .lat = cameraPosition.target.latitude,
-                .lon = cameraPosition.target.latitude,
+                .point = {
+                    .lat = cameraPosition.target.latitude,
+                    .lon = cameraPosition.target.latitude,
+                },
                 .azimuth = cameraPosition.azimuth,
                 .finished = finished,
                 .reason = cameraUpdateReason == YMKCameraUpdateReasonGestures ? "GESTURES" : "APPLICATION",

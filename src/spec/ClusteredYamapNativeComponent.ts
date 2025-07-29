@@ -47,8 +47,11 @@ interface Point {
 }
 
 export interface CameraPosition {
-  lat: Double;
-  lon: Double;
+  id?: string;
+  point: {
+    lat: Double;
+    lon: Double;
+  }
   azimuth: Double;
   finished: boolean;
   reason: string;
@@ -87,7 +90,7 @@ export interface ClusteredYamapNativeProps extends ViewProps {
   userLocationIcon: string | undefined;
   interactiveDisabled?: boolean;
 
-  onCameraPositionReceived: DirectEventHandler<undefined>;
+  onCameraPositionReceived: DirectEventHandler<CameraPosition>;
   onVisibleRegionReceived: DirectEventHandler<undefined>;
   onWorldToScreenPointsReceived: DirectEventHandler<undefined>;
   onScreenToWorldPointsReceived: DirectEventHandler<undefined>;
