@@ -34,8 +34,8 @@ export type YamapRef = {
     duration?: number,
     animation?: Animation
   ) => void;
-  fitAllMarkers: () => void;
-  fitMarkers: (points: Point[]) => void;
+  fitAllMarkers: (duration?: number, animation?: Animation) => void;
+  fitMarkers: (points: Point[], duration?: number, animation?: Animation) => void;
   setZoom: (zoom: number, duration?: number, animation?: Animation) => void;
   getCameraPosition: (callback: CameraPositionCallback) => void;
   getVisibleRegion: (callback: VisibleRegionCallback) => void;

@@ -1,6 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {Platform, StyleSheet} from 'react-native';
-import {Yamap, Circle, Marker, MarkerRef, Polyline, YamapRef} from '../../../';
+import {Circle, Marker, MarkerRef, Polyline, Yamap, YamapRef} from '../../../';
 import {Polygon} from '../../../src';
 
 export const MapScreen = () => {
@@ -40,10 +40,10 @@ export const MapScreen = () => {
       //   console.log(Platform.OS, 'findDrivingRoutes', e);
       // });
       // setTimeout(() => mapRef.current?.setTrafficVisible(true), 3000);
-      //setTimeout(() => mapRef.current?.setCenter({lat: 56, lon: 38}), 3000);
-      //setTimeout(() => mapRef.current?.fitAllMarkers(), 3000);
-      //setTimeout(() => mapRef.current?.fitMarkers([{lat: 56, lon: 38}]), 3000);
-      //setTimeout(() => mapRef.current?.setZoom(10, 1), 3000);
+      // setTimeout(() => mapRef.current?.setCenter({lat: 56, lon: 38}), 3000);
+      // setTimeout(() => mapRef.current?.fitAllMarkers(3, Animation.LINEAR), 3000);
+      // setTimeout(() => mapRef.current?.fitMarkers([{lat: 56, lon: 38}], 3, Animation.LINEAR), 3000);
+      // setTimeout(() => mapRef.current?.setZoom(10, 1), 3000);
     }
   }, [mapLoaded]);
 

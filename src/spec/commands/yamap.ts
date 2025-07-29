@@ -16,8 +16,19 @@ export interface YamapNativeCommands {
       animation: Animation
     }>>,
   ) => void;
-  fitAllMarkers: (viewRef: React.ElementRef<YamapComponentType | ClusteredYamapComponentType>, args: Array<Readonly<{}>>) => void;
-  fitMarkers: (viewRef: React.ElementRef<YamapComponentType | ClusteredYamapComponentType>, points: Array<Readonly<{points: Point[]}>>) => void;
+  fitAllMarkers: (
+    viewRef: React.ElementRef<YamapComponentType | ClusteredYamapComponentType>,
+    args: Array<Readonly<{
+      duration?: number,
+      animation?: Animation,
+    }>>) => void;
+  fitMarkers: (
+    viewRef: React.ElementRef<YamapComponentType | ClusteredYamapComponentType>,
+    args: Array<Readonly<{
+      points: Point[],
+      duration?: number,
+      animation?: Animation,
+    }>>) => void;
   setZoom: (
     viewRef: React.ElementRef<YamapComponentType | ClusteredYamapComponentType>,
     args: Array<Readonly<{
@@ -26,9 +37,21 @@ export interface YamapNativeCommands {
       animation: Animation,
     }>>
   ) => void;
-  getCameraPosition: (viewRef: React.ElementRef<YamapComponentType | ClusteredYamapComponentType>, args: Array<Readonly<{id: string}>>) => void;
-  getVisibleRegion: (viewRef: React.ElementRef<YamapComponentType | ClusteredYamapComponentType>, args: Array<Readonly<{id: string}>>) => void;
-  setTrafficVisible: (viewRef: React.ElementRef<YamapComponentType | ClusteredYamapComponentType>, args: Array<Readonly<{isVisible: boolean}>>) => void;
+  getCameraPosition: (
+    viewRef: React.ElementRef<YamapComponentType | ClusteredYamapComponentType>,
+    args: Array<Readonly<{
+      id: string,
+    }>>) => void;
+  getVisibleRegion: (
+    viewRef: React.ElementRef<YamapComponentType | ClusteredYamapComponentType>,
+    args: Array<Readonly<{
+      id: string,
+    }>>) => void;
+  setTrafficVisible: (
+    viewRef: React.ElementRef<YamapComponentType | ClusteredYamapComponentType>,
+    args: Array<Readonly<{
+      isVisible: boolean,
+    }>>) => void;
   getScreenPoints: (
     viewRef: React.ElementRef<YamapComponentType | ClusteredYamapComponentType>,
     args: Array<Readonly<{

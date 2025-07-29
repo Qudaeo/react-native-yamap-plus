@@ -228,18 +228,15 @@ using namespace facebook::react;
 }
 
 - (void)handleCommand:(const NSString *)commandName args:(const NSArray *)args {
-    if ([commandName isEqual:@"findRoutes"]) {
-        NSArray *pointsDict = args[0][0][@"points"];
-        NSMutableArray *requestPoints = [[NSMutableArray alloc] init];
-        for (int i = 0; i < [pointsDict count]; i++) {
-            YMKPoint *point = [YMKPoint pointWithLatitude:[[pointsDict objectAtIndex:i][@"lat"] doubleValue] longitude:[[pointsDict objectAtIndex:i][@"lon"] doubleValue]];
-            YMKRequestPoint *requestPoint = [YMKRequestPoint requestPointWithPoint:point type:YMKRequestPointTypeWaypoint pointContext:nil drivingArrivalPointId:nil indoorLevelId:nil];
-            [requestPoints addObject:requestPoint];
-        }
-        NSArray *vehicles = args[0][0][@"vehicles"];
-        NSString *id = args[0][0][@"id"];
-
-        [self findRoutes:requestPoints vehicles:vehicles withId:id];
+    if ([commandName isEqual:@"fitMarkers"]) {
+        NSArray *points = [RCTConvert YMKPointArray:args[0][0][@"points"]];
+        NSNumber *duration = args[0][0][@"duration"];
+        NSNumber *animation = args[0][0][@"animation"];
+        [self fitMarkers:points duration:[duration floatValue] animation:[animation intValue]];
+    } else if ([commandName isEqual:@"fitAllMarkers"]) {
+        NSNumber *duration = args[0][0][@"duration"];
+        NSNumber *animation = args[0][0][@"animation"];
+        [self fitAllMarkers:[duration floatValue] animation:[animation intValue]];
     }
 }
 
@@ -565,7 +562,7 @@ using namespace facebook::react;
     }
 }
 
-- (void)fitAllMarkers {
+- (void)fitAllMarkers:(float)duration animation:(int)animation {
     NSMutableArray<YMKPoint *> *lastKnownMarkers = [[NSMutableArray alloc] init];
 
     for (int i = 0; i < [_reactSubviews count]; ++i) {
@@ -577,7 +574,7 @@ using namespace facebook::react;
         }
     }
 
-    [self fitMarkers:lastKnownMarkers];
+    [self fitMarkers:lastKnownMarkers duration:duration animation:animation];
 }
 
 - (NSArray<YMKPoint *> *)mapPlacemarksToPoints:(NSArray<YMKPlacemarkMapObject *> *)placemarks {
@@ -607,18 +604,21 @@ using namespace facebook::react;
     return boundingBox;
 }
 
-- (void)fitMarkers:(NSArray<YMKPoint *> *) points {
+- (void)fitMarkers:(NSArray<YMKPoint *> *)points duration:(float)duration animation:(int)animation {
     if ([points count] == 0) {
         return;
     }
+    
+    YMKAnimation *anim = [YMKAnimation animationWithType:animation == 0 ? YMKAnimationTypeSmooth : YMKAnimationTypeLinear duration:duration];
+    
     if ([points count] == 1) {
         YMKPoint *center = [points objectAtIndex:0];
-        [mapView.mapWindow.map moveWithCameraPosition:[YMKCameraPosition cameraPositionWithTarget:center zoom:15 azimuth:0 tilt:0]];
+        [mapView.mapWindow.map moveWithCameraPosition:[YMKCameraPosition cameraPositionWithTarget:center zoom:15 azimuth:0 tilt:0] animation:anim cameraCallback:^(BOOL completed){}];
         return;
     }
     YMKCameraPosition *cameraPosition = [mapView.mapWindow.map cameraPositionWithGeometry:[YMKGeometry geometryWithBoundingBox:[self calculateBoundingBox:points]]];
     cameraPosition = [YMKCameraPosition cameraPositionWithTarget:cameraPosition.target zoom:cameraPosition.zoom - 0.8f azimuth:cameraPosition.azimuth tilt:cameraPosition.tilt];
-    [mapView.mapWindow.map moveWithCameraPosition:cameraPosition animation:[YMKAnimation animationWithType:YMKAnimationTypeSmooth duration:1.0] cameraCallback:^(BOOL completed){}];
+    [mapView.mapWindow.map moveWithCameraPosition:cameraPosition animation:anim cameraCallback:^(BOOL completed){}];
 }
 
 - (void)setLogoPosition:(NSDictionary *)logoPosition {
@@ -1058,7 +1058,7 @@ using namespace facebook::react;
     for (YMKPlacemarkMapObject *placemark in [cluster placemarks]) {
         [lastKnownMarkers addObject:[placemark geometry]];
     }
-    [self fitMarkers:lastKnownMarkers];
+    [self fitMarkers:lastKnownMarkers duration:0.7 animation:0];
     return YES;
 }
 

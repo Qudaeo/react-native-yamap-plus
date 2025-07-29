@@ -32,8 +32,17 @@ class YamapViewManagerImpl() {
                 args.getDouble("duration").toFloat(),
                 args.getInt("animation")
             )
-            "fitAllMarkers" -> fitAllMarkers(view)
-            "fitMarkers" -> fitMarkers(view, args.getArray("points"))
+            "fitAllMarkers" -> fitAllMarkers(
+                view,
+                args.getDouble("duration").toFloat(),
+                args.getInt("animation")
+            )
+            "fitMarkers" -> fitMarkers(
+                view,
+                args.getArray("points"),
+                args.getDouble("duration").toFloat(),
+                args.getInt("animation")
+            )
             "setZoom" -> view.setZoom(
                 args.getDouble("zoom").toFloat(),
                 args.getDouble("duration").toFloat(),
@@ -85,14 +94,14 @@ class YamapViewManagerImpl() {
         }
     }
 
-    private fun fitAllMarkers(view: YamapView) {
-        view.fitAllMarkers()
+    private fun fitAllMarkers(view: YamapView, duration: Float, animation: Int) {
+        view.fitAllMarkers(duration, animation)
     }
 
-    private fun fitMarkers(view: YamapView, jsPoints: ReadableArray?) {
+    private fun fitMarkers(view: YamapView, jsPoints: ReadableArray?, duration: Float, animation: Int) {
         jsPoints?.let {
             val points = PointUtil.jsPointsToPoints(it)
-            view.fitMarkers(points)
+            view.fitMarkers(points, duration, animation)
         }
     }
 

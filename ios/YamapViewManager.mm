@@ -74,8 +74,11 @@ RCT_EXPORT_VIEW_PROPERTY(fastTapDisabled, BOOL)
 RCT_EXPORT_METHOD(fitAllMarkers:(nonnull NSNumber *)reactTag argsArr:(NSArray*)argsArr) {
     [self.bridge.uiManager addUIBlock:^(RCTUIManager *uiManager, NSDictionary<NSNumber *, UIView *> *viewRegistry) {
         YamapView *view = (YamapView *)viewRegistry[reactTag];
-
-        [view fitAllMarkers];
+        
+        NSDictionary* args = argsArr.firstObject;
+        NSNumber *duration = args[@"duration"];
+        NSNumber *animation = args[@"animation"];
+        [view fitAllMarkers:[duration floatValue] animation:[animation intValue]];
     }];
 }
 
@@ -85,7 +88,9 @@ RCT_EXPORT_METHOD(fitMarkers:(nonnull NSNumber *)reactTag argsArr:(NSArray*)args
 
         NSDictionary* args = argsArr.firstObject;
         NSArray<YMKPoint *> *points = [RCTConvert YMKPointArray:args[@"points"]];
-        [view fitMarkers: points];
+        NSNumber *duration = args[@"duration"];
+        NSNumber *animation = args[@"animation"];
+        [view fitMarkers: points duration:[duration floatValue] animation:[animation intValue]];
     }];
 }
 

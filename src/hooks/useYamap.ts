@@ -13,9 +13,12 @@ export const useYamap = (
   useImperativeHandle(ref, () => ({
     setCenter: (center, zoom = 10, azimuth = 0, tilt = 0, duration = 0, animation = Animation.SMOOTH) =>
       nativeCommands.setCenter(nativeRef.current!, [{center, zoom, azimuth, tilt, duration, animation}]),
-    fitAllMarkers: () => nativeCommands.fitAllMarkers(nativeRef.current!, [{}]),
-    fitMarkers: (points) => nativeCommands.fitMarkers(nativeRef.current!, [{points}]),
-    setTrafficVisible: (isVisible) => nativeCommands.setTrafficVisible(nativeRef.current!, [{isVisible}]),
+    fitAllMarkers: (duration = 0.7, animation = Animation.SMOOTH) =>
+      nativeCommands.fitAllMarkers(nativeRef.current!, [{duration, animation}]),
+    fitMarkers: (points, duration = 0.7, animation = Animation.SMOOTH) =>
+      nativeCommands.fitMarkers(nativeRef.current!, [{points, duration, animation}]),
+    setTrafficVisible: (isVisible) =>
+      nativeCommands.setTrafficVisible(nativeRef.current!, [{isVisible}]),
     setZoom: (zoom, duration = 0, animation = Animation.SMOOTH) =>
       nativeCommands.setZoom(nativeRef.current!, [{zoom, duration, animation}]),
     getCameraPosition: (callback) => {

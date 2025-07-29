@@ -138,7 +138,7 @@ class ClusteredYamapView(context: Context?) : YamapView(context), ClusterListene
         for (placemark in cluster.placemarks) {
             points.add(placemark.geometry)
         }
-        fitMarkers(points)
+        fitMarkers(points, 0.7f, 0)
         return true
     }
 
