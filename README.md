@@ -1,7 +1,4 @@
-
 ## React Native Yandex Maps (Яндекс Карты)
-
-#### Форк библиотеки [react-native-yamap](https://github.com/volga-volga/react-native-yamap), разработанной компанией [Волга-Волга](https://vvdev.ru/)
 
 #### Библиотека для интеграции MapKit SDK в React Native
 
@@ -10,8 +7,6 @@
 ```
 yarn add react-native-yamap-plus
 ```
-
-## Использование карт
 
 ### Инициализировать карты
 
@@ -67,140 +62,16 @@ const Map = () => {
 };
 ```
 
-#### Основные типы
-
-```typescript
-interface Point {
-  lat: Number;
-  lon: Number;
-}
-
-interface ScreenPoint {
-  x: number;
-  y: number;
-}
-
-interface MapLoaded {
-  renderObjectCount: number;
-  curZoomModelsLoaded: number;
-  curZoomPlacemarksLoaded: number;
-  curZoomLabelsLoaded: number;
-  curZoomGeometryLoaded: number;
-  tileMemoryUsage: number;
-  delayedGeometryLoaded: number;
-  fullyAppeared: number;
-  fullyLoaded: number;
-}
-
-interface InitialRegion {
-  lat: number;
-  lon: number;
-  zoom?: number;
-  azimuth?: number;
-  tilt?: number;
-}
-
-
-type MasstransitVehicles = 'bus' | 'trolleybus' | 'tramway' | 'minibus' | 'suburban' | 'underground' | 'ferry' | 'cable' | 'funicular';
-
-type Vehicles = MasstransitVehicles | 'walk' | 'car';
-
-type MapType = 'none' | 'raster' | 'vector';
-
-
-interface DrivingInfo {
-  time: string;
-  timeWithTraffic: string;
-  distance: number;
-}
-
-interface MasstransitInfo {
-  time:  string;
-  transferCount:  number;
-  walkingDistance:  number;
-}
-
-interface RouteInfo<T extends(DrivingInfo | MasstransitInfo)> {
-  id: string;
-  sections: {
-    points: Point[];
-    sectionInfo: T;
-    routeInfo: T;
-    routeIndex: number;
-    stops: any[];
-    type: string;
-    transports?: any;
-    sectionColor?: string;
-  }
-}
-
-interface RoutesFoundEvent<T extends(DrivingInfo | MasstransitInfo)> {
-  nativeEvent:  {
-    status: 'success' | 'error';
-    id: string;
-    routes: RouteInfo<T>[];
-  };
-}
-
-type CameraUpdateReason = "APPLICATION" | "GESTURES"
-
-interface CameraPosition {
-    azimuth: number;
-    finished: boolean;
-    point: Point;
-    reason: CameraUpdateReason;
-    tilt: number;
-    zoom: number;
-}
-
-type VisibleRegion = {
-  bottomLeft: Point;
-  bottomRight: Point;
-  topLeft: Point;
-  topRight: Point;
-}
-
-
-type YamapSuggest = {
-  title: string;
-  subtitle?: string;
-  uri?: string;
-}
-
-type YamapCoords = {
-  lon: number;
-  lat: number;
-}
-
-type YamapSuggestWithCoords = {
-  lon: number;
-  lat: number;
-  title: string;
-  subtitle?: string;
-  uri?: string;
-}
-
-type YandexLogoPosition = {
-  horizontal: 'left' | 'center' | 'right';
-  vertical: 'top' | 'bottom';
-}
-
-type YandexLogoPadding = {
-  horizontal?: number;
-  vertical?: number;
-}
-```
-
 #### Доступные `props` для компонента **MapView**:
 
 | Название | Тип | Стандартное значение | Описание |
 |--|--|--|--|
-| showUserPosition | boolean | true | Отслеживание геоданных и отображение позиции пользователя |
-| followUser | boolean | true | слежение камеры за пользователем |
+| showUserPosition | boolean | false | Отслеживание геоданных и отображение позиции пользователя |
+| followUser | boolean | false | слежение камеры за пользователем |
 | userLocationIcon | ImageSource | false | Иконка для позиции пользователя. Доступны те же значения что и у компонента Image из React Native |
 | userLocationIconScale | number | 1 | Масштабирование иконки пользователя |
 | initialRegion | InitialRegion | | Изначальное местоположение карты при загрузке |
-| interactive | boolean | true | Интерактивная ли карта (перемещение по карте, отслеживание нажатий) |
+| interactiveDisabled | boolean | false | Интерактивная ли карта (перемещение по карте, отслеживание нажатий) |
 | nightMode | boolean | false | Использование ночного режима |
 | onMapLoaded | function | | Колбек на загрузку карты |
 | onCameraPositionChange | function | | Колбек на изменение положения камеры |
@@ -210,11 +81,11 @@ type YandexLogoPadding = {
 | userLocationAccuracyFillColor | string |  | Цвет фона зоны точности определения позиции пользователя |
 | userLocationAccuracyStrokeColor | string |  | Цвет границы зоны точности определения позиции пользователя |
 | userLocationAccuracyStrokeWidth | number | | Толщина зоны точности определения позиции пользователя |
-| scrollGesturesEnabled | boolean | true | Включены ли жесты скролла |
-| zoomGesturesEnabled | boolean | true | Включены ли жесты зума |
-| tiltGesturesEnabled | boolean | true | Включены ли жесты наклона камеры двумя пальцами |
-| rotateGesturesEnabled | boolean | true | Включены ли жесты поворота камеры |
-| fastTapEnabled | boolean | true | Убрана ли задержка в 300мс при клике/тапе |
+| scrollGesturesDisabled | boolean | false | Включены ли жесты скролла |
+| zoomGesturesDisabled | boolean | false | Включены ли жесты зума |
+| tiltGesturesDisabled | boolean | false | Включены ли жесты наклона камеры двумя пальцами |
+| rotateGesturesDisabled | boolean | false | Включены ли жесты поворота камеры |
+| fastTapDisabled | boolean | false | Убрана ли задержка в 300мс при клике/тапе |
 | clusterColor | string | 'red' | Цвет фона метки-кластера |
 | logoPosition | YandexLogoPosition | {} | Позиция логотипа Яндекса на карте |
 | logoPadding | YandexLogoPadding | {} | Отступ логотипа Яндекса на карте |
@@ -229,10 +100,6 @@ type YandexLogoPadding = {
 -  `setZoom(zoom: number, duration: number, animation: Animation)` - изменить текущий zoom карты. Параметры `duration` и `animation` работают по аналогии с `setCenter`;
 -  `getCameraPosition(callback: (position: CameraPosition) => void)` - запрашивает положение камеры и вызывает переданный колбек с текущим значением;
 -  `getVisibleRegion(callback: (region: VisibleRegion) => void)` - запрашивает видимый регион и вызывает переданный колбек с текущим значением;
--  `findRoutes(points: Point[], vehicles: Vehicles[], callback: (event: RoutesFoundEvent) => void)` - запрос маршрутов через точки `points` с использованием транспорта `vehicles`. При получении маршрутов будет вызван `callback` с информацией обо всех маршрутах (подробнее в разделе **"Запрос маршрутов"**);
--  `findMasstransitRoutes(points: Point[], callback: (event: RoutesFoundEvent<MasstransitInfo>) => void): void` - запрос маршрутов на любом общественном транспорте;
--  `findPedestrianRoutes(points: Point[], callback: (event: RoutesFoundEvent<MasstransitInfo>) => void): void` - запрос пешеходного маршрута;
--  `findDrivingRoutes(points: Point[], callback: (event: RoutesFoundEvent<DrivingInfo>) => void): void` - запрос маршрута для автомобиля;
 -  `setTrafficVisible(isVisible: boolean): void` - включить/отключить отображение слоя с пробками на картах;
 -  `getScreenPoints(point: Point[], callback: (result: {screenPoints: ScreenPoint[]}) => void)` - получить кооординаты на экране (x и y) по координатам маркеров;
 -  `getWorldPoints(screenPoint: ScreenPoint[], callback: (result: {worldPoints: Point[]}) => void)` - получить координаты точек (lat и lon) по координатам на экране.
@@ -264,9 +131,9 @@ import {Yamap, Marker} from 'react-native-yamap-plus';
 | children | ReactElement | Рендер маркера как компонента |
 | onPress | function | Действие при нажатии/клике |
 | anchor | {  x:  number,  y:  number  } | Якорь иконки маркера. Координаты принимают значения от 0 до 1 |
-| zIndex | number | Отображение элемента по оси Z |
+| zI | number | zIndex для объекта на карте |
 | visible | boolean | Отображение маркера на карте |
-| handled | boolean | Включение(**false**)/отключение(**true**) всплытия события нажатия для родителя `default:true` |
+| handled | boolean | Включение(**false**)/отключение(**true**) всплытия события нажатия для родителя `default:false` |
 
 #### Доступные методы для примитива **Marker**:
 
@@ -293,7 +160,7 @@ import {Yamap, Circle} from 'react-native-yamap-plus';
 | strokeColor | string | Цвет границы |
 | strokeWidth | number | Толщина границы |
 | onPress | function | Действие при нажатии/клике |
-| zIndex | number | Отображение элемента по оси Z |
+| zI | number | zIndex для объекта на карте |
 | handled | boolean | Включение(**false**)/отключение(**true**) всплытия события нажатия для родителя `default:true` |
 
 ### Polyline
@@ -325,8 +192,8 @@ import {Yamap, Polyline} from 'react-native-yamap-plus';
 | dashOffset | number | Отступ первого штриха от начала полилинии |
 | gapLength | number | Длина разрыва между штрихами |
 | onPress | function | Действие при нажатии/клике |
-| zIndex | number | Отображение элемента по оси Z |
-| handled | boolean | Включение(**false**)/отключение(**true**) всплытия события нажатия для родителя `default:true` |
+| zI | number | zIndex для объекта на карте |
+| handled | boolean | Включение(**false**)/отключение(**true**) всплытия события нажатия для родителя `default:false` |
 
 ### Polygon
 
@@ -354,50 +221,25 @@ import {Yamap, Polygon} from 'react-native-yamap-plus';
 | strokeWidth | number | Толщина границы |
 | innerRings | (Point[])[] | Массив полилиний, которые образуют отверстия в полигоне |
 | onPress | function | Действие при нажатии/клике |
-| zIndex | number | Отображение элемента по оси Z |
-| handled | boolean | Включение(**false**)/отключение(**true**) всплытия события нажатия для родителя `default:true` |
+| zI | number | zIndex для объекта на карте |
+| handled | boolean | Включение(**false**)/отключение(**true**) всплытия события нажатия для родителя `default:false` |
 
-## Запрос маршрутов
+## Запрос маршрутов (модуль Transport)
 
-Маршруты можно запросить используя метод `findRoutes` компонента `Yamap` (через ref).
+```typescript
+import {Transport} from 'react-native-yamap-plus';
 
-`findRoutes(points: Point[], vehicles: Vehicles[], callback: (event: RoutesFoundEvent) => void)` - запрос маршрутов через точки `points` с использованием транспорта `vehicles`. При получении маршрутов будет вызван `callback` с информацией обо всех маршрутах.
-
-Доступны следующие роутеры из Yandex MapKit:
-
--  **masstransit** - для маршрутов на общественном транспорте;
--  **pedestrian** - для пешеходных маршрутов;
--  **driving** - для маршрутов на автомобиле.
+const routes = await Transport.findRoutes(points, vehicles) // универсальный поиск маршрутов
+const masstransitRoutes = await findMasstransitRoutes(points) // маршрутов на общественном транспорте
+const pedestrianRoutes = await findPedestrianRoutes(points) // пешеходные маршруты
+const drivingRoutes = await findDrivingRoutes(points) // маршруты на автомобиле
+```
 
 Тип роутера зависит от переданного в функцию массива `vehicles`:
 
-- Если передан пустой массив (`this.map.current.findRoutes(points, [], () => null);`), то будет использован `PedestrianRouter`;
-- Если передан массив с одним элементом `'car'` (`this.map.current.findRoutes(points, ['car'], () => null);`), то будет использован `DrivingRouter`;
+- Если передан пустой массив (`findRoutes(points, [])`), то будет использован `PedestrianRouter`;
+- Если передан массив с одним элементом `'car'` (`findRoutes(points, ['car'])`), то будет использован `DrivingRouter`;
 - Во всех остальных случаях используется `MasstransitRouter`.
-
-Также можно использовать нужный роутер, вызвав соответствующую функцию
-
-```
-findMasstransitRoutes(points: Point[], callback: (event: RoutesFoundEvent) => void): void;
-findPedestrianRoutes(points: Point[], callback: (event: RoutesFoundEvent) => void): void;
-findDrivingRoutes(points: Point[], callback: (event: RoutesFoundEvent) => void): void;
-```
-
-#### Замечание
-
-В зависимости от типа роутера информация о маршутах может незначительно отличаться.
-
-```typescript
-interface Address {
-  country_code: string;
-  formatted: string;
-  postal_code: string;
-  Components: {
-    kind: string,
-    name: string
-  }[];
-}
-```
 
 ## Поиск по гео с подсказсками (GeoSuggestions)
 

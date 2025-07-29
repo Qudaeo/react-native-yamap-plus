@@ -1,6 +1,7 @@
-export * from './Circle';
-export * from './ClusteredYamap';
-export * from './Marker';
-export * from './Polygon';
-export * from './Polyline';
-export * from './Yamap';
+export {Circle} from './Circle';
+export {ClusteredYamap} from './ClusteredYamap/ClusteredYamap';
+export {Marker, MarkerRef} from './Marker';
+export {Polygon} from './Polygon';
+export {Polyline} from './Polyline';
+export {Yamap} from './Yamap/Yamap';
+export {YamapRef} from './Yamap/types';

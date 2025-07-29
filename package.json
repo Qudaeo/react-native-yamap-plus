@@ -1,37 +1,38 @@
 {
   "name": "react-native-yamap-plus",
-  "version": "4.18.0",
+  "version": "4.14.4",
   "description": "Yandex MapKit for React Native",
-  "main": "lib/commonjs/index",
-  "module": "lib/module/index",
-  "types": "lib/typescript/index.d.ts",
+  "source": "src/index.ts",
+  "main": "src/index.ts",
   "scripts": {
     "example": "yarn workspace react-native-yamap-example",
-    "prepare": "bob build",
+    "prepare": "del-cli android/build example/android/build example/android/app/build example/ios/build lib",
+    "build": "tsc",
     "release": "release-it"
   },
   "homepage": "https://github.com/qudaeo/react-native-yamap-plus",
   "keywords": [
     "react-native",
-    "mapkit",
+    "component",
     "yandex",
-    "yamap",
-    "polygon",
-    "polyline",
-    "marker",
+    "mapkit",
+    "sdk",
     "map",
     "maps",
-    "react-native-maps",
-    "yandexmap",
-    "yandexmaps",
-    "geocoder"
+    "mapview",
+    "yamap",
+    "geo",
+    "geocoder",
+    "geosearch",
+    "яндекс",
+    "карты"
   ],
-  "author": "Nikita Sirotkin",
+  "author": "Aleksey Pekhterev",
   "license": "MIT",
   "devDependencies": {
     "@types/react": "*",
     "@types/react-native": "*",
-    "react-native-builder-bob": "0.40.12",
+    "del-cli": "6.0.0",
     "release-it": "19.0.3",
     "typescript": "5.8.3"
   },
@@ -39,49 +40,40 @@
     "react": "*",
     "react-native": "*"
   },
-  "react-native": "src/index.ts",
-  "source": "src/index.ts",
   "files": [
     "src",
-    "lib",
     "android",
     "ios",
     "*.podspec",
     "tsconfig.json",
     "!ios/build",
     "!android/build",
-    "!android/gradle",
-    "!android/gradlew",
-    "!android/gradlew.bat",
     "!android/local.properties",
-    "!ios/RNYamap.xcodeproj/project.xcworkspace",
-    "!ios/RNYamap.xcodeproj/xcuserdata",
     "!**/__tests__",
     "!**/__fixtures__",
     "!**/__mocks__",
     "!**/.*"
   ],
-  "react-native-builder-bob": {
-    "source": "src",
-    "output": "lib",
-    "targets": [
-      "commonjs",
-      "module",
-      [
-        "typescript",
-        {
-          "project": "tsconfig.json",
-          "tsc": "./node_modules/.bin/tsc"
-        }
-      ]
-    ]
-  },
-  "eslintIgnore": [
-    "node_modules/",
-    "lib/"
-  ],
   "workspaces": [
     "example"
   ],
+  "codegenConfig": {
+    "name": "RNYamapPlusSpec",
+    "type": "all",
+    "jsSrcsDir": "./src/spec",
+    "android": {
+      "javaPackageName": "ru.yamap"
+    },
+    "ios": {
+      "componentProvider": {
+        "ClusteredYamapView": "ClusteredYamapView",
+        "CircleView": "CircleView",
+        "MarkerView": "MarkerView",
+        "PolygonView": "PolygonView",
+        "PolylineView": "PolylineView",
+        "YamapView": "YamapView"
+      }
+    }
+  },
   "packageManager": "yarn@4.9.2"
 }

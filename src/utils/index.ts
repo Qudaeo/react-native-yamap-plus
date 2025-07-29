@@ -1,5 +1,4 @@
-export * from './CallbacksManager';
-export * from './getImageUri';
-export * from './getProcessedColors';
-export * from './guid';
-export * from './types';
+export {CallbacksManager} from './CallbacksManager';
+export {guid} from './guid';
+export {getImageUri, processColorsToNative} from './props';
+export {OmitEx} from './types';

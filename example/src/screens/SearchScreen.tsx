@@ -1,13 +1,12 @@
 import React, {useEffect, useState} from 'react';
 import {StyleSheet, Text, TextInput, View} from 'react-native';
-import {Address, Point} from '../../../';
+import {Address, Point, Search} from '../../../';
 import {useDebounceFunc} from '../helper/debounce';
-import {Search} from '../../../';
 
 export const SearchScreen = () => {
   const [text, setText] = useState('Moscow');
   const [point, setPoint] = useState<Point | {}>({});
-  const [address, setAddress] = useState<Address>();
+  const [address, setAddress] = useState<Address | {}>();
 
   const search = useDebounceFunc(async (searchText: string) => {
     try {
@@ -18,6 +17,12 @@ export const SearchScreen = () => {
         if (point1.lat) {
           const address1 = await Search.geocodePoint(point1);
           setAddress(address1);
+
+          // await Search.searchPoint(point1, 10, {searchTypes: [SearchType.GEO]})
+          //   .then(res => console.log('Search.searchPoint', res));
+
+          // await Search.searchText(searchText, {type: GeoFigureType.POINT, value: {lon: 50, lat: 50}}, {searchTypes: [SearchType.GEO]})
+          //   .then(res => console.log('Search.searchText', res));
         }
       }
     } catch (e) {
@@ -27,6 +32,7 @@ export const SearchScreen = () => {
 
   useEffect( () => {
     setPoint({});
+    setAddress({});
     search(text);
     /* eslint-disable-next-line react-hooks/exhaustive-deps */
   }, [text]);

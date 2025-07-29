@@ -19,7 +19,7 @@ export const SelectOption: FC<Props> = ({selectedScreen, setSelectedScreen}) => 
       >
         {screens.map(screen =>
           <OptionBubble
-            key={screen}
+            key={screen + (selectedScreen === screen ? 'selected' : '')}
             option={screen}
             selectOption={() => {
               setSelectedScreen(screen)
