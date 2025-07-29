@@ -237,6 +237,9 @@ using namespace facebook::react;
         NSNumber *duration = args[0][0][@"duration"];
         NSNumber *animation = args[0][0][@"animation"];
         [self fitAllMarkers:[duration floatValue] animation:[animation intValue]];
+    } else if ([commandName isEqual:@"setTrafficVisible"]) {
+        BOOL isVisible = [args[0][0][@"isVisible"] boolValue];
+        [self setTrafficVisible:isVisible];
     }
 }
 
@@ -312,14 +315,14 @@ using namespace facebook::react;
     initializedRegion = YES;
 }
 
-- (void)setTrafficVisible:(BOOL)traffic {
+- (void)setTrafficVisible:(BOOL)isVisible {
     YMKMapKit *inst = [YMKMapKit sharedInstance];
 
     if (trafficLayer == nil) {
         trafficLayer = [inst createTrafficLayerWithMapWindow:mapView.mapWindow];
     }
 
-    if (traffic) {
+    if (isVisible) {
         [trafficLayer setTrafficVisibleWithOn:YES];
         [trafficLayer addTrafficListenerWithTrafficListener:self];
     } else {
