@@ -344,6 +344,24 @@ using namespace facebook::react;
     }
 }
 
+- (void)setTrafficVisible:(BOOL)isVisible {
+    YMKMapKit *inst = [YMKMapKit sharedInstance];
+
+    if (trafficLayer == nil) {
+        trafficLayer = [inst createTrafficLayerWithMapWindow:mapView.mapWindow];
+    }
+
+    if (isVisible) {
+        [trafficLayer setTrafficVisibleWithOn:YES];
+        [trafficLayer addTrafficListenerWithTrafficListener:self];
+    } else {
+        [trafficLayer setTrafficVisibleWithOn:NO];
+        [trafficLayer removeTrafficListenerWithTrafficListener:self];
+    }
+}
+
+#ifndef RCT_NEW_ARCH_ENABLED
+
 - (void)setInitialRegion:(NSDictionary *)initialParams {
     if (initializedRegion) return;
     if ([initialParams valueForKey:@"lat"] == nil || [initialParams valueForKey:@"lon"] == nil) return;
@@ -362,22 +380,6 @@ using namespace facebook::react;
     YMKCameraPosition *initialRegionPosition = [YMKCameraPosition cameraPositionWithTarget:initialRegionCenter zoom:initialZoom azimuth:initialAzimuth tilt:initialTilt];
     [mapView.mapWindow.map moveWithCameraPosition:initialRegionPosition];
     initializedRegion = YES;
-}
-
-- (void)setTrafficVisible:(BOOL)isVisible {
-    YMKMapKit *inst = [YMKMapKit sharedInstance];
-
-    if (trafficLayer == nil) {
-        trafficLayer = [inst createTrafficLayerWithMapWindow:mapView.mapWindow];
-    }
-
-    if (isVisible) {
-        [trafficLayer setTrafficVisibleWithOn:YES];
-        [trafficLayer addTrafficListenerWithTrafficListener:self];
-    } else {
-        [trafficLayer setTrafficVisibleWithOn:NO];
-        [trafficLayer removeTrafficListenerWithTrafficListener:self];
-    }
 }
 
 - (NSDictionary *)cameraPositionToJSON:(YMKCameraPosition *)position reason:(YMKCameraUpdateReason)reason finished:(BOOL)finished {
@@ -435,16 +437,9 @@ using namespace facebook::react;
     NSMutableDictionary *response = [NSMutableDictionary dictionaryWithDictionary:cameraPosition];
     [response setValue:_id forKey:@"id"];
 
-#ifdef RCT_NEW_ARCH_ENABLED
-
-#else
-
     if (self.onCameraPositionReceived) {
         self.onCameraPositionReceived(response);
     }
-
-#endif
-
 }
 
 - (void)emitVisibleRegionToJS:(NSString *)_id {
@@ -453,16 +448,9 @@ using namespace facebook::react;
     NSMutableDictionary *response = [NSMutableDictionary dictionaryWithDictionary:visibleRegion];
     [response setValue:_id forKey:@"id"];
 
-#ifdef RCT_NEW_ARCH_ENABLED
-
-#else
-
     if (self.onVisibleRegionReceived) {
         self.onVisibleRegionReceived(response);
     }
-
-#endif
-
 }
 
 - (void)emitWorldToScreenPoint:(NSArray<YMKPoint *> *)worldPoints withId:(NSString *)_id {
@@ -477,16 +465,9 @@ using namespace facebook::react;
     [response setValue:_id forKey:@"id"];
     [response setValue:screenPoints forKey:@"screenPoints"];
 
-#ifdef RCT_NEW_ARCH_ENABLED
-
-#else
-
     if (self.onWorldToScreenPointsReceived) {
         self.onWorldToScreenPointsReceived(response);
     }
-
-#endif
-
 }
 
 - (void)emitScreenToWorldPoint:(NSArray<YMKScreenPoint *> *)screenPoints withId:(NSString *)_id {
@@ -501,17 +482,12 @@ using namespace facebook::react;
     [response setValue:_id forKey:@"id"];
     [response setValue:worldPoints forKey:@"worldPoints"];
 
-#ifdef RCT_NEW_ARCH_ENABLED
-
-#else
-
     if (self.onScreenToWorldPointsReceived) {
         self.onScreenToWorldPointsReceived(response);
     }
+}
 
 #endif
-
-}
 
 - (void)onCameraPositionChangedWithMap:(nonnull YMKMap*)map
                         cameraPosition:(nonnull YMKCameraPosition*)cameraPosition
