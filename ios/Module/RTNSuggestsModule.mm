@@ -1,9 +1,14 @@
 #import "RTNSuggestsModule.h"
+
+#ifdef USE_YANDEX_MAPS_FULL
+
 #import "../Util/RCTConvert+Yamap.mm"
 
 #import <YandexMapsMobile/YMKSearch.h>
 #import <YandexMapsMobile/YMKSearchSuggestSession.h>
 #import <YandexMapsMobile/YMKSuggestResponse.h>
+
+#endif
 
 @implementation RTNSuggestsModule
 
@@ -12,6 +17,8 @@ NSString *ERR_SUGGEST_FAILED = @"ERR_SUGGEST_FAILED";
 - (dispatch_queue_t)methodQueue {
     return dispatch_get_main_queue();
 }
+
+#ifdef USE_YANDEX_MAPS_FULL
 
 - (instancetype) init {
     YMKPoint *southWestPoint = [YMKPoint pointWithLatitude:-90.0 longitude:-180.0];
@@ -87,6 +94,8 @@ NSString *ERR_SUGGEST_FAILED = @"ERR_SUGGEST_FAILED";
     resolve(@[]);
 }
 
+#endif
+
 #ifdef RCT_NEW_ARCH_ENABLED
 
 // New architecture
@@ -96,10 +105,23 @@ NSString *ERR_SUGGEST_FAILED = @"ERR_SUGGEST_FAILED";
 }
 
 - (void)suggest:(nonnull NSString *)query resolve:(nonnull RCTPromiseResolveBlock)resolve reject:(nonnull RCTPromiseRejectBlock)reject {
+
+#ifdef USE_YANDEX_MAPS_FULL
+
     [self suggestImpl:query options:_defaultSuggestOptions boundingBox:_defaultBoundingBox resolver:resolve rejecter:reject];
+
+#else
+
+    reject(@"SUGGESTS_FAILED", @"SUGGESTS module is not available in Lite version", nil);
+
+#endif
+
 }
 
 - (void)suggestWithOptions:(nonnull NSString *)query options:(JS::NativeSuggestsModule::SuggestOptions &)options resolve:(nonnull RCTPromiseResolveBlock)resolve reject:(nonnull RCTPromiseRejectBlock)reject {
+
+#ifdef USE_YANDEX_MAPS_FULL
+
     YMKSuggestOptions *suggestOptions = [[YMKSuggestOptions alloc] init];
 
     std::optional<bool> suggestWords = options.suggestWords();
@@ -132,10 +154,27 @@ NSString *ERR_SUGGEST_FAILED = @"ERR_SUGGEST_FAILED";
     }
 
     [self suggestImpl:query options:suggestOptions boundingBox:boundingBox resolver:resolve rejecter:reject];
+
+#else
+
+    reject(@"SUGGESTS_FAILED", @"SUGGESTS module is not available in Lite version", nil);
+
+#endif
+
 }
 
 - (void)reset:(nonnull RCTPromiseResolveBlock)resolve reject:(nonnull RCTPromiseRejectBlock)reject {
+
+#ifdef USE_YANDEX_MAPS_FULL
+
     [self resetImpl:resolve];
+
+#else
+
+    reject(@"SUGGESTS_FAILED", @"SUGGESTS module is not available in Lite version", nil);
+
+#endif
+
 }
 
 #else
@@ -143,10 +182,23 @@ NSString *ERR_SUGGEST_FAILED = @"ERR_SUGGEST_FAILED";
 // Old architecture
 
 RCT_EXPORT_METHOD(suggest:(nonnull NSString*) query resolver:(RCTPromiseResolveBlock) resolve rejecter:(RCTPromiseRejectBlock) reject) {
+
+#ifdef USE_YANDEX_MAPS_FULL
+
     [self suggestImpl:query options:_defaultSuggestOptions boundingBox:_defaultBoundingBox resolver:resolve rejecter:reject];
+
+#else
+
+    reject(@"SUGGESTS_FAILED", @"SUGGESTS module is not available in Lite version", nil);
+
+#endif
+
 }
 
 RCT_EXPORT_METHOD(suggestWithOptions:(nonnull NSString*) query options:(NSDictionary *) options resolver:(RCTPromiseResolveBlock) resolve rejecter:(RCTPromiseRejectBlock) reject) {
+
+#ifdef USE_YANDEX_MAPS_FULL
+
     YMKSuggestOptions *suggestOptions = [[YMKSuggestOptions alloc] init];
 
     id suggestWords = [options valueForKey:@"suggestWords"];
@@ -176,10 +228,27 @@ RCT_EXPORT_METHOD(suggestWithOptions:(nonnull NSString*) query options:(NSDictio
     }
 
     [self suggestImpl:query options:suggestOptions boundingBox:boundingBox resolver:resolve rejecter:reject];
+
+#else
+
+    reject(@"SUGGESTS_FAILED", @"SUGGESTS module is not available in Lite version", nil);
+
+#endif
+
 }
 
 RCT_EXPORT_METHOD(reset: (RCTPromiseResolveBlock) resolve rejecter:(RCTPromiseRejectBlock) reject) {
+
+#ifdef USE_YANDEX_MAPS_FULL
+
     [self resetImpl:resolve];
+
+#else
+
+    reject(@"SUGGESTS_FAILED", @"SUGGESTS module is not available in Lite version", nil);
+
+#endif
+
 }
 
 #endif

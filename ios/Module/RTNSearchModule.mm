@@ -1,10 +1,15 @@
 #import "RTNSearchModule.h"
+
+#ifdef USE_YANDEX_MAPS_FULL
+
 #import "../Util/RCTConvert+Yamap.mm"
 
 #import <YandexMapsMobile/YMKSearch.h>
 #import <YandexMapsMobile/YMKSearchResponse.h>
 #import <YandexMapsMobile/YMKSearchToponymObjectMetadata.h>
 #import <YandexMapsMobile/YMKUriObjectMetadata.h>
+
+#endif
 
 @implementation RTNSearchModule
 
@@ -14,6 +19,8 @@ NSString *ERR_SEARCH_FAILED = @"ERR_SEARCH_FAILED";
 - (dispatch_queue_t)methodQueue {
     return dispatch_get_main_queue();
 }
+
+#ifdef USE_YANDEX_MAPS_FULL
 
 - (instancetype)init
 {
@@ -206,9 +213,15 @@ NSString *ERR_SEARCH_FAILED = @"ERR_SEARCH_FAILED";
     }];
 }
 
+#else
+
+#endif
+
 #ifdef RCT_NEW_ARCH_ENABLED
 
 // New architecture
+
+#ifdef USE_YANDEX_MAPS_FULL
 
 - (YMKSearchOptions *) searchOptionsWithStruct:(JS::NativeSearchModule::SearchOptions &) options {
     YMKSearchOptions *searchOptions = [[YMKSearchOptions alloc] init];
@@ -242,43 +255,108 @@ NSString *ERR_SEARCH_FAILED = @"ERR_SEARCH_FAILED";
     return searchOptions;
 }
 
+#endif
+
 - (std::shared_ptr<facebook::react::TurboModule>)getTurboModule:(const facebook::react::ObjCTurboModule::InitParams &)params {
     return std::make_shared<facebook::react::NativeSearchModuleSpecJSI>(params);
 }
 
 - (void)searchByAddress:(nonnull NSString *)query figure:(nonnull NSDictionary *)figure options:(JS::NativeSearchModule::SearchOptions &)options resolve:(nonnull RCTPromiseResolveBlock)resolve reject:(nonnull RCTPromiseRejectBlock)reject {
+
+#ifdef USE_YANDEX_MAPS_FULL
+
     YMKSearchOptions *searchOptions = [self searchOptionsWithStruct: options];
     [self searchByAddressImpl:query figure:figure searchOptions:searchOptions resolver:resolve rejecter:reject];
+
+#else
+
+    reject(@"SEARCH_FAILED", @"SEARCH module is not available in Lite version", nil);
+
+#endif
+
 }
 
 - (void)searchByPoint:(JS::NativeSearchModule::Point &)point zoom:(nonnull NSNumber *)zoom options:(JS::NativeSearchModule::SearchOptions &)options resolve:(nonnull RCTPromiseResolveBlock)resolve reject:(nonnull RCTPromiseRejectBlock)reject {
+
+#ifdef USE_YANDEX_MAPS_FULL
+
     YMKPoint *searchPoint = [YMKPoint pointWithLatitude:point.lat() longitude:point.lon()];
     YMKSearchOptions *searchOptions = [self searchOptionsWithStruct: options];
     [self searchByPointImpl:searchPoint zoom:zoom searchOptions:searchOptions resolver:resolve rejecter:reject];
+
+#else
+
+    reject(@"SEARCH_FAILED", @"SEARCH module is not available in Lite version", nil);
+
+#endif
+
 }
 
 - (void)addressToGeo:(nonnull NSString *)address resolve:(nonnull RCTPromiseResolveBlock)resolve reject:(nonnull RCTPromiseRejectBlock)reject {
+
+#ifdef USE_YANDEX_MAPS_FULL
+
     [self addressToGeoImpl:address resolve:resolve reject:reject];
+
+#else
+
+    reject(@"SEARCH_FAILED", @"SEARCH module is not available in Lite version", nil);
+
+#endif
+
 }
 
 - (void)geoToAddress:(JS::NativeSearchModule::Point &)point resolve:(nonnull RCTPromiseResolveBlock)resolve reject:(nonnull RCTPromiseRejectBlock)reject {
+
+#ifdef USE_YANDEX_MAPS_FULL
+
     YMKPoint *searchPoint = [YMKPoint pointWithLatitude:point.lat() longitude:point.lon()];
     [self geoToAddressImpl:searchPoint resolve:resolve reject:reject];
+
+#else
+
+    reject(@"SEARCH_FAILED", @"SEARCH module is not available in Lite version", nil);
+
+#endif
+
 }
 
 - (void)searchByURI:(nonnull NSString *)query options:(JS::NativeSearchModule::SearchOptions &)options resolve:(nonnull RCTPromiseResolveBlock)resolve reject:(nonnull RCTPromiseRejectBlock)reject {
+
+#ifdef USE_YANDEX_MAPS_FULL
+
     YMKSearchOptions *searchOptions = [self searchOptionsWithStruct: options];
     [self searchByURIImpl:query searchOptions:searchOptions resolve:resolve reject:reject];
+
+#else
+
+    reject(@"SEARCH_FAILED", @"SEARCH module is not available in Lite version", nil);
+
+#endif
+
 }
 
 - (void)resolveURI:(nonnull NSString *)query options:(JS::NativeSearchModule::SearchOptions &)options resolve:(nonnull RCTPromiseResolveBlock)resolve reject:(nonnull RCTPromiseRejectBlock)reject {
+
+#ifdef USE_YANDEX_MAPS_FULL
+
     YMKSearchOptions *searchOptions = [self searchOptionsWithStruct: options];
     [self resolveURIImpl:query searchOptions:searchOptions resolve:resolve reject:reject];
+
+#else
+
+    reject(@"SEARCH_FAILED", @"SEARCH module is not available in Lite version", nil);
+
+#endif
+
 }
 
 #else
 
 // Old architecture
+
+
+#ifdef USE_YANDEX_MAPS_FULL
 
 - (YMKSearchOptions *) searchOptionsWithDictionary:(NSDictionary *) options {
     YMKSearchOptions *searchOptions = [[YMKSearchOptions alloc] init];
@@ -306,34 +384,96 @@ NSString *ERR_SEARCH_FAILED = @"ERR_SEARCH_FAILED";
     return searchOptions;
 }
 
+#endif
+
 RCT_EXPORT_METHOD(searchByAddress:(nonnull NSString*) query figure:(NSDictionary*)figure options:(NSDictionary*) options resolver:(RCTPromiseResolveBlock) resolve rejecter:(RCTPromiseRejectBlock) reject) {
+
+#ifdef USE_YANDEX_MAPS_FULL
+
     YMKSearchOptions *searchOptions = [self searchOptionsWithDictionary: options];
     [self searchByAddressImpl:query figure:figure searchOptions:searchOptions resolver:resolve rejecter:reject];
+
+#else
+
+    reject(@"SEARCH_FAILED", @"SEARCH module is not available in Lite version", nil);
+
+#endif
+
 }
 
 RCT_EXPORT_METHOD(searchByPoint:(nonnull NSDictionary*) point zoom:(nonnull NSNumber*) zoom options:(NSDictionary*) options resolver:(RCTPromiseResolveBlock) resolve rejecter:(RCTPromiseRejectBlock) reject) {
+
+#ifdef USE_YANDEX_MAPS_FULL
+
     YMKPoint *searchPoint = [RCTConvert YMKPoint:point];
     YMKSearchOptions *searchOptions = [self searchOptionsWithDictionary: options];
     [self searchByPointImpl:searchPoint zoom:zoom searchOptions:searchOptions resolver:resolve rejecter:reject];
+
+#else
+
+    reject(@"SEARCH_FAILED", @"SEARCH module is not available in Lite version", nil);
+
+#endif
+
 }
 
 RCT_EXPORT_METHOD(addressToGeo:(nonnull NSString*) address resolver:(RCTPromiseResolveBlock) resolve rejecter:(RCTPromiseRejectBlock) reject) {
+
+#ifdef USE_YANDEX_MAPS_FULL
+
     [self addressToGeoImpl:address resolve:resolve reject:reject];
+
+#else
+
+    reject(@"SEARCH_FAILED", @"SEARCH module is not available in Lite version", nil);
+
+#endif
+
 }
 
 RCT_EXPORT_METHOD(geoToAddress:(nonnull NSDictionary*) point resolver:(RCTPromiseResolveBlock) resolve rejecter:(RCTPromiseRejectBlock) reject) {
+
+#ifdef USE_YANDEX_MAPS_FULL
+
     YMKPoint *searchPoint = [RCTConvert YMKPoint:point];
     [self geoToAddressImpl:searchPoint resolve:resolve reject:reject];
+
+#else
+
+    reject(@"SEARCH_FAILED", @"SEARCH module is not available in Lite version", nil);
+
+#endif
+
 }
 
 RCT_EXPORT_METHOD(searchByURI:(nonnull NSString*) query options:(NSDictionary*) options resolver:(RCTPromiseResolveBlock) resolve rejecter:(RCTPromiseRejectBlock) reject) {
+
+#ifdef USE_YANDEX_MAPS_FULL
+
     YMKSearchOptions *searchOptions = [self searchOptionsWithDictionary: options];
     [self searchByURIImpl:query searchOptions:searchOptions resolve:resolve reject:reject];
+
+#else
+
+    reject(@"SEARCH_FAILED", @"SEARCH module is not available in Lite version", nil);
+
+#endif
+
 }
 
 RCT_EXPORT_METHOD(resolveURI:(nonnull NSString*) query options:(NSDictionary*) options resolver:(RCTPromiseResolveBlock) resolve rejecter:(RCTPromiseRejectBlock) reject) {
+
+#ifdef USE_YANDEX_MAPS_FULL
+
     YMKSearchOptions *searchOptions = [self searchOptionsWithDictionary: options];
     [self resolveURIImpl:query searchOptions:searchOptions resolve:resolve reject:reject];
+    
+#else
+
+    reject(@"SEARCH_FAILED", @"SEARCH module is not available in Lite version", nil);
+
+#endif
+
 }
 
 #endif

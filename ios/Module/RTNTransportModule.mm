@@ -1,5 +1,7 @@
 #import "RTNTransportModule.h"
 
+#ifdef USE_YANDEX_MAPS_FULL
+
 #import "ColorUtil.h"
 #import "../Util/RCTConvert+Yamap.mm"
 
@@ -13,7 +15,11 @@
 
 #define UIColorFromRGB(rgbValue) [UIColor colorWithRed:((float)((rgbValue & 0xFF0000) >> 16))/255.0 green:((float)((rgbValue & 0xFF00) >> 8))/255.0 blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]
 
+#endif
+
 @implementation RTNTransportModule
+
+#ifdef USE_YANDEX_MAPS_FULL
 
 YMKMasstransitSession *masstransitSession;
 YMKMasstransitSession *walkSession;
@@ -50,7 +56,7 @@ NSMutableDictionary *vehicleColors;
     
     NSArray<YMKPoint *> *_points = [RCTConvert YMKPointArray:points];
     NSMutableArray<YMKRequestPoint *> *requestPoints = [[NSMutableArray alloc] init];
-
+    
     for (int i = 0; i < [_points count]; ++i) {
         YMKRequestPoint *requestPoint = [YMKRequestPoint requestPointWithPoint:[_points objectAtIndex:i] type:YMKRequestPointTypeWaypoint pointContext:nil drivingArrivalPointId:nil indoorLevelId:nil];
         [requestPoints addObject:requestPoint];
@@ -59,18 +65,18 @@ NSMutableDictionary *vehicleColors;
     if ([vehicles count] == 1 && [[vehicles objectAtIndex:0] isEqualToString:@"car"]) {
         YMKDrivingOptions *drivingOptions = [[YMKDrivingOptions alloc] init];
         YMKDrivingVehicleOptions *vehicleOptions = [[YMKDrivingVehicleOptions alloc] init];
-
+        
         YMKDrivingRouter *drivingRouter = [[YMKDirectionsFactory instance] createDrivingRouterWithType: YMKDrivingRouterTypeCombined];
         drivingSession = [drivingRouter requestRoutesWithPoints:requestPoints drivingOptions:drivingOptions vehicleOptions:vehicleOptions routeHandler:^(NSArray<YMKDrivingRoute *> *routes, NSError *error) {
             if (error != nil) {
                 reject(@"drivingRouter requestRoutesWithPoints error", error.userInfo.description, error);
                 return;
             }
-
+            
             NSMutableDictionary* response = [[NSMutableDictionary alloc] init];
             [response setValue:@"status" forKey:@"success"];
             NSMutableArray* jsonRoutes = [[NSMutableArray alloc] init];
-
+            
             for (int i = 0; i < [routes count]; ++i) {
                 YMKDrivingRoute *_route = [routes objectAtIndex:i];
                 NSMutableDictionary *jsonRoute = [[NSMutableDictionary alloc] init];
@@ -84,13 +90,13 @@ NSMutableDictionary *vehicleColors;
                 [jsonRoute setValue:sections forKey:@"sections"];
                 [jsonRoutes addObject:jsonRoute];
             }
-
+            
             [response setValue:jsonRoutes forKey:@"routes"];
             resolve(response);
         }];
         return;
     }
-
+    
     YMKMasstransitSessionRouteHandler _routeHandler = ^(NSArray<YMKMasstransitRoute *> *routes, NSError *error) {
         if (error != nil) {
             reject(@"_routeHandler error", error.userInfo.description, error);
@@ -102,7 +108,7 @@ NSMutableDictionary *vehicleColors;
         for (int i = 0; i < [routes count]; ++i) {
             YMKMasstransitRoute *_route = [routes objectAtIndex:i];
             NSMutableDictionary *jsonRoute = [[NSMutableDictionary alloc] init];
-
+            
             [jsonRoute setValue:[NSString stringWithFormat:@"%d", i] forKey:@"id"];
             NSMutableArray *sections = [[NSMutableArray alloc] init];
             NSArray<YMKMasstransitSection *> *_sections = [_route sections];
@@ -117,13 +123,13 @@ NSMutableDictionary *vehicleColors;
         resolve(response);
         return;
     };
-
+    
     if ([vehicles count] == 0) {
         YMKPedestrianRouter *pedestrianRouter = [[YMKTransportFactory instance] createPedestrianRouter];
         walkSession = [pedestrianRouter requestRoutesWithPoints:points timeOptions:[[YMKTimeOptions alloc] init] routeOptions:_routeOptions routeHandler:_routeHandler];
         return;
     }
-
+    
     YMKTransitOptions *_transitOptions = [YMKTransitOptions transitOptionsWithAvoid:YMKFilterVehicleTypesNone timeOptions:[[YMKTimeOptions alloc] init]];
     YMKMasstransitRouter *masstransitRouter = [[YMKTransportFactory instance] createMasstransitRouter];
     masstransitSession = [masstransitRouter requestRoutesWithPoints:requestPoints transitOptions:_transitOptions routeOptions:_routeOptions routeHandler:_routeHandler];
@@ -149,23 +155,23 @@ NSMutableDictionary *vehicleColors;
     [routeMetadata setObject:@(routeIndex) forKey:@"routeIndex"];
     [routeMetadata setObject:stops forKey:@"stops"];
     [routeMetadata setObject:UIColor.darkGrayColor forKey:@"sectionColor"];
-
+    
     if (section.metadata.weight.distance.value == 0) {
         [routeMetadata setObject:@"waiting" forKey:@"type"];
     } else {
         [routeMetadata setObject:@"car" forKey:@"type"];
     }
-
+    
     NSMutableDictionary *wTransports = [[NSMutableDictionary alloc] init];
-
+    
     for (NSString *key in transports) {
         [wTransports setObject:[transports valueForKey:key] forKey:key];
     }
-
+    
     [routeMetadata setObject:wTransports forKey:@"transports"];
     NSMutableArray* points = [[NSMutableArray alloc] init];
     YMKPolyline* subpolyline = [YMKSubpolylineHelper subpolylineWithPolyline:route.geometry subpolyline:section.geometry];
-
+    
     for (int i = 0; i < [subpolyline.points count]; ++i) {
         YMKPoint* point = [subpolyline.points objectAtIndex:i];
         NSMutableDictionary* jsonPoint = [[NSMutableDictionary alloc] init];
@@ -174,7 +180,7 @@ NSMutableDictionary *vehicleColors;
         [points addObject:jsonPoint];
     }
     [routeMetadata setValue:points forKey:@"points"];
-
+    
     return routeMetadata;
 }
 
@@ -196,13 +202,13 @@ NSMutableDictionary *vehicleColors;
     [routeMetadata setObject:sectionWeightData forKey:@"sectionInfo"];
     [routeMetadata setObject:routeWeightData forKey:@"routeInfo"];
     [routeMetadata setObject:@(routeIndex) forKey:@"routeIndex"];
-
+    
     for (YMKMasstransitRouteStop *stop in section.stops) {
         [stops addObject:stop.metadata.stop.name];
     }
-
+    
     [routeMetadata setObject:stops forKey:@"stops"];
-
+    
     if (data.transports != nil) {
         for (YMKMasstransitTransport *transport in data.transports) {
             for (NSString *type in transport.line.vehicleTypes) {
@@ -240,17 +246,17 @@ NSMutableDictionary *vehicleColors;
             [routeMetadata setObject:@"walk" forKey:@"type"];
         }
     }
-
+    
     NSMutableDictionary *wTransports = [[NSMutableDictionary alloc] init];
-
+    
     for (NSString *key in transports) {
         [wTransports setObject:[transports valueForKey:key] forKey:key];
     }
-
+    
     [routeMetadata setObject:wTransports forKey:@"transports"];
     NSMutableArray *points = [[NSMutableArray alloc] init];
     YMKPolyline* subpolyline = [YMKSubpolylineHelper subpolylineWithPolyline:route.geometry subpolyline:section.geometry];
-
+    
     for (int i = 0; i < [subpolyline.points count]; ++i) {
         YMKPoint *point = [subpolyline.points objectAtIndex:i];
         NSMutableDictionary *jsonPoint = [[NSMutableDictionary alloc] init];
@@ -258,11 +264,19 @@ NSMutableDictionary *vehicleColors;
         [jsonPoint setValue:[NSNumber numberWithDouble:point.longitude] forKey:@"lon"];
         [points addObject:jsonPoint];
     }
-
+    
     [routeMetadata setValue:points forKey:@"points"];
-
+    
     return routeMetadata;
 }
+
+#else
+
+- (void)findRoutesImpl:(nonnull NSArray *)points vehicles:(nonnull NSArray *)vehicles resolve:(nonnull RCTPromiseResolveBlock)resolve reject:(nonnull RCTPromiseRejectBlock)reject {
+    reject(@"TRANSPORT_FAILED", @"TRANSPORT module is not available in Lite version", nil);
+}
+
+#endif
 
 #ifdef RCT_NEW_ARCH_ENABLED
 
