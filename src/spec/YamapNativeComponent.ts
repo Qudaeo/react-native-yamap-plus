@@ -11,7 +11,7 @@ import {
 import {NativeMethods, ViewProps} from 'react-native';
 import {Component} from 'react';
 
-interface InitialRegion {
+export interface InitialRegion {
   lat: Double;
   lon: Double;
   zoom?: Double;

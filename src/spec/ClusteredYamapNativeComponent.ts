@@ -11,7 +11,7 @@ import {NativeMethods, ViewProps} from 'react-native';
 import {Component} from 'react';
 import {YamapNativeCommands} from './commands/yamap';
 
-export interface MapLoaded {
+interface MapLoaded {
   renderObjectCount: Double;
   curZoomModelsLoaded: Double;
   curZoomPlacemarksLoaded: Double;
@@ -46,7 +46,7 @@ interface Point {
   lon: Double;
 }
 
-export interface CameraPosition {
+interface CameraPosition {
   id: string;
   point: {
     lat: Double;
@@ -59,7 +59,7 @@ export interface CameraPosition {
   zoom: Double;
 }
 
-export type VisibleRegion = {
+type VisibleRegion = {
   id: string;
   bottomLeft: {
     lat: Double;
@@ -79,7 +79,7 @@ export type VisibleRegion = {
   };
 }
 
-export type ScreenPointsResponse = {
+type ScreenPointsResponse = {
   id: string;
   screenPoints: {
     x: Double;
@@ -87,7 +87,7 @@ export type ScreenPointsResponse = {
   }[]
 }
 
-export type WorldPointsResponse = {
+type WorldPointsResponse = {
   id: string;
   worldPoints: {
     lat: Double;

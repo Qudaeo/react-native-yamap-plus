@@ -5,3 +5,5 @@ export {Polygon} from './Polygon';
 export {Polyline} from './Polyline';
 export {Yamap} from './Yamap/Yamap';
 export {YamapRef} from './Yamap/types';
+export {YandexClusterSizes} from '../spec/ClusteredYamapNativeComponent';
+export {InitialRegion} from '../spec/YamapNativeComponent';

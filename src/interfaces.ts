@@ -33,7 +33,7 @@ export const ALL_MASSTRANSIT_VEHICLES: Vehicles[] = [
   'ferry',
   'cable',
   'funicular',
-] as const;
+];
 
 export type CameraPositionCallback = (position: CameraPosition) => void
 
@@ -111,8 +111,3 @@ export interface RoutesFoundState {
     }[];
   }[];
 }
-
-export interface YandexClusterSizes {
-  width?: number;
-  height?: number;
-};
