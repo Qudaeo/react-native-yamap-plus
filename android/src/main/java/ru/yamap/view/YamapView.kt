@@ -450,10 +450,10 @@ open class YamapView(context: Context?) : MapView(context), UserLocationObjectLi
         if (show) {
             userLocationLayer!!.setObjectListener(this)
             userLocationLayer!!.isVisible = true
-            userLocationLayer!!.isHeadingEnabled = true
+            userLocationLayer!!.isHeadingModeActive = true
         } else {
             userLocationLayer!!.isVisible = false
-            userLocationLayer!!.isHeadingEnabled = false
+            userLocationLayer!!.isHeadingModeActive = false
             userLocationLayer!!.setObjectListener(null)
         }
     }

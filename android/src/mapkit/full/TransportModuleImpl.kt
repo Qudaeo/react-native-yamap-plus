@@ -21,6 +21,7 @@ import com.yandex.mapkit.geometry.SubpolylineHelper
 import com.yandex.mapkit.transport.TransportFactory
 import com.yandex.mapkit.transport.masstransit.FilterVehicleTypes
 import com.yandex.mapkit.transport.masstransit.Route
+import com.yandex.mapkit.transport.masstransit.RouteOptions
 import com.yandex.mapkit.transport.masstransit.Section
 import com.yandex.mapkit.transport.masstransit.Session
 import com.yandex.mapkit.transport.masstransit.TimeOptions
@@ -72,7 +73,7 @@ class TransportModuleImpl {
             val _points = ArrayList<RequestPoint>()
             for (i in points.indices) {
                 val point = points[i]
-                val _p = RequestPoint(point, RequestPointType.WAYPOINT, null, null)
+                val _p = RequestPoint(point, RequestPointType.WAYPOINT, null, null, null)
                 _points.add(_p)
             }
 
@@ -90,7 +91,7 @@ class TransportModuleImpl {
         val _points = ArrayList<RequestPoint>()
         for (i in points.indices) {
             val point = points[i]
-            _points.add(RequestPoint(point, RequestPointType.WAYPOINT, null, null))
+            _points.add(RequestPoint(point, RequestPointType.WAYPOINT, null, null, null))
         }
         val listener: Session.RouteListener = object : Session.RouteListener {
             override fun onMasstransitRoutes(routes: List<Route>) {
@@ -128,7 +129,7 @@ class TransportModuleImpl {
                 pedestrianRouter.requestRoutes(
                     _points,
                     TimeOptions(),
-                    true,
+                    RouteOptions(),
                     listener
                 )
             }
@@ -140,7 +141,7 @@ class TransportModuleImpl {
             masstransitRouter.requestRoutes(
                 _points,
                 transitOptions,
-                true,
+                RouteOptions(),
                 listener
             )
         }
