@@ -8,6 +8,7 @@ import com.facebook.react.uimanager.UIManagerHelper
 import com.facebook.react.uimanager.UIManagerHelper.getSurfaceId
 import com.yandex.mapkit.geometry.Point
 import com.yandex.mapkit.geometry.Polyline
+import com.yandex.mapkit.map.LineStyle
 import com.yandex.mapkit.map.MapObject
 import com.yandex.mapkit.map.MapObjectTapListener
 import com.yandex.mapkit.map.PolylineMapObject
@@ -86,15 +87,18 @@ class YamapPolyline(context: Context?) : ViewGroup(context), MapObjectTapListene
     private fun updatePolyline() {
         if (rnMapObject === null) return
 
+        val style = LineStyle()
+        style.strokeWidth = _strokeWidth
+        style.dashLength = _dashLength.toFloat()
+        style.gapLength = _gapLength.toFloat()
+        style.dashOffset = _dashOffset
+        style.outlineColor = _outlineColor
+        style.outlineWidth = _outlineWidth.toFloat()
+        (rnMapObject as PolylineMapObject).style = style
+
         (rnMapObject as PolylineMapObject).geometry = polyline
-        (rnMapObject as PolylineMapObject).strokeWidth = _strokeWidth
         (rnMapObject as PolylineMapObject).setStrokeColor(_strokeColor)
         (rnMapObject as PolylineMapObject).zIndex = _zIndex.toFloat()
-        (rnMapObject as PolylineMapObject).dashLength = _dashLength.toFloat()
-        (rnMapObject as PolylineMapObject).gapLength = _gapLength.toFloat()
-        (rnMapObject as PolylineMapObject).dashOffset = _dashOffset
-        (rnMapObject as PolylineMapObject).outlineColor = _outlineColor
-        (rnMapObject as PolylineMapObject).outlineWidth = _outlineWidth.toFloat()
     }
 
     fun setPolylineMapObject(obj: MapObject?) {
