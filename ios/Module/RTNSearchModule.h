@@ -1,4 +1,8 @@
+#ifdef USE_YANDEX_MAPS_FULL
+
 #import <YandexMapsMobile/YMKSearchManager.h>
+
+#endif
 
 #ifdef RCT_NEW_ARCH_ENABLED
 
@@ -12,8 +16,12 @@
 
 #endif
 
+#ifdef USE_YANDEX_MAPS_FULL
+
 @property YMKSearchManager *searchManager;
 @property YMKBoundingBox *defaultBoundingBox;
 @property YMKSearchSession *searchSession;
+
+#endif
 
 @end

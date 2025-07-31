@@ -16,6 +16,17 @@ def isNewArchitectureEnabled() {
   return rootProject.hasProperty("newArchEnabled") && rootProject.getProperty("newArchEnabled") == "true"
 }
 
+def kotlin_version = getExtOrDefault("kotlinVersion")
+def play_services_location_version = getExtOrDefault("playServicesLocationVersion")
+def use_yandex_maps_lite = getExtOrDefault("useYandexMapsLite")
+def maps_mobile_full_version = getExtOrDefault("mapsMobileFullVersion")
+def maps_mobile_lite_version = getExtOrDefault("mapsMobileLiteVersion")
+
+println "isNewArchitectureEnabled=" + isNewArchitectureEnabled()
+println "kotlin_version=" + kotlin_version
+println "play_services_location_version=" + play_services_location_version
+println "use_yandex_maps_lite=" + use_yandex_maps_lite
+
 apply plugin: "com.android.library"
 apply plugin: "kotlin-android"
 
@@ -53,6 +64,15 @@ android {
                 'src/oldarch'
         ]
       }
+      if (use_yandex_maps_lite == true) {
+        java.srcDirs += [
+                'src/mapkit/lite'
+        ]
+      } else {
+        java.srcDirs += [
+                'src/mapkit/full'
+        ]
+      }
     }
   }
 }
@@ -61,22 +81,19 @@ repositories {
   mavenCentral()
 }
 
-def kotlin_version = getExtOrDefault("kotlinVersion")
-def play_services_location_version = getExtOrDefault("playServicesLocationVersion")
-def maps_mobile_version = getExtOrDefault("mapsMobileVersion")
-
-println "isNewArchitectureEnabled=" + isNewArchitectureEnabled()
-println "kotlin_version=" + kotlin_version
-println "play_services_location_version=" + play_services_location_version
-println "maps_mobile_version=" + maps_mobile_version
-
 dependencies {
   //noinspection GradleDynamicVersion
   implementation "com.facebook.react:react-native:+"
   implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
   implementation "com.google.android.gms:play-services-location:$play_services_location_version"
-  implementation "com.yandex.android:maps.mobile:$maps_mobile_version"
+  if (use_yandex_maps_lite == true) {
+    println "maps_mobile_version=" + maps_mobile_lite_version
+    implementation "com.yandex.android:maps.mobile:$maps_mobile_lite_version"
+  } else {
+    println "maps_mobile_version=" + maps_mobile_full_version
+    implementation "com.yandex.android:maps.mobile:$maps_mobile_full_version"
+  }
 }
 
 if (isNewArchitectureEnabled()) {
