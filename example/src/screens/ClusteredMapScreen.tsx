@@ -2,7 +2,7 @@ import React, {useRef} from 'react';
 import {StyleSheet} from 'react-native';
 import {DirectEventHandler} from "react-native/Libraries/Types/CodegenTypes";
 import {ClusteredYamap, Marker, YamapRef} from '../../../';
-import {MapLoaded} from "../../../src/spec/ClusteredYamapNativeComponent";
+import {MapLoaded} from "../../../src/spec/YamapNativeComponent.ts";
 
 const markers = [
   {
