@@ -29,6 +29,8 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)animatedMoveTo:(YMKPoint*)point withDuration:(float)duration;
 - (void)animatedRotateTo:(float)angle withDuration:(float)duration;
 
+- (void)setAnchor:(NSValue*)anchor;
+
 #endif
 
 - (YMKPoint*)getPoint;

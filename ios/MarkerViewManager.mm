@@ -28,7 +28,19 @@ RCT_EXPORT_VIEW_PROPERTY(scale, NSNumber)
 RCT_EXPORT_VIEW_PROPERTY(rotated, NSNumber)
 RCT_EXPORT_VIEW_PROPERTY(visible, NSNumber)
 RCT_EXPORT_VIEW_PROPERTY(handled, BOOL)
-RCT_EXPORT_VIEW_PROPERTY(anchor, NSValue)
+RCT_CUSTOM_VIEW_PROPERTY(anchor, NSDictionary, MarkerView) {
+    CGPoint point;
+
+    if (json) {
+        CGFloat x = [[json valueForKey:@"x"] doubleValue];
+        CGFloat y = [[json valueForKey:@"y"] doubleValue];
+        point = CGPointMake(x, y);
+    } else {
+        point = CGPointMake(0.5, 0.5);
+    }
+
+    [view setAnchor: [NSValue valueWithCGPoint:point]];
+}
 RCT_EXPORT_VIEW_PROPERTY(zI, NSNumber)
 RCT_EXPORT_VIEW_PROPERTY(source, NSString)
 
