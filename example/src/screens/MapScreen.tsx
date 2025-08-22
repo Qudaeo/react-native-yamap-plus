@@ -1,7 +1,8 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Platform, StyleSheet} from 'react-native';
+import {StyleSheet} from 'react-native';
 import {Circle, Marker, MarkerRef, Polyline, Yamap, YamapRef} from '../../../';
 import {Polygon} from '../../../src';
+import MarkerIcon from '../assets/images/marker.svg';
 
 export const MapScreen = () => {
   const [mapLoaded, setMapLoaded] = useState(false);
@@ -75,14 +76,14 @@ export const MapScreen = () => {
         ref={markerRef}
         point={{lat: 55.751244, lon: 37.618423}}
         source={require('../assets/images/marker.png')}
-        scale={0.25}
-        visible={Platform.OS === 'android' ? mapLoaded : true}
         rotated={true}
         onPress={() => {
            console.log('marker onPress');
         }}
         anchor={{x: 0.5, y: 1}}
-      />
+      >
+        <MarkerIcon width={100} height={100} />
+      </Marker>
       <Circle
         center={{lat: 55.74, lon: 37.64}}
         radius={500}
