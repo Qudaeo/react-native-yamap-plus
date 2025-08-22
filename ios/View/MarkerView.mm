@@ -39,7 +39,7 @@ using namespace facebook::react;
     NSNumber *visible;
     BOOL handled;
     NSMutableArray<UIView*> *_reactSubviews;
-    UIView* _childView;
+    YRTViewProvider *_markerViewProvider;
 }
 
 - (instancetype)init {
@@ -216,7 +216,12 @@ using namespace facebook::react;
                 }];
             }
         }
-        [mapObject setIconStyleWithStyle:iconStyle];
+
+        if (_markerViewProvider == nil) {
+            [mapObject setIconStyleWithStyle:iconStyle];
+        } else {
+            [mapObject setViewWithView:_markerViewProvider style:iconStyle];
+        }
     }
 }
 
@@ -272,21 +277,29 @@ using namespace facebook::react;
 
 - (void)setChildView {
     if ([_reactSubviews count] > 0) {
-        _childView = [_reactSubviews objectAtIndex:0];
+        UIView *_childView = [_reactSubviews objectAtIndex:0];
         if (_childView != nil) {
             [_childView setOpaque:false];
-            YRTViewProvider* v = [[YRTViewProvider alloc] initWithUIView:_childView];
-            if (v != nil) {
-                if (mapObject.isValid) {
-                    [mapObject setViewWithView:v];
-                    [self updateMarker];
-                }
-            }
+            _markerViewProvider = [[YRTViewProvider alloc] initWithUIView:_childView];
+            [self updateMarker];
         }
     } else {
-        _childView = nil;
+        _markerViewProvider = nil;
     }
 }
+
+#ifdef RCT_NEW_ARCH_ENABLED
+
+- (void)mountChildComponentView:(UIView<RCTComponentViewProtocol> *)childComponentView index:(NSInteger)index {
+    [_reactSubviews insertObject:childComponentView atIndex:index];
+    [self setChildView];
+}
+
+- (void)unmountChildComponentView:(UIView<RCTComponentViewProtocol> *)childComponentView index:(NSInteger)index {
+    [childComponentView removeFromSuperview];
+}
+
+#else
 
 - (void)didUpdateReactSubviews {
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -303,6 +316,8 @@ using namespace facebook::react;
     [_reactSubviews removeObject:subview];
     [super removeReactSubview: subview];
 }
+
+#endif
 
 - (void)moveAnimationLoop:(NSInteger)frame withTotalFrames:(NSInteger)totalFrames withDeltaLat:(double)deltaLat withDeltaLon:(double)deltaLon {
     @try  {
