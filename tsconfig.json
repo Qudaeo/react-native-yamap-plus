@@ -15,5 +15,6 @@
     "sourceMap": true,
     "skipLibCheck": true
   },
-  "exclude": ["example", "lib"]
+  "exclude": ["example", "lib", "**/node_modules", "**/Pods"],
+  "include": ["**/*.ts", "**/*.tsx"]
 }
