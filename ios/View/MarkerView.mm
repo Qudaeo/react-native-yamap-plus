@@ -127,14 +127,15 @@ using namespace facebook::react;
 
 - (void)prepareForRecycle
 {
-  [super prepareForRecycle];
-  zIndex = 1;
-  scale = [NSNumber numberWithInt:1];
-  rotationType = [NSNumber numberWithInt:0];
-  visible = [NSNumber numberWithInt:1];
-  handled = NO;
-  source = nil;
-  lastSource = nil;
+    [super prepareForRecycle];
+    zIndex = 1;
+    scale = [NSNumber numberWithInt:1];
+    rotationType = [NSNumber numberWithInt:0];
+    visible = [NSNumber numberWithInt:1];
+    handled = NO;
+    source = nil;
+    lastSource = nil;
+    _reactSubviews = [[NSMutableArray alloc] init];
 }
 
 #else
