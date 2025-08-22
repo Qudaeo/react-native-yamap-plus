@@ -75,7 +75,6 @@ export const MapScreen = () => {
       <Marker
         ref={markerRef}
         point={{lat: 55.751244, lon: 37.618423}}
-        source={require('../assets/images/marker.png')}
         rotated={true}
         onPress={() => {
            console.log('marker onPress');
