@@ -57,12 +57,10 @@ class MarkerViewManager : ViewGroupManager<MarkerView>(), MarkerViewManagerInter
 
     override fun addView(parent: MarkerView, child: View, index: Int) {
         parent.addChildView(child, index)
-        super.addView(parent, child, index)
     }
 
     override fun removeViewAt(parent: MarkerView, index: Int) {
         parent.removeChildView(index)
-        super.removeViewAt(parent, index)
     }
 
     override fun receiveCommand(view: MarkerView, commandType: String, argsArr: ReadableArray?) {
