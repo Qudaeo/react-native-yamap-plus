@@ -6,7 +6,6 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.PointF
 import android.view.View
-import android.view.View.OnLayoutChangeListener
 import android.view.animation.LinearInterpolator
 import com.facebook.react.views.view.ReactViewGroup
 import com.yandex.mapkit.geometry.Point
@@ -89,11 +88,11 @@ class MarkerView(context: Context?) : ReactViewGroup(context), MapObjectTapListe
     private fun updateMarker() {
         if (rnMapObject != null && rnMapObject!!.isValid) {
             val iconStyle = IconStyle()
-            iconStyle.setScale(_scale)
-            iconStyle.setRotationType(if (_rotated) RotationType.ROTATE else RotationType.NO_ROTATION)
-            iconStyle.setVisible(_visible)
+            iconStyle.scale = _scale
+            iconStyle.rotationType = if (_rotated) RotationType.ROTATE else RotationType.NO_ROTATION
+            iconStyle.visible = _visible
             if (_markerAnchor != null) {
-                iconStyle.setAnchor(_markerAnchor)
+                iconStyle.anchor = _markerAnchor
             }
             (rnMapObject as PlacemarkMapObject).geometry = point!!
             (rnMapObject as PlacemarkMapObject).zIndex = _zIndex
@@ -147,7 +146,7 @@ class MarkerView(context: Context?) : ReactViewGroup(context), MapObjectTapListe
 
     fun removeChildView(index: Int) {
         _children.removeAt(index)
-        setChildView(if (_children.size > 0) _children[0] else null)
+        setChildView(if (_children.isNotEmpty()) _children[0] else null)
     }
 
     private fun moveAnimationLoop(lat: Double, lon: Double) {
