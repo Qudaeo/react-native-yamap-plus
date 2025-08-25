@@ -43,7 +43,7 @@ class MarkerView(context: Context?) : ReactViewGroup(context), MapObjectTapListe
     private val childLayoutListener =
         OnLayoutChangeListener { _, _, _, _, _, _, _, _, _ -> updateMarker() }
 
-    override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
+    override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
     }
 
     // PROPS
