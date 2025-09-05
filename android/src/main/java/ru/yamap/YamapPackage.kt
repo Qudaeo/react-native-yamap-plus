@@ -13,7 +13,6 @@ import ru.yamap.module.SuggestsModuleImpl
 import ru.yamap.module.TransportModule
 import ru.yamap.module.TransportModuleImpl
 import ru.yamap.module.YamapModule
-import ru.yamap.module.YamapModuleImpl
 import ru.yamap.view.YamapViewManager
 import ru.yamap.view.ClusteredYamapViewManager
 import ru.yamap.view.PolygonViewManager
@@ -28,7 +27,7 @@ class YamapPackage : BaseReactPackage() {
             TransportModuleImpl.NAME -> TransportModule(reactContext)
             SearchModuleImpl.NAME -> SearchModule(reactContext)
             SuggestsModuleImpl.NAME -> SuggestsModule(reactContext)
-            YamapModuleImpl.NAME -> YamapModule(reactContext)
+            YamapModule.NAME -> YamapModule(reactContext)
 
             else -> null
         }
@@ -59,9 +58,9 @@ class YamapPackage : BaseReactPackage() {
                 isCxxModule = false,
                 isTurboModule = true
             ),
-            YamapModuleImpl.NAME to ReactModuleInfo(
-                name = YamapModuleImpl.NAME,
-                className = YamapModuleImpl.NAME,
+            YamapModule.NAME to ReactModuleInfo(
+                name = YamapModule.NAME,
+                className = YamapModule.NAME,
                 canOverrideExistingModule = false,
                 needsEagerInit = false,
                 isCxxModule = false,
