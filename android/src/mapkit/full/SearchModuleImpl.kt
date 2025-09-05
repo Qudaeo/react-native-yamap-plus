@@ -2,7 +2,6 @@ package ru.yamap.module
 
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReadableMap
-import com.facebook.react.bridge.ReadableType
 import com.facebook.react.bridge.UiThreadUtil
 import com.yandex.mapkit.geometry.BoundingBox
 import com.yandex.mapkit.geometry.Geometry
@@ -13,7 +12,6 @@ import com.yandex.mapkit.geometry.Polyline
 import com.yandex.mapkit.search.SearchOptions
 import com.yandex.mapkit.search.SearchType
 import com.yandex.mapkit.search.Snippet
-import com.yandex.mapkit.search.SuggestType
 import ru.yamap.search.MapSearchClient
 import ru.yamap.search.MapSearchItem
 import ru.yamap.search.YandexMapSearchClient

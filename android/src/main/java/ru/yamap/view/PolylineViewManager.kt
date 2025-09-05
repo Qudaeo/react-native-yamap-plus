@@ -5,59 +5,67 @@ import com.facebook.react.uimanager.ThemedReactContext
 import com.facebook.react.uimanager.ViewGroupManager
 import com.facebook.react.viewmanagers.PolylineViewManagerDelegate
 import com.facebook.react.viewmanagers.PolylineViewManagerInterface
+import ru.yamap.events.YamapPolylinePressEvent
+import ru.yamap.utils.PointUtil
 
 class PolylineViewManager : ViewGroupManager<PolylineView>(), PolylineViewManagerInterface<PolylineView> {
 
-    private val implementation = PolylineViewManagerImpl()
     private val delegate = PolylineViewManagerDelegate(this)
 
     override fun getDelegate() = delegate
 
-    override fun getName() = PolylineViewManagerImpl.NAME
+    override fun getName() = NAME
 
-    override fun getExportedCustomBubblingEventTypeConstants() =
-        PolylineViewManagerImpl.exportedCustomBubblingEventTypeConstants
+    override fun getExportedCustomBubblingEventTypeConstants() = mapOf(
+        YamapPolylinePressEvent.EVENT_NAME to
+                mapOf("phasedRegistrationNames" to mapOf("bubbled" to "onPress"))
+    )
 
     override fun createViewInstance(context: ThemedReactContext) = PolylineView(context)
 
     // PROPS
     override fun setPoints(view: PolylineView, jsPoints: ReadableArray?) {
-        implementation.setPoints(view, jsPoints)
+        val points = jsPoints?.let { PointUtil.jsPointsToPoints(it) }
+        view.setPolygonPoints(points)
     }
 
     override fun setStrokeWidth(view: PolylineView, width: Float) {
-        implementation.setStrokeWidth(view, width)
+        view.setStrokeWidth(width)
     }
 
     override fun setStrokeColor(view: PolylineView, color: Int) {
-        implementation.setStrokeColor(view, color)
+        view.setStrokeColor(color)
     }
 
     override fun setZI(view: PolylineView, zIndex: Float) {
-        implementation.setZI(view, zIndex)
+        view.setZIndex(zIndex)
     }
 
     override fun setDashLength(view: PolylineView, length: Float) {
-        implementation.setDashLength(view, length)
+        view.setDashLength(length)
     }
 
     override fun setDashOffset(view: PolylineView, offset: Float) {
-        implementation.setDashOffset(view, offset)
+        view.setDashOffset(offset)
     }
 
     override fun setGapLength(view: PolylineView, length: Float) {
-        implementation.setGapLength(view, length)
+        view.setGapLength(length)
     }
 
     override fun setOutlineWidth(view: PolylineView, width: Float) {
-        implementation.setOutlineWidth(view, width)
+        view.setOutlineWidth(width)
     }
 
     override fun setOutlineColor(view: PolylineView, color: Int) {
-        implementation.setOutlineColor(view, color)
+        view.setOutlineColor(color)
     }
 
     override fun setHandled(view: PolylineView, handled: Boolean) {
-        implementation.setHandled(view, handled)
+        view.setHandled(handled)
+    }
+
+    companion object {
+        const val NAME = "PolylineView"
     }
 }

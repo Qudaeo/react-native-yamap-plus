@@ -5,12 +5,13 @@ import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.UiThreadUtil
 import com.yandex.mapkit.MapKitFactory
 import com.yandex.runtime.i18n.I18nManagerFactory
+import ru.yamap.NativeYamapModuleSpec
 
-class YamapModuleImpl(reactContext: ReactApplicationContext) {
+class YamapModule(reactContext: ReactApplicationContext) : NativeYamapModuleSpec(reactContext) {
 
-    private val reactApplicationContext = reactContext
+    override fun getName() = NAME
 
-    fun init(apiKey: String?, promise: Promise) {
+    override fun init(apiKey: String?, promise: Promise) {
         UiThreadUtil.runOnUiThread(Thread(Runnable {
             var apiKeyException: Throwable? = null
             try {
@@ -36,7 +37,7 @@ class YamapModuleImpl(reactContext: ReactApplicationContext) {
         }))
     }
 
-    fun setLocale(locale: String?, promise: Promise) {
+    override fun setLocale(locale: String?, promise: Promise) {
         UiThreadUtil.runOnUiThread(Thread {
             try {
                 MapKitFactory.setLocale(locale)
@@ -47,7 +48,7 @@ class YamapModuleImpl(reactContext: ReactApplicationContext) {
         })
     }
 
-    fun getLocale(promise: Promise) {
+    override fun getLocale(promise: Promise) {
         UiThreadUtil.runOnUiThread(Thread {
             try {
                 val locale = I18nManagerFactory.getLocale()
@@ -58,7 +59,7 @@ class YamapModuleImpl(reactContext: ReactApplicationContext) {
         })
     }
 
-    fun resetLocale(promise: Promise) {
+    override fun resetLocale(promise: Promise) {
         UiThreadUtil.runOnUiThread(Thread {
             try {
                 I18nManagerFactory.setLocale(null)

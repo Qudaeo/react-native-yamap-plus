@@ -5,46 +5,56 @@ import com.facebook.react.uimanager.ThemedReactContext
 import com.facebook.react.uimanager.ViewGroupManager
 import com.facebook.react.viewmanagers.CircleViewManagerDelegate
 import com.facebook.react.viewmanagers.CircleViewManagerInterface
+import ru.yamap.events.YamapCirclePressEvent
+import ru.yamap.utils.PointUtil
 
 class CircleViewManager : ViewGroupManager<CircleView>(), CircleViewManagerInterface<CircleView> {
 
-    private val implementation = CircleViewManagerImpl()
     private val delegate = CircleViewManagerDelegate(this)
 
     override fun getDelegate() = delegate
 
-    override fun getName() = CircleViewManagerImpl.NAME
+    override fun getName() = NAME
 
-    override fun getExportedCustomBubblingEventTypeConstants() =
-        CircleViewManagerImpl.exportedCustomBubblingEventTypeConstants
+    override fun getExportedCustomBubblingEventTypeConstants() = mapOf(
+        YamapCirclePressEvent.EVENT_NAME to
+                mapOf("phasedRegistrationNames" to mapOf("bubbled" to "onPress"))
+    )
 
     override fun createViewInstance(context: ThemedReactContext)  = CircleView(context)
 
     override fun setCenter(view: CircleView, center: ReadableMap?) {
-        implementation.setCenter(view, center)
+        center?.let {
+            val point = PointUtil.readableMapToPoint(it)
+            view.setCenter(point)
+        }
     }
 
     override fun setRadius(view: CircleView, radius: Float) {
-        implementation.setRadius(view, radius)
+        view.setRadius(radius)
     }
 
     override fun setStrokeWidth(view: CircleView, width: Float) {
-        implementation.setStrokeWidth(view, width)
+        view.setStrokeWidth(width)
     }
 
     override fun setStrokeColor(view: CircleView, color: Int) {
-        implementation.setStrokeColor(view, color)
+        view.setStrokeColor(color)
     }
 
     override fun setFillColor(view: CircleView, color: Int) {
-        implementation.setFillColor(view, color)
+        view.setFillColor(color)
     }
 
     override fun setZI(view: CircleView, zIndex: Float) {
-        implementation.setZI(view, zIndex)
+        view.setZIndex(zIndex)
     }
 
     override fun setHandled(view: CircleView, handled: Boolean) {
-        implementation.setHandled(view, handled)
+        view.setHandled(handled)
+    }
+
+    companion object {
+        const val NAME = "CircleView"
     }
 }

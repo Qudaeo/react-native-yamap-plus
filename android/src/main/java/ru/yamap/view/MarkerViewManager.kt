@@ -1,52 +1,78 @@
 package ru.yamap.view
 
+import android.view.View
 import com.facebook.react.bridge.ReadableArray
 import com.facebook.react.bridge.ReadableMap
+import com.facebook.react.uimanager.ThemedReactContext
+import com.facebook.react.uimanager.ViewGroupManager
+import com.facebook.react.viewmanagers.MarkerViewManagerDelegate
+import com.facebook.react.viewmanagers.MarkerViewManagerInterface
 import ru.yamap.events.YamapMarkerPressEvent
 import ru.yamap.utils.PointUtil
 
-class MarkerViewManagerImpl() {
+class MarkerViewManager : ViewGroupManager<MarkerView>(), MarkerViewManagerInterface<MarkerView> {
+
+    private val delegate = MarkerViewManagerDelegate(this)
+
+    override fun getDelegate() = delegate
+
+    override fun getName() = NAME
+
+    override fun getExportedCustomBubblingEventTypeConstants() = mapOf(
+        YamapMarkerPressEvent.EVENT_NAME to
+                mapOf("phasedRegistrationNames" to mapOf("bubbled" to "onPress"))
+    )
+
+    public override fun createViewInstance(context: ThemedReactContext) = MarkerView(context)
 
     // PROPS
-    fun setPoint(view: MarkerView, jsPoint: ReadableMap?) {
+    override fun setPoint(view: MarkerView, jsPoint: ReadableMap?) {
         jsPoint?.let {
             val point = PointUtil.readableMapToPoint(it)
             view.setPoint(point)
         }
     }
 
-    fun setZI(view: MarkerView, zIndex: Float) {
+    override fun setZI(view: MarkerView, zIndex: Float) {
         view.setZIndex(zIndex)
     }
 
-    fun setScale(view: MarkerView, scale: Float) {
+    override fun setScale(view: MarkerView, scale: Float) {
         view.setScale(scale)
     }
 
-    fun setHandled(view: MarkerView, handled: Boolean) {
+    override fun setHandled(view: MarkerView, handled: Boolean) {
         view.setHandled(handled)
     }
 
-    fun setRotated(view: MarkerView, rotated: Boolean) {
+    override fun setRotated(view: MarkerView, rotated: Boolean) {
         view.setRotated(rotated)
     }
 
-    fun setVisible(view: MarkerView, visible: Boolean) {
+    override fun setVisible(view: MarkerView, visible: Boolean) {
         view.setVisible(visible)
     }
 
-    fun setSource(view: MarkerView, source: String?) {
+    override fun setSource(view: MarkerView, source: String?) {
         if (source != null) {
             view.setIconSource(source)
         }
     }
 
-    fun setAnchor(view: MarkerView, anchor: ReadableMap?) {
+    override fun setAnchor(view: MarkerView, anchor: ReadableMap?) {
         val pointF = PointUtil.jsPointToPointF(anchor)
         view.setAnchor(pointF)
     }
 
-    fun receiveCommand(view: MarkerView, commandType: String, argsArr: ReadableArray?) {
+    override fun addView(parent: MarkerView, child: View, index: Int) {
+        parent.addChildView(child, index)
+    }
+
+    override fun removeViewAt(parent: MarkerView, index: Int) {
+        parent.removeChildView(index)
+    }
+
+    override fun receiveCommand(view: MarkerView, commandType: String, argsArr: ReadableArray?) {
         val args = argsArr?.getArray(0)?.getMap(0) ?: return
 
         when (commandType) {
@@ -75,10 +101,5 @@ class MarkerViewManagerImpl() {
 
     companion object {
         const val NAME = "MarkerView"
-
-        val exportedCustomBubblingEventTypeConstants = mapOf(
-            YamapMarkerPressEvent.EVENT_NAME to
-                    mapOf("phasedRegistrationNames" to mapOf("bubbled" to "onPress"))
-        )
     }
 }

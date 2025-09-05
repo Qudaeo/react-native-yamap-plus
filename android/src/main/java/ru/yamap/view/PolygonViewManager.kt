@@ -5,47 +5,66 @@ import com.facebook.react.uimanager.ThemedReactContext
 import com.facebook.react.uimanager.ViewGroupManager
 import com.facebook.react.viewmanagers.PolygonViewManagerDelegate
 import com.facebook.react.viewmanagers.PolygonViewManagerInterface
+import com.yandex.mapkit.geometry.Point
+import ru.yamap.events.YamapPolygonPressEvent
+import ru.yamap.utils.PointUtil
 
 class PolygonViewManager : ViewGroupManager<PolygonView>(),  PolygonViewManagerInterface<PolygonView> {
 
-    private val implementation = PolygonViewManagerImpl()
     private val delegate = PolygonViewManagerDelegate(this)
 
     override fun getDelegate() = delegate
 
-    override fun getName() = PolygonViewManagerImpl.NAME
+    override fun getName() = NAME
 
-    override fun getExportedCustomBubblingEventTypeConstants() =
-        PolygonViewManagerImpl.exportedCustomBubblingEventTypeConstants
+    override fun getExportedCustomBubblingEventTypeConstants() = mapOf(
+        YamapPolygonPressEvent.EVENT_NAME to
+                mapOf("phasedRegistrationNames" to mapOf("bubbled" to "onPress"))
+    )
 
     override fun createViewInstance(context: ThemedReactContext) = PolygonView(context)
 
     // PROPS
     override fun setPoints(view: PolygonView, jsPoints: ReadableArray?) {
-        implementation.setPoints(view, jsPoints)
+        jsPoints?.let {
+            val points = PointUtil.jsPointsToPoints(it)
+            view.setPolygonPoints(points)
+        }
     }
 
     override fun setInnerRings(view: PolygonView, jsRings: ReadableArray?) {
-        implementation.setInnerRings(view, jsRings)
+        val rings = ArrayList<ArrayList<Point>>()
+        jsRings?.let {
+            for (j in 0 until it.size()) {
+                val jsPoints = it.getArray(j) ?: return
+                val points = PointUtil.jsPointsToPoints(jsPoints)
+                rings.add(points)
+            }
+        }
+        view.setPolygonInnerRings(rings)
     }
 
     override fun setStrokeWidth(view: PolygonView, width: Float) {
-        implementation.setStrokeWidth(view, width)
+        view.setStrokeWidth(width)
     }
 
     override fun setStrokeColor(view: PolygonView, color: Int) {
-        implementation.setStrokeColor(view, color)
+        view.setStrokeColor(color)
     }
 
     override fun setFillColor(view: PolygonView, color: Int) {
-        implementation.setFillColor(view, color)
+        view.setFillColor(color)
     }
 
     override fun setZI(view: PolygonView, zIndex: Float) {
-        implementation.setZI(view, zIndex)
+        view.setZIndex(zIndex)
     }
 
     override fun setHandled(view: PolygonView, handled: Boolean) {
-        implementation.setHandled(view, handled)
+        view.setHandled(handled)
+    }
+
+    companion object {
+        const val NAME = "PolygonView"
     }
 }
