@@ -4,6 +4,12 @@
 
 #### Библиотека для интеграции MapKit SDK в React Native
 
+| Version | React Native New Arch support |
+|---------|-------------------------------|
+| 6(RC)   | New Arch                      |
+| 5(RC)   | Legacy + New Arch             |
+| 4       | Legacy Arch                   |
+
 ## Установка
 
 ```
