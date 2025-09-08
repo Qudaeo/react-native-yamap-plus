@@ -2,8 +2,6 @@
 
 #import <React/UIView+React.h>
 
-#ifdef RCT_NEW_ARCH_ENABLED
-
 #import "../Util/NewArchUtils.h"
 
 #import <react/renderer/components/RNYamapPlusSpec/ComponentDescriptors.h>
@@ -19,26 +17,16 @@ using namespace facebook::react;
 
 @end
 
-#endif
-
 @implementation ClusteredYamapView
 
 - (instancetype)init {
     if (self = [super init]) {
-
-#ifdef RCT_NEW_ARCH_ENABLED
-
         static const auto defaultProps = std::make_shared<const ClusteredYamapViewProps>();
         _props = defaultProps;
-
-#endif
-
     }
 
     return self;
 }
-
-#ifdef RCT_NEW_ARCH_ENABLED
 
 + (ComponentDescriptorProvider)componentDescriptorProvider
 {
@@ -98,7 +86,5 @@ using namespace facebook::react;
     static const auto defaultProps = std::make_shared<const ClusteredYamapViewProps>();
     _props = defaultProps;
 }
-
-#endif
 
 @end

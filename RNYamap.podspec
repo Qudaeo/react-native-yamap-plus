@@ -21,9 +21,5 @@ Pod::Spec.new do |s|
         s.dependency "YandexMapsMobile", "4.17.0-full"
     end
 
-    if ENV['RCT_NEW_ARCH_ENABLED'] == '1' then
-        install_modules_dependencies(s)
-    else
-        s.dependency "React-Core"
-    end
+    install_modules_dependencies(s)
 end

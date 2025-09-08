@@ -278,10 +278,6 @@ NSMutableDictionary *vehicleColors;
 
 #endif
 
-#ifdef RCT_NEW_ARCH_ENABLED
-
-// New architecture
-
 - (std::shared_ptr<facebook::react::TurboModule>)getTurboModule:(const facebook::react::ObjCTurboModule::InitParams &)params {
     return std::make_shared<facebook::react::NativeTransportModuleSpecJSI>(params);
 }
@@ -289,17 +285,6 @@ NSMutableDictionary *vehicleColors;
 - (void)findRoutes:(nonnull NSArray *)points vehicles:(nonnull NSArray *)vehicles resolve:(nonnull RCTPromiseResolveBlock)resolve reject:(nonnull RCTPromiseRejectBlock)reject {
     [self findRoutesImpl:points vehicles:vehicles resolve:resolve reject:reject];
 }
-
-#else
-
-// Old architecture
-
-RCT_EXPORT_METHOD(findRoutes:(nonnull NSArray *)points vehicles:(nonnull NSArray *)vehicles resolve:(nonnull RCTPromiseResolveBlock)resolve reject:(nonnull RCTPromiseRejectBlock)reject) {
-    [self findRoutesImpl:points vehicles:vehicles resolve:resolve reject:reject];
-}
-
-#endif
-
 
 RCT_EXPORT_MODULE()
 

@@ -14,8 +14,6 @@
 #import "../Util/RCTConvert+Yamap.mm"
 #import "ImageCacheManager.h"
 
-#ifdef RCT_NEW_ARCH_ENABLED
-
 #import "../Util/NewArchUtils.h"
 
 #import <react/renderer/components/RNYamapPlusSpec/ComponentDescriptors.h>
@@ -30,8 +28,6 @@ using namespace facebook::react;
 @interface YamapView () <YMKUserLocationObjectListener, YMKMapCameraListener, YMKMapLoadedListener, YMKTrafficDelegate, YMKClusterListener, YMKClusterTapListener>
 
 @end
-
-#endif
 
 #import <YandexMapsMobile/YMKMap.h>
 #import <YandexMapsMobile/YMKMapKitFactory.h>
@@ -79,12 +75,8 @@ using namespace facebook::react;
         mapView = [[YMKMapView alloc] initWithFrame:frame];
 #endif
 
-#ifdef RCT_NEW_ARCH_ENABLED
-
         static const auto defaultProps = std::make_shared<const YamapViewProps>();
         _props = defaultProps;
-
-#endif
 
         _reactSubviews = [[NSMutableArray alloc] init];
         userLocationImageScale = [NSNumber numberWithFloat:1.f];
@@ -110,8 +102,6 @@ using namespace facebook::react;
 
     return self;
 }
-
-#ifdef RCT_NEW_ARCH_ENABLED
 
 + (ComponentDescriptorProvider)componentDescriptorProvider
 {
@@ -421,8 +411,6 @@ using namespace facebook::react;
     return YMKMapTypeVectorMap;
 }
 
-#endif
-
 - (void)removeAllSections {
     [mapView.mapWindow.map.mapObjects clear];
 }
@@ -469,142 +457,10 @@ using namespace facebook::react;
     }
 }
 
-#ifndef RCT_NEW_ARCH_ENABLED
-
-- (void)setInitialRegion:(NSDictionary *)initialParams {
-    if (initializedRegion) return;
-    if ([initialParams valueForKey:@"lat"] == nil || [initialParams valueForKey:@"lon"] == nil) return;
-
-    float initialZoom = 10.f;
-    float initialAzimuth = 0.f;
-    float initialTilt = 0.f;
-
-    if ([initialParams valueForKey:@"zoom"] != nil) initialZoom = [initialParams[@"zoom"] floatValue];
-
-    if ([initialParams valueForKey:@"azimuth"] != nil) initialTilt = [initialParams[@"azimuth"] floatValue];
-
-    if ([initialParams valueForKey:@"tilt"] != nil) initialTilt = [initialParams[@"tilt"] floatValue];
-
-    YMKPoint *initialRegionCenter = [RCTConvert YMKPoint:@{@"lat" : [initialParams valueForKey:@"lat"], @"lon" : [initialParams valueForKey:@"lon"]}];
-    YMKCameraPosition *initialRegionPosition = [YMKCameraPosition cameraPositionWithTarget:initialRegionCenter zoom:initialZoom azimuth:initialAzimuth tilt:initialTilt];
-    [mapView.mapWindow.map moveWithCameraPosition:initialRegionPosition];
-    initializedRegion = YES;
-}
-
-- (NSDictionary *)cameraPositionToJSON:(YMKCameraPosition *)position reason:(YMKCameraUpdateReason)reason finished:(BOOL)finished {
-    return @{
-        @"azimuth": [NSNumber numberWithFloat:position.azimuth],
-        @"tilt": [NSNumber numberWithFloat:position.tilt],
-        @"zoom": [NSNumber numberWithFloat:position.zoom],
-        @"point": @{
-            @"lat": [NSNumber numberWithDouble:position.target.latitude],
-            @"lon": [NSNumber numberWithDouble:position.target.longitude]
-        },
-        @"reason": reason == 0 ? @"GESTURES" : @"APPLICATION",
-        @"finished": @(finished)
-    };
-}
-
-- (NSDictionary *)worldPointToJSON:(YMKPoint *)point {
-    return @{
-        @"lat": [NSNumber numberWithDouble:point.latitude],
-        @"lon": [NSNumber numberWithDouble:point.longitude]
-    };
-}
-
-- (NSDictionary *)screenPointToJSON:(YMKScreenPoint *)point {
-    return @{
-        @"x": [NSNumber numberWithFloat:point.x],
-        @"y": [NSNumber numberWithFloat:point.y]
-    };
-}
-
-- (NSDictionary *)visibleRegionToJSON:(YMKVisibleRegion *)region {
-    return @{
-        @"bottomLeft": @{
-            @"lat": [NSNumber numberWithDouble:region.bottomLeft.latitude],
-            @"lon": [NSNumber numberWithDouble:region.bottomLeft.longitude]
-        },
-        @"bottomRight": @{
-            @"lat": [NSNumber numberWithDouble:region.bottomRight.latitude],
-            @"lon": [NSNumber numberWithDouble:region.bottomRight.longitude]
-        },
-        @"topLeft": @{
-            @"lat": [NSNumber numberWithDouble:region.topLeft.latitude],
-            @"lon": [NSNumber numberWithDouble:region.topLeft.longitude]
-        },
-        @"topRight": @{
-            @"lat": [NSNumber numberWithDouble:region.topRight.latitude],
-            @"lon": [NSNumber numberWithDouble:region.topRight.longitude]
-        }
-    };
-}
-
-- (void)emitCameraPositionToJS:(NSString *)_id {
-    YMKCameraPosition *position = mapView.mapWindow.map.cameraPosition;
-    NSDictionary *cameraPosition = [self cameraPositionToJSON:position reason:YMKCameraUpdateReasonApplication finished:YES];
-    NSMutableDictionary *response = [NSMutableDictionary dictionaryWithDictionary:cameraPosition];
-    [response setValue:_id forKey:@"id"];
-
-    if (self.onCameraPositionReceived) {
-        self.onCameraPositionReceived(response);
-    }
-}
-
-- (void)emitVisibleRegionToJS:(NSString *)_id {
-    YMKVisibleRegion *region = mapView.mapWindow.map.visibleRegion;
-    NSDictionary *visibleRegion = [self visibleRegionToJSON:region];
-    NSMutableDictionary *response = [NSMutableDictionary dictionaryWithDictionary:visibleRegion];
-    [response setValue:_id forKey:@"id"];
-
-    if (self.onVisibleRegionReceived) {
-        self.onVisibleRegionReceived(response);
-    }
-}
-
-- (void)emitWorldToScreenPoint:(NSArray<YMKPoint *> *)worldPoints withId:(NSString *)_id {
-    NSMutableArray *screenPoints = [[NSMutableArray alloc] init];
-
-    for (int i = 0; i < [worldPoints count]; ++i) {
-        YMKScreenPoint *screenPoint = [mapView.mapWindow worldToScreenWithWorldPoint:[worldPoints objectAtIndex:i]];
-        [screenPoints addObject:[self screenPointToJSON:screenPoint]];
-    }
-
-    NSMutableDictionary *response = [[NSMutableDictionary alloc] init];
-    [response setValue:_id forKey:@"id"];
-    [response setValue:screenPoints forKey:@"screenPoints"];
-
-    if (self.onWorldToScreenPointsReceived) {
-        self.onWorldToScreenPointsReceived(response);
-    }
-}
-
-- (void)emitScreenToWorldPoint:(NSArray<YMKScreenPoint *> *)screenPoints withId:(NSString *)_id {
-    NSMutableArray *worldPoints = [[NSMutableArray alloc] init];
-
-    for (int i = 0; i < [screenPoints count]; ++i) {
-        YMKPoint *worldPoint = [mapView.mapWindow screenToWorldWithScreenPoint:[screenPoints objectAtIndex:i]];
-        [worldPoints addObject:[self worldPointToJSON:worldPoint]];
-    }
-
-    NSMutableDictionary *response = [[NSMutableDictionary alloc] init];
-    [response setValue:_id forKey:@"id"];
-    [response setValue:worldPoints forKey:@"worldPoints"];
-
-    if (self.onScreenToWorldPointsReceived) {
-        self.onScreenToWorldPointsReceived(response);
-    }
-}
-
-#endif
-
 - (void)onCameraPositionChangedWithMap:(nonnull YMKMap*)map
                         cameraPosition:(nonnull YMKCameraPosition*)cameraPosition
                     cameraUpdateReason:(YMKCameraUpdateReason)cameraUpdateReason
                               finished:(BOOL)finished {
-
-#ifdef RCT_NEW_ARCH_ENABLED
-
     if ([self isKindOfClass:[ClusteredYamapView class]]) {
         std::dynamic_pointer_cast<const ClusteredYamapViewEventEmitter>(_eventEmitter)->onCameraPositionChange({
             .point = {
@@ -658,19 +514,6 @@ using namespace facebook::react;
             });
         }
     }
-
-#else
-
-    if (self.onCameraPositionChange) {
-        self.onCameraPositionChange([self cameraPositionToJSON:cameraPosition reason:cameraUpdateReason finished:finished]);
-    }
-
-    if (self.onCameraPositionChangeEnd && finished) {
-        self.onCameraPositionChangeEnd([self cameraPositionToJSON:cameraPosition reason:cameraUpdateReason finished:finished]);
-    }
-
-#endif
-
 }
 
 - (void)setNightMode:(BOOL)nightMode {
@@ -799,54 +642,6 @@ using namespace facebook::react;
     }];
 }
 
-#ifndef RCT_NEW_ARCH_ENABLED
-
-- (void)setUserLocationIconScale:(NSNumber *)iconScale {
-    userLocationImageScale = iconScale;
-    [self updateUserIcon];
-}
-
-- (void)setUserLocationAccuracyFillColor:(NSNumber *)color {
-    userLocationAccuracyFillColor = [RCTConvert UIColor:color];
-    [self updateUserIcon];
-}
-
-- (void)setUserLocationAccuracyStrokeColor:(NSNumber *)color {
-    userLocationAccuracyStrokeColor = [RCTConvert UIColor:color];
-    [self updateUserIcon];
-}
-
-- (void)setUserLocationAccuracyStrokeWidth:(float)width {
-    userLocationAccuracyStrokeWidth = width;
-    [self updateUserIcon];
-}
-
-- (void)setMapStyle:(NSString *)style {
-    [mapView.mapWindow.map setMapStyleWithStyle:style];
-}
-
-- (void)setZoomGesturesDisabled:(BOOL)value {
-    mapView.mapWindow.map.zoomGesturesEnabled = !value;
-}
-
-- (void)setScrollGesturesDisabled:(BOOL)value {
-    mapView.mapWindow.map.scrollGesturesEnabled = !value;
-}
-
-- (void)setTiltGesturesDisabled:(BOOL)value {
-    mapView.mapWindow.map.tiltGesturesEnabled = !value;
-}
-
-- (void)setRotateGesturesDisabled:(BOOL)value {
-    mapView.mapWindow.map.rotateGesturesEnabled = !value;
-}
-
-- (void)setFastTapDisabled:(BOOL)value {
-    mapView.mapWindow.map.fastTapEnabled = !value;
-}
-
-#endif
-
 - (void)updateUserIcon {
     if (userLocationView == nil) {
         return;
@@ -888,62 +683,21 @@ using namespace facebook::react;
 
 - (void)onMapTapWithMap:(nonnull YMKMap *)map
                   point:(nonnull YMKPoint *)point {
-
-#ifdef RCT_NEW_ARCH_ENABLED
-
     if ([self isKindOfClass:[ClusteredYamapView class]]) {
         std::dynamic_pointer_cast<const ClusteredYamapViewEventEmitter>(_eventEmitter)->onMapPress({.lat = point.latitude, .lon = point.longitude});
     } else {
         std::dynamic_pointer_cast<const YamapViewEventEmitter>(_eventEmitter)->onMapPress({.lat = point.latitude, .lon = point.longitude});
     }
-
-#else
-
-    if (self.onMapPress) {
-        NSDictionary *data = @{
-            @"lat": [NSNumber numberWithDouble:point.latitude],
-            @"lon": [NSNumber numberWithDouble:point.longitude]
-        };
-        self.onMapPress(data);
-    }
-
-#endif
-
 }
 
 - (void)onMapLongTapWithMap:(nonnull YMKMap *)map
                       point:(nonnull YMKPoint *)point {
-
-#ifdef RCT_NEW_ARCH_ENABLED
-
     if ([self isKindOfClass:[ClusteredYamapView class]]) {
         std::dynamic_pointer_cast<const ClusteredYamapViewEventEmitter>(_eventEmitter)->onMapLongPress({.lat = point.latitude, .lon = point.longitude});
     } else {
         std::dynamic_pointer_cast<const YamapViewEventEmitter>(_eventEmitter)->onMapLongPress({.lat = point.latitude, .lon = point.longitude});
     }
-
-#else
-
-    if (self.onMapLongPress) {
-        NSDictionary *data = @{
-            @"lat": [NSNumber numberWithDouble:point.latitude],
-            @"lon": [NSNumber numberWithDouble:point.longitude]
-        };
-        self.onMapLongPress(data);
-    }
-
-#endif
-
 }
-
-#ifndef RCT_NEW_ARCH_ENABLED
-
-- (void)insertReactSubview:(UIView<RCTComponent> *)subview atIndex:(NSInteger)index {
-    [self insertSubview:subview atIndex:index];
-    [super insertReactSubview:subview atIndex:index];
-}
-
-#endif
 
 - (void)insertSubview:(UIView *)subview atIndex:(NSInteger)index {
     if ([subview isKindOfClass:[PolygonView class]]) {
@@ -1067,18 +821,7 @@ using namespace facebook::react;
         }
     }
 
-#ifdef RCT_NEW_ARCH_ENABLED
-
     [self clusterPlacemarks];
-
-#else
-
-    if (mapLoaded) {
-        [self clusterPlacemarks];
-    }
-
-#endif
-
 }
 
 -(UIImage*)clusterImage:(NSNumber*) clusterSize {
@@ -1125,9 +868,6 @@ using namespace facebook::react;
 }
 
 - (void)onMapLoadedWithStatistics:(YMKMapLoadStatistics*)statistics {
-
-#ifdef RCT_NEW_ARCH_ENABLED
-
     if ([self isKindOfClass:[ClusteredYamapView class]]) {
         std::dynamic_pointer_cast<const ClusteredYamapViewEventEmitter>(_eventEmitter)->onMapLoaded({
             .renderObjectCount = [[NSNumber numberWithLong:statistics.renderObjectCount] doubleValue],
@@ -1153,27 +893,6 @@ using namespace facebook::react;
             .fullyLoaded = statistics.fullyLoaded,
         });
     }
-
-#else
-
-    if (self.onMapLoaded) {
-        NSDictionary *data = @{
-            @"renderObjectCount": @(statistics.renderObjectCount),
-            @"curZoomModelsLoaded": @(statistics.curZoomModelsLoaded),
-            @"curZoomPlacemarksLoaded": @(statistics.curZoomPlacemarksLoaded),
-            @"curZoomLabelsLoaded": @(statistics.curZoomLabelsLoaded),
-            @"curZoomGeometryLoaded": @(statistics.curZoomGeometryLoaded),
-            @"tileMemoryUsage": @(statistics.tileMemoryUsage),
-            @"delayedGeometryLoaded": @(statistics.delayedGeometryLoaded),
-            @"fullyAppeared": @(statistics.fullyAppeared),
-            @"fullyLoaded": @(statistics.fullyLoaded),
-        };
-        self.onMapLoaded(data);
-    }
-
-    [self clusterPlacemarks];
-
-#endif
 
     mapLoaded = YES;
 }

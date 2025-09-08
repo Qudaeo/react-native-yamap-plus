@@ -2,8 +2,6 @@
 
 #import "../Util/RCTConvert+Yamap.mm"
 
-#ifdef RCT_NEW_ARCH_ENABLED
-
 #import "../Util/NewArchUtils.h"
 
 #import <react/renderer/components/RNYamapPlusSpec/ComponentDescriptors.h>
@@ -19,8 +17,6 @@ using namespace facebook::react;
 
 @end
 
-#endif
-
 @implementation CircleView {
     YMKPoint* center;
     float radius;
@@ -35,14 +31,9 @@ using namespace facebook::react;
 
 - (instancetype)init {
     if (self = [super init]) {
-        
-#ifdef RCT_NEW_ARCH_ENABLED
-        
         static const auto defaultProps = std::make_shared<const PolygonViewProps>();
         _props = defaultProps;
-        
-#endif
-        
+
         fillColor = UIColor.blackColor;
         strokeColor = UIColor.blackColor;
         zIndex = 1;
@@ -55,8 +46,6 @@ using namespace facebook::react;
 
     return self;
 }
-
-#ifdef RCT_NEW_ARCH_ENABLED
 
 + (ComponentDescriptorProvider)componentDescriptorProvider
 {
@@ -110,46 +99,6 @@ using namespace facebook::react;
     radius = 0;
 }
 
-#else
-
-- (void)setFillColor:(NSNumber*)color {
-    fillColor = [RCTConvert UIColor:color];
-    [self updateCircle];
-}
-
-- (void)setStrokeColor:(NSNumber*)color {
-    strokeColor = [RCTConvert UIColor:color];
-    [self updateCircle];
-}
-
-- (void)setStrokeWidth:(NSNumber*)width {
-    strokeWidth = [width floatValue];
-    [self updateCircle];
-}
-
-- (void)setZI:(NSNumber*)zI {
-    zIndex = [zI floatValue];
-    [self updateCircle];
-}
-
-- (void)setHandled:(BOOL)_handled {
-    handled = _handled;
-}
-
-- (void)setRadius:(float)_radius {
-    radius = _radius;
-    [self updateGeometry];
-    [self updateCircle];
-}
-
-- (void)setCircleCenter:(YMKPoint*)point {
-    center = point;
-    [self updateGeometry];
-    [self updateCircle];
-}
-
-#endif
-
 - (void)updateGeometry {
     if (center) {
         circle = [YMKCircle circleWithCenter:center radius:radius];
@@ -177,16 +126,7 @@ using namespace facebook::react;
 }
 
 - (BOOL)onMapObjectTapWithMapObject:(nonnull YMKMapObject*)mapObject point:(nonnull YMKPoint*)point {
-#ifdef RCT_NEW_ARCH_ENABLED
-
     std::dynamic_pointer_cast<const CircleViewEventEmitter>(_eventEmitter)->onPress({});
-
-#else
-
-    if (self.onPress)
-        self.onPress(@{});
-
-#endif
 
     return handled;
 }

@@ -1,8 +1,6 @@
 #ifndef NewArchUtils_h
 #define NewArchUtils_h
 
-#ifdef RCT_NEW_ARCH_ENABLED
-
 #import <react/renderer/components/RNYamapPlusSpec/Props.h>
 
 using namespace facebook::react;
@@ -17,5 +15,4 @@ using namespace facebook::react;
 
 @end
 
-#endif
 #endif

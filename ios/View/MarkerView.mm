@@ -6,8 +6,6 @@
 
 #import <YandexMapsMobile/YMKIconStyle.h>
 
-#ifdef RCT_NEW_ARCH_ENABLED
-
 #import "../Util/NewArchUtils.h"
 
 #import <react/renderer/components/RNYamapPlusSpec/ComponentDescriptors.h>
@@ -22,8 +20,6 @@ using namespace facebook::react;
 @interface MarkerView () <RCTMarkerViewViewProtocol, YMKMapObjectTapListener>
 
 @end
-
-#endif
 
 #define YAMAP_FRAMES_PER_SECOND 25
 
@@ -44,13 +40,8 @@ using namespace facebook::react;
 
 - (instancetype)init {
     if (self = [super init]) {
-
-#ifdef RCT_NEW_ARCH_ENABLED
-
         static const auto defaultProps = std::make_shared<const MarkerViewProps>();
         _props = defaultProps;
-
-#endif
 
         zIndex = 1;
         scale = [NSNumber numberWithInt:1];
@@ -64,8 +55,6 @@ using namespace facebook::react;
 
     return self;
 }
-
-#ifdef RCT_NEW_ARCH_ENABLED
 
 + (ComponentDescriptorProvider)componentDescriptorProvider
 {
@@ -138,59 +127,8 @@ using namespace facebook::react;
     _reactSubviews = [[NSMutableArray alloc] init];
 }
 
-#else
-
-- (void)setScale:(NSNumber*)_scale {
-    scale = _scale;
-    [self updateMarker];
-}
-- (void)setRotated:(NSNumber*) rotated {
-    rotationType = rotated;
-    [self updateMarker];
-}
-
-- (void)setZI:(NSNumber *)zI {
-    zIndex = [zI floatValue];
-    [self updateMarker];
-}
-
-- (void)setVisible:(NSNumber*)_visible {
-    visible = _visible;
-    [self updateMarker];
-}
-
-- (void)setHandled:(BOOL)_handled {
-    handled = _handled;
-}
-
-- (void)setPoint:(YMKPoint*)point {
-    _point = point;
-    [self updateMarker];
-}
-
-- (void)setSource:(NSString*)_source {
-    source = _source;
-    [self updateMarker];
-}
-
-- (void)setAnchor:(NSValue*)_anchor {
-    anchor = _anchor;
-}
-
-#endif
-
 - (BOOL)onMapObjectTapWithMapObject:(nonnull YMKMapObject*)_mapObject point:(nonnull YMKPoint*)point {
-
-#ifdef RCT_NEW_ARCH_ENABLED
-
     std::dynamic_pointer_cast<const MarkerViewEventEmitter>(_eventEmitter)->onPress({});
-
-#else
-
-    if (self.onPress)
-        self.onPress(@{});
-
-#endif
 
     return handled;
 }
@@ -289,8 +227,6 @@ using namespace facebook::react;
     }
 }
 
-#ifdef RCT_NEW_ARCH_ENABLED
-
 - (void)mountChildComponentView:(UIView<RCTComponentViewProtocol> *)childComponentView index:(NSInteger)index {
     [_reactSubviews insertObject:childComponentView atIndex:index];
     [self setChildView];
@@ -299,26 +235,6 @@ using namespace facebook::react;
 - (void)unmountChildComponentView:(UIView<RCTComponentViewProtocol> *)childComponentView index:(NSInteger)index {
     [childComponentView removeFromSuperview];
 }
-
-#else
-
-- (void)didUpdateReactSubviews {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self setChildView];
-    });
-}
-
-- (void)insertReactSubview:(UIView*)subview atIndex:(NSInteger)atIndex {
-    [_reactSubviews insertObject:subview atIndex: atIndex];
-    [super insertReactSubview:subview atIndex:atIndex];
-}
-
-- (void)removeReactSubview:(UIView*)subview {
-    [_reactSubviews removeObject:subview];
-    [super removeReactSubview: subview];
-}
-
-#endif
 
 - (void)moveAnimationLoop:(NSInteger)frame withTotalFrames:(NSInteger)totalFrames withDeltaLat:(double)deltaLat withDeltaLon:(double)deltaLon {
     @try  {

@@ -4,17 +4,9 @@
 
 #endif
 
-#ifdef RCT_NEW_ARCH_ENABLED
-
 #import <RNYamapPlusSpec/RNYamapPlusSpec.h>
+
 @interface RTNSearchModule : NativeSearchModuleSpecBase <NativeSearchModuleSpec>
-
-#else
-
-#import <React/RCTBridgeModule.h>
-@interface RTNSearchModule : NSObject <RCTBridgeModule>
-
-#endif
 
 #ifdef USE_YANDEX_MAPS_FULL
 

@@ -2,9 +2,6 @@
 
 #import <YandexMapsMobile/YMKLineStyle.h>
 #import "../Util/RCTConvert+Yamap.mm"
-
-#ifdef RCT_NEW_ARCH_ENABLED
-
 #import "../Util/NewArchUtils.h"
 
 #import <react/renderer/components/RNYamapPlusSpec/ComponentDescriptors.h>
@@ -19,8 +16,6 @@ using namespace facebook::react;
 @interface PolylineView () <RCTPolylineViewViewProtocol, YMKMapObjectTapListener>
 
 @end
-
-#endif
 
 @implementation PolylineView {
     NSMutableArray<YMKPoint*> *_points;
@@ -40,13 +35,8 @@ using namespace facebook::react;
 
 - (instancetype)init {
     if (self = [super init]) {
-
-#ifdef RCT_NEW_ARCH_ENABLED
-
         static const auto defaultProps = std::make_shared<const PolylineViewProps>();
         _props = defaultProps;
-
-#endif
 
         strokeColor = UIColor.blackColor;
         outlineColor = UIColor.blackColor;
@@ -62,8 +52,6 @@ using namespace facebook::react;
 
     return self;
 }
-
-#ifdef RCT_NEW_ARCH_ENABLED
 
 + (ComponentDescriptorProvider)componentDescriptorProvider
 {
@@ -140,60 +128,6 @@ using namespace facebook::react;
   handled = NO;
 }
 
-#else
-
-- (void)setStrokeColor:(NSNumber *)color {
-    strokeColor = [RCTConvert UIColor:color];
-    [self updatePolyline];
-}
-
-- (void)setStrokeWidth:(NSNumber *)width {
-    strokeWidth = [width floatValue];
-    [self updatePolyline];
-}
-
-- (void)setOutlineWidth:(NSNumber *)width {
-    outlineWidth = [width floatValue];
-    [self updatePolyline];
-}
-
-- (void)setDashLength:(NSNumber *)length {
-    dashLength = [length floatValue];
-    [self updatePolyline];
-}
-
-- (void)setDashOffset:(NSNumber *)offset {
-    dashOffset = [offset floatValue];
-    [self updatePolyline];
-}
-
-- (void)setGapLength:(NSNumber *)length {
-    gapLength = [length floatValue];
-    [self updatePolyline];
-}
-
-- (void)setOutlineColor:(NSNumber *)color {
-    outlineColor = [RCTConvert UIColor:color];
-    [self updatePolyline];
-}
-
-- (void)setZI:(NSNumber *)_zIndex {
-    zIndex = [_zIndex floatValue];
-    [self updatePolyline];
-}
-
-- (void)setPoints:(NSMutableArray<YMKPoint*>*)points {
-    _points = points;
-    polyline = [YMKPolyline polylineWithPoints:points];
-    [self updatePolyline];
-}
-
-- (void)setHandled:(BOOL)_handled {
-    handled = _handled;
-}
-
-#endif
-
 - (void)updatePolyline {
     if (mapObject != nil && [mapObject isValid]) {
         [mapObject setGeometry:polyline];
@@ -212,17 +146,7 @@ using namespace facebook::react;
 }
 
 - (BOOL)onMapObjectTapWithMapObject:(nonnull YMKMapObject*)mapObject point:(nonnull YMKPoint*)point {
-
-#ifdef RCT_NEW_ARCH_ENABLED
-
     std::dynamic_pointer_cast<const PolylineViewEventEmitter>(_eventEmitter)->onPress({});
-
-#else
-
-    if (self.onPress)
-        self.onPress(@{});
-
-#endif
 
     return handled;
 }
@@ -245,13 +169,9 @@ using namespace facebook::react;
     [self updatePolyline];
 }
 
-#ifdef RCT_NEW_ARCH_ENABLED
-
 Class<RCTComponentViewProtocol> PolylineViewCls(void)
 {
     return PolylineView.class;
 }
-
-#endif
 
 @end

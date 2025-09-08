@@ -1,9 +1,6 @@
 #import "PolygonView.h"
 
 #import "../Util/RCTConvert+Yamap.mm"
-
-#ifdef RCT_NEW_ARCH_ENABLED
-
 #import "../Util/NewArchUtils.h"
 
 #import <react/renderer/components/RNYamapPlusSpec/ComponentDescriptors.h>
@@ -19,8 +16,6 @@ using namespace facebook::react;
 
 @end
 
-#endif
-
 @implementation PolygonView {
     NSMutableArray<YMKPoint*>* _points;
     NSArray<NSArray<YMKPoint*>*>* innerRings;
@@ -35,13 +30,8 @@ using namespace facebook::react;
 
 - (instancetype)init {
     if (self = [super init]) {
-
-#ifdef RCT_NEW_ARCH_ENABLED
-
         static const auto defaultProps = std::make_shared<const PolygonViewProps>();
         _props = defaultProps;
-
-#endif
 
         fillColor = UIColor.blackColor;
         strokeColor = UIColor.blackColor;
@@ -55,8 +45,6 @@ using namespace facebook::react;
 
     return self;
 }
-
-#ifdef RCT_NEW_ARCH_ENABLED
 
 + (ComponentDescriptorProvider)componentDescriptorProvider
 {
@@ -132,57 +120,6 @@ using namespace facebook::react;
   innerRings = [[NSMutableArray alloc] init];
 }
 
-#else
-
-- (void)setFillColor:(NSNumber*)color {
-    fillColor = [RCTConvert UIColor:color];
-    [self updatePolygon];
-}
-
-- (void)setStrokeColor:(NSNumber*)color {
-    strokeColor = [RCTConvert UIColor:color];
-    [self updatePolygon];
-}
-
-- (void)setStrokeWidth:(NSNumber*)width {
-    strokeWidth = [width floatValue];
-    [self updatePolygon];
-}
-
-- (void)setZI:(NSNumber*)zI {
-    zIndex = [zI floatValue];
-    [self updatePolygon];
-}
-
-- (void)updatePolygonGeometry {
-    YMKLinearRing* ring = [YMKLinearRing linearRingWithPoints:_points];
-    NSMutableArray<YMKLinearRing*>* _innerRings = [[NSMutableArray alloc] init];
-
-    for (int i = 0; i < [innerRings count]; ++i) {
-        YMKLinearRing* iRing = [YMKLinearRing linearRingWithPoints:[innerRings objectAtIndex:i]];
-        [_innerRings addObject:iRing];
-    }
-    polygon = [YMKPolygon polygonWithOuterRing:ring innerRings:_innerRings];
-}
-
-- (void)setPoints:(NSMutableArray<YMKPoint*>*)points {
-    _points = points;
-    [self updatePolygonGeometry];
-    [self updatePolygon];
-}
-
-- (void)setInnerRings:(NSArray<NSArray<YMKPoint*>*>*)_innerRings {
-    innerRings = _innerRings;
-    [self updatePolygonGeometry];
-    [self updatePolygon];
-}
-
-- (void)setHandled:(BOOL)_handled {
-    handled = _handled;
-}
-
-#endif
-
 - (void)updatePolygon {
     if (mapObject != nil && [mapObject isValid]) {
         [mapObject setGeometry:polygon];
@@ -200,17 +137,7 @@ using namespace facebook::react;
 }
 
 - (BOOL)onMapObjectTapWithMapObject:(nonnull YMKMapObject*)mapObject point:(nonnull YMKPoint*)point {
-
-#ifdef RCT_NEW_ARCH_ENABLED
-
     std::dynamic_pointer_cast<const PolygonViewEventEmitter>(_eventEmitter)->onPress({});
-
-#else
-
-    if (self.onPress)
-        self.onPress(@{});
-
-#endif
 
     return handled;
 }

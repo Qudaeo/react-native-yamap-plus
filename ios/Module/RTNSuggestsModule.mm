@@ -96,10 +96,6 @@ NSString *ERR_SUGGEST_FAILED = @"ERR_SUGGEST_FAILED";
 
 #endif
 
-#ifdef RCT_NEW_ARCH_ENABLED
-
-// New architecture
-
 - (std::shared_ptr<facebook::react::TurboModule>)getTurboModule:(const facebook::react::ObjCTurboModule::InitParams &)params {
     return std::make_shared<facebook::react::NativeSuggestsModuleSpecJSI>(params);
 }
@@ -176,82 +172,6 @@ NSString *ERR_SUGGEST_FAILED = @"ERR_SUGGEST_FAILED";
 #endif
 
 }
-
-#else
-
-// Old architecture
-
-RCT_EXPORT_METHOD(suggest:(nonnull NSString*) query resolver:(RCTPromiseResolveBlock) resolve rejecter:(RCTPromiseRejectBlock) reject) {
-
-#ifdef USE_YANDEX_MAPS_FULL
-
-    [self suggestImpl:query options:_defaultSuggestOptions boundingBox:_defaultBoundingBox resolver:resolve rejecter:reject];
-
-#else
-
-    reject(@"SUGGESTS_FAILED", @"SUGGESTS module is not available in Lite version", nil);
-
-#endif
-
-}
-
-RCT_EXPORT_METHOD(suggestWithOptions:(nonnull NSString*) query options:(NSDictionary *) options resolver:(RCTPromiseResolveBlock) resolve rejecter:(RCTPromiseRejectBlock) reject) {
-
-#ifdef USE_YANDEX_MAPS_FULL
-
-    YMKSuggestOptions *suggestOptions = [[YMKSuggestOptions alloc] init];
-
-    id suggestWords = [options valueForKey:@"suggestWords"];
-    if (suggestWords != nil) {
-        suggestOptions.suggestWords = suggestWords;
-    }
-
-    id suggestTypes = [options valueForKey:@"suggestTypes"];
-    if (suggestTypes != nil) {
-        for (NSString *suggestType in suggestTypes) {
-            suggestOptions.suggestTypes = suggestOptions.suggestTypes | [self suggestTypeWithString:suggestType];
-        }
-    }
-
-    id userPosition = [options valueForKey:@"userPosition"];
-    if (userPosition != nil) {
-        suggestOptions.userPosition = [RCTConvert YMKPoint:userPosition];
-    }
-
-    YMKBoundingBox *boundingBox = _defaultBoundingBox;
-    id boxDictionary = [options valueForKey:@"boundingBox"];
-    if (userPosition != nil) {
-        id southWest = [boxDictionary valueForKey:@"southWest"];
-        id northEast = [boxDictionary valueForKey:@"northEast"];
-
-        boundingBox = [YMKBoundingBox boundingBoxWithSouthWest:[RCTConvert YMKPoint:southWest] northEast:[RCTConvert YMKPoint:northEast]];
-    }
-
-    [self suggestImpl:query options:suggestOptions boundingBox:boundingBox resolver:resolve rejecter:reject];
-
-#else
-
-    reject(@"SUGGESTS_FAILED", @"SUGGESTS module is not available in Lite version", nil);
-
-#endif
-
-}
-
-RCT_EXPORT_METHOD(reset: (RCTPromiseResolveBlock) resolve rejecter:(RCTPromiseRejectBlock) reject) {
-
-#ifdef USE_YANDEX_MAPS_FULL
-
-    [self resetImpl:resolve];
-
-#else
-
-    reject(@"SUGGESTS_FAILED", @"SUGGESTS module is not available in Lite version", nil);
-
-#endif
-
-}
-
-#endif
 
 RCT_EXPORT_MODULE()
 

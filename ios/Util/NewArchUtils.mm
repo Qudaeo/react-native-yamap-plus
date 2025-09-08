@@ -1,5 +1,3 @@
-#ifdef RCT_NEW_ARCH_ENABLED
-
 #import "NewArchUtils.h"
 
 @implementation NewArchUtils;
@@ -96,5 +94,3 @@
 }
 
 @end
-
-#endif
