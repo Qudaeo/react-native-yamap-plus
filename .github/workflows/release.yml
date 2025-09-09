@@ -38,5 +38,6 @@ jobs:
         run: yarn release ${{ github.event.inputs.release_type }}
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       - name: Echo message
         run: echo '🚀🚀🚀 Success! 🚀🚀🚀'
