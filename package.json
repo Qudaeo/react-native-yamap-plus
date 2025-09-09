@@ -7,7 +7,7 @@
   "types": "lib/typescript/index.d.ts",
   "scripts": {
     "example": "yarn workspace react-native-yamap-example",
-    "prepare": "bob build",
+    "build": "bob build",
     "release": "release-it"
   },
   "homepage": "https://github.com/qudaeo/react-native-yamap-plus",

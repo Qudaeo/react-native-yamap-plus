@@ -34,8 +34,6 @@ jobs:
           cache: yarn
       - name: Install dependencies
         run: yarn install --immutable
-      - name: Build lib
-        run: yarn prepare
       - name: Release-it
         run: yarn release ${{ github.event.inputs.release_type }}
         env:
