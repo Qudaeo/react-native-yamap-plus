@@ -1,0 +1,44 @@
+name: Release
+on:
+  workflow_dispatch:
+    inputs:
+      release_type:
+        description: 'Type of release'
+        required: true
+        default: 'patch'
+        type: choice
+        options:
+          - 'patch'
+          - 'minor'
+          - 'major'
+
+permissions:
+  id-token: write  # Required for OIDC
+  contents: read
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: v4
+      - name: Enable Corepack
+        run: corepack enable
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+          registry-url: 'https://registry.npmjs.org'
+          cache: yarn
+      - name: Install dependencies
+        run: yarn install --immutable
+      - name: Build lib
+        run: yarn prepare
+      - name: Release-it
+        run: yarn release ${{ github.event.inputs.release_type }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
+      - name: Echo message
+        run: echo '🚀🚀🚀 Success! 🚀🚀🚀'
