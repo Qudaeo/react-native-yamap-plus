@@ -35,9 +35,13 @@ jobs:
       - name: Install dependencies
         run: yarn install --immutable
       - name: Release-it
-        run: yarn release ${{ github.event.inputs.release_type }}
+        run: |
+          git config user.name "${{ github.actor }}"
+          git config user.email "${{ github.actor }}@users.noreply.github.com"
+          yarn release ${{ github.event.inputs.release_type }}
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       - name: Echo message
         run: echo '🚀🚀🚀 Success! 🚀🚀🚀'
