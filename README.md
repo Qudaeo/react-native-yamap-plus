@@ -85,7 +85,7 @@ const Map = () => {
 };
 ```
 
-#### Доступные `props` для компонента **MapView**:
+#### Доступные `props` для компонента **Yamap**:
 
 | Название | Тип | Стандартное значение | Описание |
 |--|--|--|--|
@@ -109,13 +109,12 @@ const Map = () => {
 | tiltGesturesDisabled | boolean | false | Включены ли жесты наклона камеры двумя пальцами |
 | rotateGesturesDisabled | boolean | false | Включены ли жесты поворота камеры |
 | fastTapDisabled | boolean | false | Убрана ли задержка в 300мс при клике/тапе |
-| clusterColor | string | 'red' | Цвет фона метки-кластера |
 | logoPosition | YandexLogoPosition | {} | Позиция логотипа Яндекса на карте |
 | logoPadding | YandexLogoPadding | {} | Отступ логотипа Яндекса на карте |
 | mapType | string | 'vector' | Тип карты |
 | mapStyle | string | {} | Стили карты согласно [документации](https://yandex.ru/dev/maps/mapkit/doc/dg/concepts/style.html) |
 
-#### Доступные методы для компонента **MapView**:
+#### Доступные методы для компонента **Yamap**:
 
 -  `fitMarkers(points: Point[]): void` - подобрать положение камеры, чтобы вместить указанные маркеры (если возможно);
 -  `fitAllMarkers(): void` - подобрать положение камеры, чтобы вместить все маркеры (если возможно);
@@ -126,6 +125,19 @@ const Map = () => {
 -  `setTrafficVisible(isVisible: boolean): void` - включить/отключить отображение слоя с пробками на картах;
 -  `getScreenPoints(point: Point[], callback: (result: {screenPoints: ScreenPoint[]}) => void)` - получить кооординаты на экране (x и y) по координатам маркеров;
 -  `getWorldPoints(screenPoint: ScreenPoint[], callback: (result: {worldPoints: Point[]}) => void)` - получить координаты точек (lat и lon) по координатам на экране.
+
+#### Дополнительные `props` компонента **ClusteredYamap**: для стилизации кластеризованного маркера
+
+| Название           | Тип                              | Стандартное значение    | Описание                                         |
+|--------------------|----------------------------------|-------------------------|--------------------------------------------------|
+| clusteredMarkers   | Array<{point: Point, data: any}> | undefined               | Массив точек на карте                            |
+| сlusterIcon        | ImageSource                      | undefined               | Кастомная иконка для маркера (по умолчанию круг) |
+| clusterColor       | string                           | 'red'                   | Цвет фона метки-кластера                         |
+| сlusterSize        | YandexClusterSizes               | {width: 32, height: 32} | Размер маркера                                   |
+| сlusterTextColor   | string                           | 'black'                 | Цвет текста                                      |
+| сlusterTextSize    | number                           | 45                      | Размер текста                                    |
+| сlusterTextXOffset | number                           | 0                       | Отступ для текста                                |
+| сlusterTextYOffset | number                           | 0                       | Отступ для текста                                |
 
 **ВАЖНО**
 
