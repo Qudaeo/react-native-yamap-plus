@@ -2304,7 +2304,7 @@ PODS:
     - React-perflogger (= 0.82.0-rc.1)
     - React-utils (= 0.82.0-rc.1)
     - SocketRocket
-  - RNSVG (15.12.1):
+  - RNSVG (15.13.0):
     - boost
     - DoubleConversion
     - fast_float
@@ -2330,10 +2330,10 @@ PODS:
     - ReactCodegen
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
-    - RNSVG/common (= 15.12.1)
+    - RNSVG/common (= 15.13.0)
     - SocketRocket
     - Yoga
-  - RNSVG/common (15.12.1):
+  - RNSVG/common (15.13.0):
     - boost
     - DoubleConversion
     - fast_float
@@ -2700,7 +2700,7 @@ SPEC CHECKSUMS:
   ReactAppDependencyProvider: dbc881851cc7d5738549280515386bf30e70be48
   ReactCodegen: a8c6b9d22326efe140b5a06f044b50ea1278efb0
   ReactCommon: bb141256a927aa1d9cdac9720a11f52e7304e504
-  RNSVG: 287504b73fa0e90a605225aa9f852a86d5461e84
+  RNSVG: 60b2eab78fdbdc574703a2ee965b1e8df1c4461b
   RNYamap: 615925c61598fca141a717d191daae3c66048f7f
   SocketRocket: d4aabe649be1e368d1318fdf28a022d714d65748
   YandexMapsMobile: 0682eba9415201205a86b71dcafde88dba3522b3
