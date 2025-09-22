@@ -2310,7 +2310,7 @@ PODS:
     - ReactCommon/turbomodule/core
     - SocketRocket
     - Yoga
-  - RNYamap (5.0.0-rc.6):
+  - RNYamap (5.0.0):
     - boost
     - DoubleConversion
     - fast_float
@@ -2337,10 +2337,10 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - SocketRocket
-    - YandexMapsMobile (= 4.17.0-full)
+    - YandexMapsMobile (= 4.22.0-full)
     - Yoga
   - SocketRocket (0.7.1)
-  - YandexMapsMobile (4.17.0-full)
+  - YandexMapsMobile (4.22.0-full)
   - Yoga (0.0.0)
 
 DEPENDENCIES:
@@ -2646,9 +2646,9 @@ SPEC CHECKSUMS:
   ReactCodegen: 1d05923ad119796be9db37830d5e5dc76586aa00
   ReactCommon: 394c6b92765cf6d211c2c3f7f6bc601dffb316a6
   RNSVG: 6c39befcfad06eec55b40c19a030b2d9eca63334
-  RNYamap: 0e0973d005205b784590edec27cbea1f294e3e48
+  RNYamap: c68381bbf605768a957cc29d8cf933b6ee89b480
   SocketRocket: d4aabe649be1e368d1318fdf28a022d714d65748
-  YandexMapsMobile: 0682eba9415201205a86b71dcafde88dba3522b3
+  YandexMapsMobile: 27e6e45425bb61f0be2dbc2bf02d4e64926691a9
   Yoga: a3ed390a19db0459bd6839823a6ac6d9c6db198d
 
 PODFILE CHECKSUM: 8680ce980c733c58166a18e79b5493e2772a378d
