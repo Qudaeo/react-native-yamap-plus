@@ -13,7 +13,9 @@
 
 ## Миграция `4` → `5` или `4` → `6`
 
-- Дефолтное значение `handled` у компонентов `Circle`, `Marker`, `Polygon` и `Polyline` изменено с `true` на `false`
+- Компоненты `Circle`, `Marker`, `Polygon` и `Polyline`:
+  - дефолтное значение `handled` изменено с `true` на `false`
+  - вместо пропса `zIndex` необходимо использовать `zI`
 
 
 - Изменены названия и дефолтные значения props компонентов `Yamap` и `ClusteredYamap`:
