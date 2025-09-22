@@ -1,0 +1,20 @@
+{
+  "git": {
+    "requireBranch": "v5",
+    "commitMessage": "chore: release v${version}"
+  },
+  "hooks": {
+    "before:init": ["git pull", "npm run build"]
+  },
+  "github": {
+    "release": true,
+    "releaseName": "${version}"
+  },
+  "npm": {
+    "publish": true,
+    "skipChecks": true
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org"
+  }
+}
