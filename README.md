@@ -1,8 +1,30 @@
 ## React Native Yandex Maps (Яндекс Карты)
 
-#### Форк библиотеки [react-native-yamap](https://github.com/volga-volga/react-native-yamap), разработанной компанией [Волга-Волга](https://vvdev.ru/)
+Форк библиотеки [react-native-yamap](https://github.com/volga-volga/react-native-yamap), разработанной компанией [Волга-Волга](https://vvdev.ru/)
 
-#### Библиотека для интеграции MapKit SDK в React Native
+Библиотека для интеграции MapKit SDK в React Native
+
+| Version | React Native New Arch support |
+|---------|-------------------------------|
+| 6       | New Arch                      |
+| 5       | Legacy + New Arch             |
+| 4       | Legacy Arch                   |
+
+
+## Миграция `4` → `5` или `4` → `6`
+
+- Компоненты `Circle`, `Marker`, `Polygon` и `Polyline`:
+    - дефолтное значение `handled` изменено с `true` на `false`
+    - вместо пропса `zIndex` необходимо использовать `zI`
+
+
+- Изменены названия и дефолтные значения props компонентов `Yamap` и `ClusteredYamap`:
+    - `interactive`(`true`) → `interactiveDisabled`(`false`)
+    - `scrollGesturesEnabled`(`true`) → `scrollGesturesDisabled`(`false`)
+    - `zoomGesturesEnabled`(`true`) → `zoomGesturesDisabled`(`false`)
+    - `tiltGesturesEnabled`(`true`) → `tiltGesturesDisabled`(`false`)
+    - `rotateGesturesEnabled`(`true`) → `rotateGesturesDisabled`(`false`)
+    - `fastTapEnabled`(`true`) → `fastTapDisabled`(`false`)
 
 ## Установка
 
@@ -116,8 +138,8 @@ const Map = () => {
 
 #### Доступные методы для компонента **Yamap**:
 
--  `fitMarkers(points: Point[]): void` - подобрать положение камеры, чтобы вместить указанные маркеры (если возможно);
--  `fitAllMarkers(): void` - подобрать положение камеры, чтобы вместить все маркеры (если возможно);
+-  `fitMarkers(points: Point[], duration?: number, animation?: Animation): void` - подобрать положение камеры, чтобы вместить указанные маркеры (если возможно);
+-  `fitAllMarkers(duration?: number, animation?: Animation): void` - подобрать положение камеры, чтобы вместить все маркеры (если возможно);
 -  `setCenter(center: { lon: number, lat: number }, zoom: number = 10, azimuth: number = 0, tilt: number = 0, duration: number = 0, animation: Animation = Animation.SMOOTH)` - устанавливает камеру в точку с заданным zoom, поворотом по азимуту и наклоном карты (`tilt`). Можно параметризовать анимацию: длительность и тип. Если длительность установить 0, то переход будет без анимации. Возможные типы анимаций `Animation.SMOOTH` и `Animation.LINEAR`;
 -  `setZoom(zoom: number, duration: number, animation: Animation)` - изменить текущий zoom карты. Параметры `duration` и `animation` работают по аналогии с `setCenter`;
 -  `getCameraPosition(callback: (position: CameraPosition) => void)` - запрашивает положение камеры и вызывает переданный колбек с текущим значением;
@@ -196,7 +218,7 @@ import {Yamap, Circle} from 'react-native-yamap-plus';
 | strokeWidth | number | Толщина границы |
 | onPress | function | Действие при нажатии/клике |
 | zI | number | zIndex для объекта на карте |
-| handled | boolean | Включение(**false**)/отключение(**true**) всплытия события нажатия для родителя `default:true` |
+| handled | boolean | Включение(**false**)/отключение(**true**) всплытия события нажатия для родителя `default:false` |
 
 ### Polyline
 
@@ -338,9 +360,9 @@ const find = async (query: string, options?: SuggestOptions) => {
     disableSpellingCorrection: true,
     geometry: true,
   });
-  
+
 //   {"Components": [{"kind": "4", "name": "Малиновский сельсовет"}, {"kind": "4", "name": "Белебеевский район"}, {"kind": "3", "name": "Республика Башкортостан"}, {"kind": "19", "name": "Понтийско-Каспийская степь"}, {"kind": "19", "name": "Понтийско-Каспийская степь"}, {"kind": "19", "name": "Понтийско-Каспийская степь"}, {"kind": "3", "name": "Приволжский федеральный округ"}, {"kind": "1", "name": "Россия"}], "country_code": "RU", "formatted": "Россия, Республика Башкортостан, Белебеевский район, Малиновский сельсовет", "uri": "ymapsbm1://geo?data=IgoNAQBYQhUBAFhC"}
-  
+
 }
 ```
 
