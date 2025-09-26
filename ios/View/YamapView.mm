@@ -331,7 +331,7 @@ using namespace facebook::react;
     } else if ([commandName isEqual:@"getScreenPoints"]) {
         std::string id = std::string([args[0][0][@"id"] UTF8String]);
         NSArray *worldPoints = args[0][0][@"points"];
-        
+
         if ([self isKindOfClass:[ClusteredYamapView class]]) {
             std::vector<ClusteredYamapViewEventEmitter::OnWorldToScreenPointsReceivedScreenPoints> screenPoints;
             for (int i = 0; i < [worldPoints count]; ++i) {
@@ -342,7 +342,7 @@ using namespace facebook::react;
                     .y = screenPoint.y
                 });
             }
-            
+
             std::dynamic_pointer_cast<const ClusteredYamapViewEventEmitter>(_eventEmitter)->onWorldToScreenPointsReceived({
                 .id = id,
                 .screenPoints = screenPoints
@@ -357,7 +357,7 @@ using namespace facebook::react;
                     .y = screenPoint.y
                 });
             }
-            
+
             std::dynamic_pointer_cast<const YamapViewEventEmitter>(_eventEmitter)->onWorldToScreenPointsReceived({
                 .id = id,
                 .screenPoints = screenPoints
@@ -366,7 +366,7 @@ using namespace facebook::react;
     } else if ([commandName isEqual:@"getWorldPoints"]) {
         std::string id = std::string([args[0][0][@"id"] UTF8String]);
         NSArray *screenPoints = args[0][0][@"points"];
-        
+
         if ([self isKindOfClass:[ClusteredYamapView class]]) {
             std::vector<ClusteredYamapViewEventEmitter::OnScreenToWorldPointsReceivedWorldPoints> worldPoints;
             for (int i = 0; i < [screenPoints count]; ++i) {
@@ -377,7 +377,7 @@ using namespace facebook::react;
                     .lon = worldPoint.longitude
                 });
             }
-            
+
             std::dynamic_pointer_cast<const ClusteredYamapViewEventEmitter>(_eventEmitter)->onScreenToWorldPointsReceived({
                 .id = id,
                 .worldPoints = worldPoints
@@ -392,7 +392,7 @@ using namespace facebook::react;
                     .lon = worldPoint.longitude
                 });
             }
-            
+
             std::dynamic_pointer_cast<const YamapViewEventEmitter>(_eventEmitter)->onScreenToWorldPointsReceived({
                 .id = id,
                 .worldPoints = worldPoints
@@ -609,7 +609,7 @@ using namespace facebook::react;
         std::dynamic_pointer_cast<const ClusteredYamapViewEventEmitter>(_eventEmitter)->onCameraPositionChange({
             .point = {
                 .lat = cameraPosition.target.latitude,
-                .lon = cameraPosition.target.latitude,
+                .lon = cameraPosition.target.longitude,
             },
             .azimuth = cameraPosition.azimuth,
             .finished = finished,
@@ -621,7 +621,7 @@ using namespace facebook::react;
         std::dynamic_pointer_cast<const YamapViewEventEmitter>(_eventEmitter)->onCameraPositionChange({
             .point = {
                 .lat = cameraPosition.target.latitude,
-                .lon = cameraPosition.target.latitude,
+                .lon = cameraPosition.target.longitude,
             },
             .azimuth = cameraPosition.azimuth,
             .finished = finished,
@@ -636,7 +636,7 @@ using namespace facebook::react;
             std::dynamic_pointer_cast<const ClusteredYamapViewEventEmitter>(_eventEmitter)->onCameraPositionChangeEnd({
                 .point = {
                     .lat = cameraPosition.target.latitude,
-                    .lon = cameraPosition.target.latitude,
+                    .lon = cameraPosition.target.longitude,
                 },
                 .azimuth = cameraPosition.azimuth,
                 .finished = finished,
@@ -648,7 +648,7 @@ using namespace facebook::react;
             std::dynamic_pointer_cast<const YamapViewEventEmitter>(_eventEmitter)->onCameraPositionChangeEnd({
                 .point = {
                     .lat = cameraPosition.target.latitude,
-                    .lon = cameraPosition.target.latitude,
+                    .lon = cameraPosition.target.longitude,
                 },
                 .azimuth = cameraPosition.azimuth,
                 .finished = finished,
