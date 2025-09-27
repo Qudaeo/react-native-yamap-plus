@@ -253,7 +253,7 @@ using namespace facebook::react;
                 .id = id,
                 .point = {
                     .lat = position.target.latitude,
-                    .lon = position.target.latitude,
+                    .lon = position.target.longitude,
                 },
                 .azimuth = position.azimuth,
                 .reason = "APPLICATION",
@@ -265,7 +265,7 @@ using namespace facebook::react;
                 .id = id,
                 .point = {
                     .lat = position.target.latitude,
-                    .lon = position.target.latitude,
+                    .lon = position.target.longitude,
                 },
                 .azimuth = position.azimuth,
                 .reason = "APPLICATION",
