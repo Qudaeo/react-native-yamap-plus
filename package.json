@@ -1,6 +1,6 @@
 {
   "name": "react-native-yamap-plus",
-  "version": "6.0.0-rc.0",
+  "version": "6.0.0-rc.1",
   "description": "Yandex MapKit for React Native",
   "source": "src/index.ts",
   "main": "src/index.ts",
