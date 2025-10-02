@@ -5,8 +5,9 @@ import MarkerNativeComponent, {MarkerNativeProps} from '../spec/MarkerNativeComp
 import {Commands} from '../spec/commands/marker';
 import {Point} from '../interfaces';
 
-export type MarkerProps = OmitEx<MarkerNativeProps, 'source'> &  {
+export type MarkerProps = OmitEx<MarkerNativeProps, 'source' | 'zI'> &  {
   source?: ImageSourcePropType;
+  zIndex?: number;
 }
 
 export interface MarkerRef {
@@ -14,7 +15,7 @@ export interface MarkerRef {
   animatedRotateTo: (angle: number, duration: number) => void;
 }
 
-export const Marker = forwardRef<MarkerRef, MarkerProps>(({source, ...props}, ref) => {
+export const Marker = forwardRef<MarkerRef, MarkerProps>(({source, zIndex, ...props}, ref) => {
   const nativeRef = useRef(null);
 
   const imageUri = useMemo(() => getImageUri(source), [source]);
@@ -28,6 +29,7 @@ export const Marker = forwardRef<MarkerRef, MarkerProps>(({source, ...props}, re
 
   return (
     <MarkerNativeComponent
+      zI={zIndex}
       {...props}
       ref={nativeRef}
       source={imageUri}
