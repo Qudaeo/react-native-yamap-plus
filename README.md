@@ -15,7 +15,6 @@
 
 - Компоненты `Circle`, `Marker`, `Polygon` и `Polyline`:
   - дефолтное значение `handled` изменено с `true` на `false`
-  - вместо пропса `zIndex` необходимо использовать `zI`
 
 
 - Изменены названия и дефолтные значения props компонентов `Yamap` и `ClusteredYamap`:
@@ -188,7 +187,7 @@ import {Yamap, Marker} from 'react-native-yamap-plus';
 | children | ReactElement | Рендер маркера как компонента |
 | onPress | function | Действие при нажатии/клике |
 | anchor | {  x:  number,  y:  number  } | Якорь иконки маркера. Координаты принимают значения от 0 до 1 |
-| zI | number | zIndex для объекта на карте |
+| zIndex | number | zIndex для объекта на карте |
 | visible | boolean | Отображение маркера на карте |
 | handled | boolean | Включение(**false**)/отключение(**true**) всплытия события нажатия для родителя `default:false` |
 
@@ -217,7 +216,7 @@ import {Yamap, Circle} from 'react-native-yamap-plus';
 | strokeColor | string | Цвет границы |
 | strokeWidth | number | Толщина границы |
 | onPress | function | Действие при нажатии/клике |
-| zI | number | zIndex для объекта на карте |
+| zIndex | number | zIndex для объекта на карте |
 | handled | boolean | Включение(**false**)/отключение(**true**) всплытия события нажатия для родителя `default:false` |
 
 ### Polyline
@@ -249,7 +248,7 @@ import {Yamap, Polyline} from 'react-native-yamap-plus';
 | dashOffset | number | Отступ первого штриха от начала полилинии |
 | gapLength | number | Длина разрыва между штрихами |
 | onPress | function | Действие при нажатии/клике |
-| zI | number | zIndex для объекта на карте |
+| zIndex | number | zIndex для объекта на карте |
 | handled | boolean | Включение(**false**)/отключение(**true**) всплытия события нажатия для родителя `default:false` |
 
 ### Polygon
@@ -278,7 +277,7 @@ import {Yamap, Polygon} from 'react-native-yamap-plus';
 | strokeWidth | number | Толщина границы |
 | innerRings | (Point[])[] | Массив полилиний, которые образуют отверстия в полигоне |
 | onPress | function | Действие при нажатии/клике |
-| zI | number | zIndex для объекта на карте |
+| zIndex | number | zIndex для объекта на карте |
 | handled | boolean | Включение(**false**)/отключение(**true**) всплытия события нажатия для родителя `default:false` |
 
 ## Запрос маршрутов (модуль Transport) [Full]

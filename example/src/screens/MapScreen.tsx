@@ -95,7 +95,7 @@ export const MapScreen = () => {
           angleRef.current = angleRef.current + 180;
           markerRef.current?.animatedRotateTo(angleRef.current, 300);
         }}
-        zI={100}
+        zIndex={100}
       />
       <Polygon
         points={[
@@ -111,7 +111,7 @@ export const MapScreen = () => {
         onPress={() => {
           console.log('polygon press');
         }}
-        zI={5}
+        zIndex={5}
         innerRings={[
           [
             {lat: 55.735, lon: 37.58},
@@ -132,7 +132,7 @@ export const MapScreen = () => {
         onPress={() => {
           console.log('polygon press');
         }}
-        zI={7}
+        zIndex={7}
       />
       <Polyline
         points={[
@@ -151,7 +151,7 @@ export const MapScreen = () => {
         onPress={() => {
           console.log('polyline press');
         }}
-        zI={11}
+        zIndex={11}
       />
     </Yamap>
   );
