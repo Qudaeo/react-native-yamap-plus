@@ -218,6 +218,10 @@ using namespace facebook::react;
 }
 
 - (void)handleCommand:(const NSString *)commandName args:(const NSArray *)args {
+    if (!_eventEmitter) {
+        return;
+    }
+
     if ([commandName isEqual:@"setCenter"]) {
         NSNumber *duration = args[0][0][@"duration"];
         NSNumber *animation = args[0][0][@"animation"];
@@ -461,6 +465,10 @@ using namespace facebook::react;
                         cameraPosition:(nonnull YMKCameraPosition*)cameraPosition
                     cameraUpdateReason:(YMKCameraUpdateReason)cameraUpdateReason
                               finished:(BOOL)finished {
+    if (!_eventEmitter) {
+        return;
+    }
+
     if ([self isKindOfClass:[ClusteredYamapView class]]) {
         std::dynamic_pointer_cast<const ClusteredYamapViewEventEmitter>(_eventEmitter)->onCameraPositionChange({
             .point = {
@@ -683,6 +691,10 @@ using namespace facebook::react;
 
 - (void)onMapTapWithMap:(nonnull YMKMap *)map
                   point:(nonnull YMKPoint *)point {
+    if (!_eventEmitter) {
+        return;
+    }
+
     if ([self isKindOfClass:[ClusteredYamapView class]]) {
         std::dynamic_pointer_cast<const ClusteredYamapViewEventEmitter>(_eventEmitter)->onMapPress({.lat = point.latitude, .lon = point.longitude});
     } else {
@@ -692,6 +704,10 @@ using namespace facebook::react;
 
 - (void)onMapLongTapWithMap:(nonnull YMKMap *)map
                       point:(nonnull YMKPoint *)point {
+    if (!_eventEmitter) {
+        return;
+    }
+
     if ([self isKindOfClass:[ClusteredYamapView class]]) {
         std::dynamic_pointer_cast<const ClusteredYamapViewEventEmitter>(_eventEmitter)->onMapLongPress({.lat = point.latitude, .lon = point.longitude});
     } else {
@@ -868,6 +884,10 @@ using namespace facebook::react;
 }
 
 - (void)onMapLoadedWithStatistics:(YMKMapLoadStatistics*)statistics {
+    if (!_eventEmitter) {
+        return;
+    }
+
     if ([self isKindOfClass:[ClusteredYamapView class]]) {
         std::dynamic_pointer_cast<const ClusteredYamapViewEventEmitter>(_eventEmitter)->onMapLoaded({
             .renderObjectCount = [[NSNumber numberWithLong:statistics.renderObjectCount] doubleValue],
