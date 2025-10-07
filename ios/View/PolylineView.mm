@@ -215,7 +215,9 @@ using namespace facebook::react;
 
 #ifdef RCT_NEW_ARCH_ENABLED
 
-    std::dynamic_pointer_cast<const PolylineViewEventEmitter>(_eventEmitter)->onPress({});
+    if (_eventEmitter) {
+        std::dynamic_pointer_cast<const PolylineViewEventEmitter>(_eventEmitter)->onPress({});
+    }
 
 #else
 

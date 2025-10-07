@@ -179,7 +179,9 @@ using namespace facebook::react;
 - (BOOL)onMapObjectTapWithMapObject:(nonnull YMKMapObject*)mapObject point:(nonnull YMKPoint*)point {
 #ifdef RCT_NEW_ARCH_ENABLED
 
-    std::dynamic_pointer_cast<const CircleViewEventEmitter>(_eventEmitter)->onPress({});
+    if (_eventEmitter) {
+        std::dynamic_pointer_cast<const CircleViewEventEmitter>(_eventEmitter)->onPress({});
+    }
 
 #else
 

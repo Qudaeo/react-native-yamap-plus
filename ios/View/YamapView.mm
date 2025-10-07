@@ -228,6 +228,10 @@ using namespace facebook::react;
 }
 
 - (void)handleCommand:(const NSString *)commandName args:(const NSArray *)args {
+    if (!_eventEmitter) {
+        return;
+    }
+
     if ([commandName isEqual:@"setCenter"]) {
         NSNumber *duration = args[0][0][@"duration"];
         NSNumber *animation = args[0][0][@"animation"];
@@ -605,6 +609,10 @@ using namespace facebook::react;
 
 #ifdef RCT_NEW_ARCH_ENABLED
 
+    if (!_eventEmitter) {
+        return;
+    }
+
     if ([self isKindOfClass:[ClusteredYamapView class]]) {
         std::dynamic_pointer_cast<const ClusteredYamapViewEventEmitter>(_eventEmitter)->onCameraPositionChange({
             .point = {
@@ -891,6 +899,10 @@ using namespace facebook::react;
 
 #ifdef RCT_NEW_ARCH_ENABLED
 
+    if (!_eventEmitter) {
+        return;
+    }
+
     if ([self isKindOfClass:[ClusteredYamapView class]]) {
         std::dynamic_pointer_cast<const ClusteredYamapViewEventEmitter>(_eventEmitter)->onMapPress({.lat = point.latitude, .lon = point.longitude});
     } else {
@@ -915,6 +927,10 @@ using namespace facebook::react;
                       point:(nonnull YMKPoint *)point {
 
 #ifdef RCT_NEW_ARCH_ENABLED
+
+    if (!_eventEmitter) {
+        return;
+    }
 
     if ([self isKindOfClass:[ClusteredYamapView class]]) {
         std::dynamic_pointer_cast<const ClusteredYamapViewEventEmitter>(_eventEmitter)->onMapLongPress({.lat = point.latitude, .lon = point.longitude});
@@ -1127,6 +1143,10 @@ using namespace facebook::react;
 - (void)onMapLoadedWithStatistics:(YMKMapLoadStatistics*)statistics {
 
 #ifdef RCT_NEW_ARCH_ENABLED
+
+    if (!_eventEmitter) {
+        return;
+    }
 
     if ([self isKindOfClass:[ClusteredYamapView class]]) {
         std::dynamic_pointer_cast<const ClusteredYamapViewEventEmitter>(_eventEmitter)->onMapLoaded({
