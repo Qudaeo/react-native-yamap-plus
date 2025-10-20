@@ -1030,6 +1030,16 @@ using namespace facebook::react;
     [super removeReactSubview: subview];
 }
 
+- (void)mountChildComponentView:(UIView<RCTComponentViewProtocol> *)childComponentView index:(NSInteger)index
+{
+    [self insertSubview:childComponentView atIndex:index];
+}
+
+- (void)unmountChildComponentView:(UIView<RCTComponentViewProtocol> *)childComponentView index:(NSInteger)index
+{
+    [self removeReactSubview:childComponentView];
+}
+
 - (void)setClusterColor: (NSNumber*) color {
     clusterColor = [RCTConvert UIColor:color];
 }
