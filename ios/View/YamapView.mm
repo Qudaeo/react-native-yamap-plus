@@ -973,14 +973,13 @@ using namespace facebook::react;
         YMKPolylineMapObject *obj = [objects addPolylineWithPolyline:[polyline getPolyline]];
         [polyline setMapObject:obj];
     } else if ([subview isKindOfClass:[MarkerView class]]) {
+        MarkerView *marker = (MarkerView *) subview;
         if ([self isKindOfClass:[ClusteredYamapView class]]) {
-            MarkerView *marker = (MarkerView*) subview;
             if (index<[clusterPlacemarks count]) {
                 [marker setClusterMapObject:[clusterPlacemarks objectAtIndex:index]];
             }
         } else {
             YMKMapObjectCollection *objects = mapView.mapWindow.map.mapObjects;
-            MarkerView *marker = (MarkerView *) subview;
             YMKPlacemarkMapObject *obj = [objects addPlacemark];
             [obj setIconWithImage:[[UIImage alloc] init]];
             [obj setGeometry:[marker getPoint]];
@@ -1014,7 +1013,12 @@ using namespace facebook::react;
     } else if ([subview isKindOfClass:[MarkerView class]]) {
         YMKMapObjectCollection *objects = mapView.mapWindow.map.mapObjects;
         MarkerView *marker = (MarkerView *) subview;
-        [objects removeWithMapObject:[marker getMapObject]];
+        YMKPlacemarkMapObject *mapObject = [marker getMapObject];
+        if ([self isKindOfClass:[ClusteredYamapView class]]) {
+            [clusterPlacemarks removeObject:mapObject];
+        } else {
+            [objects removeWithMapObject:mapObject];
+        }
     } else if ([subview isKindOfClass:[CircleView class]]) {
         YMKMapObjectCollection *objects = mapView.mapWindow.map.mapObjects;
         CircleView *circle = (CircleView *) subview;
