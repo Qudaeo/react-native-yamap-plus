@@ -3428,17 +3428,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"c12@npm:3.3.0":
-  version: 3.3.0
-  resolution: "c12@npm:3.3.0"
+"c12@npm:3.3.1":
+  version: 3.3.1
+  resolution: "c12@npm:3.3.1"
   dependencies:
     chokidar: "npm:^4.0.3"
     confbox: "npm:^0.2.2"
     defu: "npm:^6.1.4"
-    dotenv: "npm:^17.2.2"
+    dotenv: "npm:^17.2.3"
     exsolve: "npm:^1.0.7"
     giget: "npm:^2.0.0"
-    jiti: "npm:^2.5.1"
+    jiti: "npm:^2.6.1"
     ohash: "npm:^2.0.11"
     pathe: "npm:^2.0.3"
     perfect-debounce: "npm:^2.0.0"
@@ -3449,7 +3449,7 @@ __metadata:
   peerDependenciesMeta:
     magicast:
       optional: true
-  checksum: 10c0/759b82ada4e84222e26695d5928a6d5c672c7a1562d2a841ac8cf00bebee9bc531c69ffd6346da2b2d07f1524d241b8234948b8261a5fe8e2fa97b5c7acc4773
+  checksum: 10c0/37b70f838980eba3836ec9754b2c28e28d4eda272baefb1e22ff997ee7569a5f2a50acd41d65ea645969cbd66e5a8334f8634b2c264a8abd0af3caeee75e6351
   languageName: node
   linkType: hard
 
@@ -4313,7 +4313,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dotenv@npm:^17.2.2":
+"dotenv@npm:^17.2.3":
   version: 17.2.3
   resolution: "dotenv@npm:17.2.3"
   checksum: 10c0/c884403209f713214a1b64d4d1defa4934c2aa5b0002f5a670ae298a51e3c3ad3ba79dfee2f8df49f01ae74290fcd9acdb1ab1d09c7bfb42b539036108bb2ba0
@@ -6778,7 +6778,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jiti@npm:^2.5.1":
+"jiti@npm:^2.6.1":
   version: 2.6.1
   resolution: "jiti@npm:2.6.1"
   bin:
@@ -8671,7 +8671,7 @@ __metadata:
     "@types/react": "npm:*"
     "@types/react-native": "npm:*"
     del-cli: "npm:7.0.0"
-    release-it: "npm:19.0.5"
+    release-it: "npm:19.0.6"
     typescript: "npm:5.9.3"
   peerDependencies:
     react: "*"
@@ -8847,15 +8847,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"release-it@npm:19.0.5":
-  version: 19.0.5
-  resolution: "release-it@npm:19.0.5"
+"release-it@npm:19.0.6":
+  version: 19.0.6
+  resolution: "release-it@npm:19.0.6"
   dependencies:
     "@nodeutils/defaults-deep": "npm:1.1.0"
     "@octokit/rest": "npm:22.0.0"
     "@phun-ky/typeof": "npm:2.0.3"
     async-retry: "npm:1.3.3"
-    c12: "npm:3.3.0"
+    c12: "npm:3.3.1"
     ci-info: "npm:^4.3.0"
     eta: "npm:4.0.1"
     git-url-parse: "npm:16.1.0"
@@ -8876,7 +8876,7 @@ __metadata:
     yargs-parser: "npm:21.1.1"
   bin:
     release-it: bin/release-it.js
-  checksum: 10c0/f07fb76c91989a0c5cd5a09daf46b0a9d327bbf4b2782fc5461a7202d23b99baac3f12ef0db6485c27b1f812f7ccf1c0a5c61a99cd3ad80a459fca6a3d38ded4
+  checksum: 10c0/75e146727831274f7dffd4eb3298e29390b8dd83353600e430588b3b40a1867c00e23f340249a83265ace2a7db0469457854eaf97810bfa15e45c8b8bc0af6ba
   languageName: node
   linkType: hard
 
