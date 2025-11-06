@@ -60,7 +60,9 @@ NSString *ERR_SUGGEST_FAILED = @"ERR_SUGGEST_FAILED";
                 if (suggestItem.subtitle) {
                     [suggestToPass setObject:suggestItem.subtitle.text forKey:@"subtitle"];
                 }
-                [suggestToPass setObject:suggestItem.uri forKey:@"uri"];
+                if (suggestItem.uri) {
+                    [suggestToPass setObject:suggestItem.uri forKey:@"uri"];
+                }
                 [suggestsToPass addObject:suggestToPass];
             }
         }
