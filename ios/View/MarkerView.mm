@@ -32,11 +32,11 @@ using namespace facebook::react;
     YMKPlacemarkMapObject *mapObject;
     float zIndex;
     NSNumber *scale;
-    NSNumber *rotationType;
+    BOOL _rotated;
     NSString *source;
     NSString *lastSource;
     NSValue *anchor;
-    NSNumber *visible;
+    BOOL visible;
     BOOL handled;
     NSMutableArray<UIView*> *_reactSubviews;
     YRTViewProvider *_markerViewProvider;
@@ -54,8 +54,8 @@ using namespace facebook::react;
 
         zIndex = 1;
         scale = [NSNumber numberWithInt:1];
-        rotationType = [NSNumber numberWithInt:0];
-        visible = [NSNumber numberWithInt:1];
+        _rotated = NO;
+        visible = YES;
         handled = NO;
         _reactSubviews = [[NSMutableArray alloc] init];
         source = @"";
@@ -92,21 +92,13 @@ using namespace facebook::react;
         scale = [NSNumber numberWithFloat:newViewProps.scale];
     }
 
-    if (oldViewProps.visible != newViewProps.visible) {
-        visible = [NSNumber numberWithInt:newViewProps.visible];
-    }
-
-    if (oldViewProps.rotated != newViewProps.rotated) {
-        rotationType = [NSNumber numberWithInt:newViewProps.rotated];
-    }
-
     if (oldViewProps.zI != newViewProps.zI) {
         zIndex = newViewProps.zI;
     }
 
-    if (oldViewProps.handled != newViewProps.handled) {
-        handled = newViewProps.handled;
-    }
+    visible = newViewProps.visible;
+    _rotated = newViewProps.rotated;
+    handled = newViewProps.handled;
 
     [self updateMarker];
 }
@@ -130,8 +122,8 @@ using namespace facebook::react;
     [super prepareForRecycle];
     zIndex = 1;
     scale = [NSNumber numberWithInt:1];
-    rotationType = [NSNumber numberWithInt:0];
-    visible = [NSNumber numberWithInt:1];
+    _rotated = NO;
+    visible = YES;
     handled = NO;
     source = nil;
     lastSource = nil;
@@ -144,8 +136,8 @@ using namespace facebook::react;
     scale = _scale;
     [self updateMarker];
 }
-- (void)setRotated:(NSNumber*) rotated {
-    rotationType = rotated;
+- (void)setRotated:(BOOL) rotated {
+    _rotated = rotated;
     [self updateMarker];
 }
 
@@ -154,7 +146,7 @@ using namespace facebook::react;
     [self updateMarker];
 }
 
-- (void)setVisible:(NSNumber*)_visible {
+- (void)setVisible:(BOOL)_visible {
     visible = _visible;
     [self updateMarker];
 }
@@ -203,11 +195,11 @@ using namespace facebook::react;
         [mapObject setZIndex:zIndex];
         YMKIconStyle* iconStyle = [[YMKIconStyle alloc] init];
         [iconStyle setScale:scale];
-        [iconStyle setVisible:visible];
+        [iconStyle setVisible:[NSNumber numberWithInt:visible]];
         if (anchor) {
           [iconStyle setAnchor:anchor];
         }
-        [iconStyle setRotationType:rotationType];
+        [iconStyle setRotationType:[NSNumber numberWithInt:_rotated]];
         if ([_reactSubviews count] == 0) {
             if (source != nil && ![source isEqualToString:@""] && ![source isEqual:lastSource]) {
                 [[ImageCacheManager instance] getWithSource:source completion:^(UIImage *image) {
@@ -234,11 +226,11 @@ using namespace facebook::react;
         [mapObject setZIndex:zIndex];
         YMKIconStyle* iconStyle = [[YMKIconStyle alloc] init];
         [iconStyle setScale:scale];
-        [iconStyle setVisible:visible];
+        [iconStyle setVisible:[NSNumber numberWithInt:visible]];
         if (anchor) {
           [iconStyle setAnchor:anchor];
         }
-        [iconStyle setRotationType:rotationType];
+        [iconStyle setRotationType:[NSNumber numberWithInt:_rotated]];
         if ([_reactSubviews count] == 0) {
             if (source != nil && ![source isEqualToString:@""] && ![source isEqual:lastSource]) {
                 [[ImageCacheManager instance] getWithSource:source completion:^(UIImage *image) {

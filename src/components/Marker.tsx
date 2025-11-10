@@ -15,7 +15,7 @@ export interface MarkerRef {
   animatedRotateTo: (angle: number, duration: number) => void;
 }
 
-export const Marker = forwardRef<MarkerRef, MarkerProps>(({source, zIndex, ...props}, ref) => {
+export const Marker = forwardRef<MarkerRef, MarkerProps>(({source, zIndex, visible = true, ...props}, ref) => {
   const nativeRef = useRef(null);
 
   const imageUri = useMemo(() => getImageUri(source), [source]);
@@ -33,6 +33,7 @@ export const Marker = forwardRef<MarkerRef, MarkerProps>(({source, zIndex, ...pr
       {...props}
       ref={nativeRef}
       source={imageUri}
+      visible={visible}
       pointerEvents="none"
     />
   );
