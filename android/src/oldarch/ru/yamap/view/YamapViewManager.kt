@@ -125,9 +125,11 @@ class YamapViewManager : ViewGroupManager<YamapView>() {
 
     override fun addView(parent: YamapView, child: View, index: Int) {
         parent.addFeature(child, index)
+        super.addView(parent, child, index)
     }
 
     override fun removeViewAt(parent: YamapView, index: Int) {
         parent.removeChild(index)
+        super.removeViewAt(parent, index)
     }
 }
