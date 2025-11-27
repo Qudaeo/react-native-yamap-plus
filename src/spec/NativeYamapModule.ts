@@ -1,4 +1,4 @@
-import {TurboModule, TurboModuleRegistry} from 'react-native';
+import {type TurboModule, TurboModuleRegistry} from 'react-native';
 
 interface Spec extends TurboModule {
   init(apiKey: string): Promise<void>

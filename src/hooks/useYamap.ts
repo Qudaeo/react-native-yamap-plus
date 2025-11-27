@@ -1,9 +1,9 @@
-import {ForwardedRef, RefObject, useImperativeHandle} from 'react';
+import {type ForwardedRef, type RefObject, useImperativeHandle} from 'react';
 import {Animation} from '../interfaces';
 import {CallbacksManager} from '../utils';
-import {YamapRef} from '../components';
-import {YamapNativeCommands} from '../spec/commands/yamap';
-import {YamapNativeRef} from '../spec/YamapNativeComponent';
+import {type YamapRef} from '../components';
+import {type YamapNativeCommands} from '../spec/commands/yamap';
+import {type YamapNativeRef} from '../spec/YamapNativeComponent';
 
 export const useYamap = (
   nativeRef: RefObject<YamapNativeRef | null>,

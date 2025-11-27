@@ -1,7 +1,8 @@
-import codegenNativeComponent, {NativeComponentType} from 'react-native/Libraries/Utilities/codegenNativeComponent';
-import {BubblingEventHandler, Double, Float} from 'react-native/Libraries/Types/CodegenTypes';
-import {ViewProps} from 'react-native';
-import {MarkerNativeCommands} from './commands/marker';
+// eslint-disable-next-line @react-native/no-deep-imports
+import codegenNativeComponent, {type NativeComponentType} from 'react-native/Libraries/Utilities/codegenNativeComponent';
+import type {BubblingEventHandler, Double, Float} from 'react-native/Libraries/Types/CodegenTypes';
+import {type ViewProps} from 'react-native';
+import {type MarkerNativeCommands} from './commands/marker';
 
 interface Point {
   lat: Double;

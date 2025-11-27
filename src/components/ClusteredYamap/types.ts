@@ -1,8 +1,8 @@
 import React from 'react';
-import {ImageSourcePropType} from 'react-native';
-import {Point} from '../../interfaces';
-import {OmitEx} from '../../utils';
-import {ClusteredYamapNativeProps, YandexClusterSizes} from '../../spec/ClusteredYamapNativeComponent';
+import {type ImageSourcePropType} from 'react-native';
+import {type Point} from '../../interfaces';
+import {type OmitEx} from '../../utils';
+import type {ClusteredYamapNativeProps, YandexClusterSizes} from '../../spec/ClusteredYamapNativeComponent';
 
 export type ClusteredYamapProps<T = any> = OmitEx<ClusteredYamapNativeProps,
   'userLocationAccuracyFillColor' |

@@ -1,4 +1,4 @@
-import {Image, ImageSourcePropType, processColor} from 'react-native';
+import {Image, type ImageSourcePropType, processColor} from 'react-native';
 
 export const getImageUri = (source: ImageSourcePropType | undefined) =>
   source ? Image.resolveAssetSource(source).uri : undefined;

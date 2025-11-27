@@ -1,6 +1,6 @@
 import React, {forwardRef, useMemo, useRef} from 'react';
 import {getImageUri, processColorsToNative} from '../../utils';
-import {YamapProps, YamapRef} from './types';
+import type {YamapProps, YamapRef} from './types';
 import {
   onCameraPositionReceived,
   onScreenToWorldPointsReceived,
@@ -8,7 +8,7 @@ import {
   onWorldToScreenPointsReceived,
 } from './events';
 import {useYamap} from '../../hooks/useYamap';
-import YamapNativeComponent, {YamapNativeRef} from '../../spec/YamapNativeComponent';
+import YamapNativeComponent, {type YamapNativeRef} from '../../spec/YamapNativeComponent';
 import {Commands} from '../../spec/commands/yamap';
 
 export const Yamap = forwardRef<YamapRef, YamapProps>((props, ref) => {

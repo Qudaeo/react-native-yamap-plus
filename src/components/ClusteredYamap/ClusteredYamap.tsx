@@ -7,10 +7,10 @@ import {
   onVisibleRegionReceived,
   onWorldToScreenPointsReceived,
 } from '../Yamap/events';
-import {ClusteredYamapProps} from './types';
-import ClusteredYamapNativeComponent, {ClusteredYamapNativeRef} from '../../spec/ClusteredYamapNativeComponent';
+import {type ClusteredYamapProps} from './types';
+import ClusteredYamapNativeComponent, {type ClusteredYamapNativeRef} from '../../spec/ClusteredYamapNativeComponent';
 import {useYamap} from '../../hooks/useYamap';
-import {YamapRef} from '../Yamap/types';
+import {type YamapRef} from '../Yamap/types';
 import {Commands} from '../../spec/commands/yamap';
 
 export const ClusteredYamap = forwardRef<YamapRef, ClusteredYamapProps>(({

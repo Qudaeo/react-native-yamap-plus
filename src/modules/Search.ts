@@ -1,4 +1,4 @@
-import NativeSearchModule, {FigureParams, Point, SearchOptions} from '../spec/NativeSearchModule';
+import NativeSearchModule, {type FigureParams, type Point, type SearchOptions} from '../spec/NativeSearchModule';
 
 export const Search = {
   searchText: (query: string, figure?: FigureParams, options?: SearchOptions) =>

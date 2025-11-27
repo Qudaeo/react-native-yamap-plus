@@ -1,4 +1,4 @@
-import {CameraPosition} from './spec/YamapNativeComponent';
+import {type CameraPosition} from './spec/YamapNativeComponent';
 
 export interface Point {
   lat: number;

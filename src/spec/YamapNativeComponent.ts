@@ -1,6 +1,7 @@
-import codegenNativeComponent, {NativeComponentType} from 'react-native/Libraries/Utilities/codegenNativeComponent';
-import {YamapNativeCommands} from './commands/yamap';
-import {
+// eslint-disable-next-line @react-native/no-deep-imports
+import codegenNativeComponent, {type NativeComponentType} from 'react-native/Libraries/Utilities/codegenNativeComponent';
+import {type YamapNativeCommands} from './commands/yamap';
+import type {
   BubblingEventHandler,
   DirectEventHandler,
   Double,
@@ -8,7 +9,7 @@ import {
   Int32,
   WithDefault,
 } from 'react-native/Libraries/Types/CodegenTypes';
-import {NativeMethods, ViewProps} from 'react-native';
+import type {NativeMethods, ViewProps} from 'react-native';
 import {Component} from 'react';
 
 export interface InitialRegion {
