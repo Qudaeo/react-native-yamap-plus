@@ -1,9 +1,9 @@
 export {Circle} from './Circle';
 export {ClusteredYamap} from './ClusteredYamap/ClusteredYamap';
-export {Marker, MarkerRef} from './Marker';
+export {Marker, type MarkerRef} from './Marker';
 export {Polygon} from './Polygon';
 export {Polyline} from './Polyline';
 export {Yamap} from './Yamap/Yamap';
-export {YamapRef} from './Yamap/types';
-export {YandexClusterSizes} from '../spec/ClusteredYamapNativeComponent';
-export {InitialRegion} from '../spec/YamapNativeComponent';
+export {type YamapRef} from './Yamap/types';
+export {type YandexClusterSizes} from '../spec/ClusteredYamapNativeComponent';
+export {type InitialRegion} from '../spec/YamapNativeComponent';

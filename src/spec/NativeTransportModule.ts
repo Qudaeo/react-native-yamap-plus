@@ -1,5 +1,5 @@
-import {TurboModule, TurboModuleRegistry} from 'react-native';
-import {Point, RoutesFoundState, Vehicles} from "../interfaces";
+import {type TurboModule, TurboModuleRegistry} from 'react-native';
+import type {Point, RoutesFoundState, Vehicles} from "../interfaces";
 
 interface Spec extends TurboModule {
   findRoutes(points: Point[], vehicles: Vehicles[]): Promise<RoutesFoundState>

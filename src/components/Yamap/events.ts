@@ -1,7 +1,7 @@
-import {NativeSyntheticEvent} from "react-native";
-import {Point, ScreenPoint, VisibleRegion} from '../../interfaces';
+import {type NativeSyntheticEvent} from "react-native";
+import type {Point, ScreenPoint, VisibleRegion} from '../../interfaces';
 import {CallbacksManager} from '../../utils';
-import {CameraPosition} from '../../spec/YamapNativeComponent';
+import {type CameraPosition} from '../../spec/YamapNativeComponent';
 
 export const onCameraPositionReceived = (event: NativeSyntheticEvent<{ id: string } & CameraPosition>) => {
   const { id, ...point } = event.nativeEvent;

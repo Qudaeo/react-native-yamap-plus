@@ -1,5 +1,6 @@
-import {Double} from 'react-native/Libraries/Types/CodegenTypes';
-import {TurboModule, TurboModuleRegistry} from 'react-native';
+// eslint-disable-next-line @react-native/no-deep-imports
+import {type Double} from 'react-native/Libraries/Types/CodegenTypes';
+import {type TurboModule, TurboModuleRegistry} from 'react-native';
 
 export type YamapSuggest = {
   title: string;

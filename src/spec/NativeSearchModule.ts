@@ -1,6 +1,7 @@
-import {Double} from 'react-native/Libraries/Types/CodegenTypes';
-import {TurboModule, TurboModuleRegistry} from 'react-native';
-import {Address, BoundingBox} from '../interfaces';
+// eslint-disable-next-line @react-native/no-deep-imports
+import {type Double} from 'react-native/Libraries/Types/CodegenTypes';
+import {type TurboModule, TurboModuleRegistry} from 'react-native';
+import type {Address, BoundingBox} from '../interfaces';
 
 export enum SearchSnippet {
   NONE = 'NONE',

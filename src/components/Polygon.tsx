@@ -1,6 +1,6 @@
-import React, { FC, useMemo } from 'react';
-import {OmitEx, processColorsToNative} from '../utils';
-import PolygonNativeComponent, {PolygonNativeProps} from '../spec/PolygonNativeComponent';
+import React, {type FC, useMemo} from 'react';
+import {type OmitEx, processColorsToNative} from '../utils';
+import PolygonNativeComponent, {type PolygonNativeProps} from '../spec/PolygonNativeComponent';
 
 type PolygonProps = OmitEx<PolygonNativeProps, 'fillColor' | 'strokeColor' | 'zI'> & {
   fillColor?: string;

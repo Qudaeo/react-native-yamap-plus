@@ -1,6 +1,6 @@
-import React, {FC, useMemo} from 'react';
-import {OmitEx, processColorsToNative} from '../utils';
-import CircleNativeComponent, {CircleNativeProps} from '../spec/CircleNativeComponent';
+import React, {type FC, useMemo} from 'react';
+import {type OmitEx, processColorsToNative} from '../utils';
+import CircleNativeComponent, {type CircleNativeProps} from '../spec/CircleNativeComponent';
 
 type CircleProps = OmitEx<CircleNativeProps, 'fillColor' | 'strokeColor' | 'zI'> & {
   fillColor?: string;

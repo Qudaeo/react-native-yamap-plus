@@ -13,7 +13,8 @@
     "outDir": "lib",
     "rootDir": "./src",
     "sourceMap": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "verbatimModuleSyntax": true
   },
   "exclude": ["example", "lib", "**/node_modules", "**/Pods"],
   "include": ["**/*.ts", "**/*.tsx"]

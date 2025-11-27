@@ -1,8 +1,10 @@
+// eslint-disable-next-line @react-native/no-deep-imports
 import codegenNativeCommands from 'react-native/Libraries/Utilities/codegenNativeCommands';
-import {Double} from 'react-native/Libraries/Types/CodegenTypes';
-import {YamapComponentType} from '../YamapNativeComponent';
-import {ClusteredYamapComponentType} from '../ClusteredYamapNativeComponent';
-import {Animation, Point, ScreenPoint} from '../../interfaces';
+// eslint-disable-next-line @react-native/no-deep-imports
+import {type Double} from 'react-native/Libraries/Types/CodegenTypes';
+import {type YamapComponentType} from '../YamapNativeComponent';
+import {type ClusteredYamapComponentType} from '../ClusteredYamapNativeComponent';
+import {Animation, type Point, type ScreenPoint} from '../../interfaces';
 
 export interface YamapNativeCommands {
   setCenter: (
