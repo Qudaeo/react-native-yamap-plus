@@ -91,6 +91,13 @@ class MarkerView(context: Context?) : ReactViewGroup(context), MapObjectTapListe
         updateMarker()
     }
 
+    fun onUpdateMarker() {
+        updateMarker()
+        // Schedule a delayed snapshot to allow child views to complete their async rendering (e.g. loading images)
+        // 400 ms is a value determined experimentally to prevent race conditions
+        postDelayed({ updateMarker() }, 400)
+    }
+
     private fun updateMarker() {
         if (rnMapObject != null && rnMapObject!!.isValid) {
             val iconStyle = IconStyle()
@@ -115,11 +122,17 @@ class MarkerView(context: Context?) : ReactViewGroup(context), MapObjectTapListe
                     }
 
                     if (_childView!!.width > 0 && _childView!!.height > 0) {
-                        val b = createBitmap(_childView!!.width, _childView!!.height)
-                        val c = Canvas(b)
-                        _childView!!.draw(c)
-                        (rnMapObject as PlacemarkMapObject).setIcon(ImageProvider.fromBitmap(b))
-                        (rnMapObject as PlacemarkMapObject).setIconStyle(iconStyle)
+                        _childView!!.post {
+                            try {
+                                val b = createBitmap(_childView!!.width, _childView!!.height)
+                                val c = Canvas(b)
+                                _childView!!.draw(c)
+                                (rnMapObject as PlacemarkMapObject).setIcon(ImageProvider.fromBitmap(b))
+                                (rnMapObject as PlacemarkMapObject).setIconStyle(iconStyle)
+                            } catch (e: Exception) {
+                                e.printStackTrace()
+                            }
+                        }
                     }
                 } catch (e: Exception) {
                     e.printStackTrace()

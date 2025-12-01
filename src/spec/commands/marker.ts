@@ -7,11 +7,11 @@ import {type Point} from '../../interfaces';
 export interface MarkerNativeCommands {
   animatedMoveTo: (
     viewRef: React.ElementRef<MarkerComponentType>,
-    args: Array<Readonly<{ coords: Point, duration: Double }>>
+    args: Array<Readonly<{coords: Point, duration: Double}>>
   ) => void;
   animatedRotateTo: (
     viewRef: React.ElementRef<MarkerComponentType>,
-    args: Array<Readonly<{ angle: Float, duration: Double }>>
+    args: Array<Readonly<{angle: Float, duration: Double}>>
   ) => void;
   updateMarker: (
     viewRef: React.ElementRef<MarkerComponentType>,
