@@ -103,6 +103,18 @@ using namespace facebook::react;
         NSNumber *duration = args[0][0][@"duration"];
 
         [self animatedRotateTo:[angle floatValue] withDuration:[duration floatValue]];
+    } else if ([commandName isEqual:@"updateMarker"]) {
+        [self updateMarker];
+        // Schedule a delayed snapshot to allow child views to complete their async rendering (e.g. loading images).
+        // 400 ms is a value determined experimentally to prevent race conditions
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.4 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+             if ([self->_reactSubviews count] > 0) {
+                 UIView *childView = [self->_reactSubviews objectAtIndex:0];
+                 [childView setNeedsLayout];
+                 [childView layoutIfNeeded];
+             }
+             [self updateMarker];
+        });
     }
 }
 
@@ -155,6 +167,15 @@ using namespace facebook::react;
         if (_markerViewProvider == nil) {
             [mapObject setIconStyleWithStyle:iconStyle];
         } else {
+            if ([_reactSubviews count] > 0) {
+                UIView *_childView = [_reactSubviews objectAtIndex:0];
+                // Force layout if needed
+                [_childView setNeedsLayout];
+                [_childView layoutIfNeeded];
+                [_childView setNeedsDisplay];
+                [_childView.layer setNeedsDisplay];
+                _markerViewProvider = [[YRTViewProvider alloc] initWithUIView:_childView];
+            }
             [mapObject setViewWithView:_markerViewProvider style:iconStyle];
         }
     }

@@ -13,18 +13,21 @@ export type MarkerProps = OmitEx<MarkerNativeProps, 'source' | 'zI'> &  {
 export interface MarkerRef {
   animatedMoveTo: (coords: Point, duration: number) => void;
   animatedRotateTo: (angle: number, duration: number) => void;
+  updateMarker: () => void;
 }
 
-export const Marker = forwardRef<MarkerRef, MarkerProps>(({source, zIndex, visible = true, ...props}, ref) => {
+export const Marker = forwardRef<MarkerRef, MarkerProps>(({ source, zIndex, visible = true, ...props }, ref) => {
   const nativeRef = useRef(null);
 
   const imageUri = useMemo(() => getImageUri(source), [source]);
 
   useImperativeHandle<MarkerRef, any>(ref, () => ({
     animatedMoveTo: (coords: Point, duration: number) =>
-      Commands.animatedMoveTo(nativeRef.current!, [{coords, duration}]),
+      Commands.animatedMoveTo(nativeRef.current!, [{ coords, duration }]),
     animatedRotateTo: (angle: number, duration: number) =>
-      Commands.animatedRotateTo(nativeRef.current!, [{angle, duration}]),
+      Commands.animatedRotateTo(nativeRef.current!, [{ angle, duration }]),
+    updateMarker: () =>
+      Commands.updateMarker(nativeRef.current!),
   }), []);
 
   return (
