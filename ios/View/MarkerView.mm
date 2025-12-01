@@ -116,6 +116,8 @@ using namespace facebook::react;
     handled = NO;
     source = nil;
     lastSource = nil;
+    // Fix for recycling bug: Ensure the provider is cleared so old icons don't persist
+    _markerViewProvider = nil;
     _reactSubviews = [[NSMutableArray alloc] init];
 }
 
