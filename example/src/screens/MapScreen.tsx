@@ -1,13 +1,14 @@
-import React, {useEffect, useRef, useState} from 'react';
-import {StyleSheet} from 'react-native';
-import {Circle, Marker, MarkerRef, Polyline, Yamap, YamapRef} from '../../../';
-import {Polygon} from '../../../src';
+import React, { useEffect, useRef, useState } from 'react';
+import { StyleSheet, Image } from 'react-native';
+import { Circle, Marker, MarkerRef, Polyline, Yamap, YamapRef } from '../../../';
+import { Polygon } from '../../../src';
 import MarkerIcon from '../assets/images/marker.svg';
 
 export const MapScreen = () => {
   const [mapLoaded, setMapLoaded] = useState(false);
   const mapRef = useRef<YamapRef | null>(null);
   const markerRef = useRef<MarkerRef | null>(null);
+  const urlImageTestMarkerRef = useRef<MarkerRef | null>(null);
   const angleRef = useRef(0);
 
   const [dashLength, setDashLength] = useState(15);
@@ -82,6 +83,23 @@ export const MapScreen = () => {
         anchor={{x: 0.5, y: 1}}
       >
         <MarkerIcon width={100} height={100} />
+      </Marker>
+      <Marker
+        ref={urlImageTestMarkerRef}
+        point={{ lat: 55.80, lon: 37.618423 }}
+        anchor={{ x: 0.5, y: 0.5 }}
+      >
+        <Image
+          source={{ uri: 'https://placehold.co/100x100.png' }}
+          style={styles.urlImageTestMarkerRef}
+          onLoad={() => {
+            console.log('Test marker image loaded, updating marker...');
+            urlImageTestMarkerRef.current?.updateMarker();
+          }}
+          onError={(e) => {
+            console.log('Test marker image load error', e.nativeEvent);
+          }}
+        />
       </Marker>
       <Circle
         center={{lat: 55.74, lon: 37.64}}
@@ -161,4 +179,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  urlImageTestMarkerRef: {
+    width: 100,
+    height: 100,
+    borderRadius: 10,
+    borderWidth: 3,
+    borderColor: 'blue'
+  }
 });

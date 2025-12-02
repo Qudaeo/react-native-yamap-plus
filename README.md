@@ -194,7 +194,47 @@ import {Yamap, Marker} from 'react-native-yamap-plus';
 #### Доступные методы для примитива **Marker**:
 
 -  `animatedMoveTo(point: Point, duration: number)` - плавное изменение позиции маркера;
--  `animatedRotateTo(angle: number, duration: number)` - плавное вращение маркера.
+-  `animatedRotateTo(angle: number, duration: number)` - плавное вращение маркера;
+-  `updateMarker()` - принудительное обновление snapshot маркера (см. раздел ниже).
+
+#### Работа с асинхронным содержимым маркеров
+
+Если маркер содержит компоненты, которые загружаются асинхронно (например, изображения, загружаемые по URL), необходимо вызывать метод `updateMarker()` после завершения загрузки. Это связано с тем, что snapshot маркера создается один раз при монтировании, и не обновляется автоматически при изменении содержимого.
+
+**Пример с изображением по URL:**
+
+```tsx
+import { useRef } from 'react';
+import { Image } from 'react-native';
+import { Yamap, Marker, type MarkerRef } from 'react-native-yamap-plus';
+
+function MapWithAsyncMarker() {
+  const markerRef = useRef<MarkerRef>(null);
+
+  return (
+    <Yamap>
+      <Marker
+        ref={markerRef}
+        point={{ lat: 55.751244, lon: 37.618423 }}
+        anchor={{ x: 0.5, y: 0.5 }}
+      >
+        <Image
+          source={{ uri: 'https://example.com/marker-icon.png' }}
+          style={{ width: 100, height: 100 }}
+          onLoad={() => {
+            // Вызываем updateMarker после загрузки изображения
+            markerRef.current?.updateMarker();
+          }}
+        />
+      </Marker>
+    </Yamap>
+  );
+}
+```
+
+**Важно:** 
+- Метод `updateMarker()` автоматически выполняется два раза: сразу после вызовы и с небольшой задержкой для надёжности.
+- Это применимо не только к изображениям, но и к любым компонентам, которые должны быть обновлены.
 
 ### Circle
 

@@ -73,6 +73,11 @@ class MarkerViewManager : ViewGroupManager<MarkerView>(), MarkerViewManagerInter
     }
 
     override fun receiveCommand(view: MarkerView, commandType: String, argsArr: ReadableArray?) {
+        if (commandType == "updateMarker") {
+            view.onUpdateMarker()
+            return
+        }
+
         val args = argsArr?.getArray(0)?.getMap(0) ?: return
 
         when (commandType) {

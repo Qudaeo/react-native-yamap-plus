@@ -13,11 +13,15 @@ export interface MarkerNativeCommands {
     viewRef: React.ElementRef<MarkerComponentType>,
     args: Array<Readonly<{angle: Float, duration: Double}>>
   ) => void;
+  updateMarker: (
+    viewRef: React.ElementRef<MarkerComponentType>,
+  ) => void;
 }
 
 export const Commands = codegenNativeCommands<MarkerNativeCommands>({
   supportedCommands: [
     'animatedMoveTo',
     'animatedRotateTo',
+    'updateMarker',
   ],
 });

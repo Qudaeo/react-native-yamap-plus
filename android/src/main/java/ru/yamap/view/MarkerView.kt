@@ -37,6 +37,12 @@ class MarkerView(context: Context?) : ReactViewGroup(context), MapObjectTapListe
     private var _childView: View? = null
     override var rnMapObject: MapObject? = null
     private val _children = ArrayList<View>()
+    init {
+        // Fix for Fresco: Images require the view to be attached to the window to load.
+        // We make the MarkerView invisible so it doesn't interfere with the map rendering,
+        // but its children are still considered "attached".
+        visibility = View.INVISIBLE
+    }
 
     // OnLayoutChangeListener { v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom -> updateMarker() }
     private val childLayoutListener =
@@ -85,6 +91,13 @@ class MarkerView(context: Context?) : ReactViewGroup(context), MapObjectTapListe
         updateMarker()
     }
 
+    fun onUpdateMarker() {
+        updateMarker()
+        // Schedule a delayed snapshot to allow child views to complete their async rendering (e.g. loading images)
+        // 400 ms is a value determined experimentally to prevent race conditions
+        postDelayed({ updateMarker() }, 400)
+    }
+
     private fun updateMarker() {
         if (rnMapObject != null && rnMapObject!!.isValid) {
             val iconStyle = IconStyle()
@@ -100,11 +113,27 @@ class MarkerView(context: Context?) : ReactViewGroup(context), MapObjectTapListe
 
             if (_childView != null) {
                 try {
-                    val b = createBitmap(_childView!!.width, _childView!!.height)
-                    val c = Canvas(b)
-                    _childView!!.draw(c)
-                    (rnMapObject as PlacemarkMapObject).setIcon(ImageProvider.fromBitmap(b))
-                    (rnMapObject as PlacemarkMapObject).setIconStyle(iconStyle)
+                    if (_childView!!.width <= 0 || _childView!!.height <= 0) {
+                        _childView!!.measure(
+                            View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                            View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+                        )
+                        _childView!!.layout(0, 0, _childView!!.measuredWidth, _childView!!.measuredHeight)
+                    }
+
+                    if (_childView!!.width > 0 && _childView!!.height > 0) {
+                        _childView!!.post {
+                            try {
+                                val b = createBitmap(_childView!!.width, _childView!!.height)
+                                val c = Canvas(b)
+                                _childView!!.draw(c)
+                                (rnMapObject as PlacemarkMapObject).setIcon(ImageProvider.fromBitmap(b))
+                                (rnMapObject as PlacemarkMapObject).setIconStyle(iconStyle)
+                            } catch (e: Exception) {
+                                e.printStackTrace()
+                            }
+                        }
+                    }
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
@@ -141,11 +170,15 @@ class MarkerView(context: Context?) : ReactViewGroup(context), MapObjectTapListe
 
     fun addChildView(view: View, index: Int) {
         _children.add(index, view)
+        // Add the child view to the hierarchy so it's attached to the window.
+        // This allows libraries like Fresco to function correctly.
+        addView(view, index)
         setChildView(_children[0])
     }
 
     fun removeChildView(index: Int) {
         _children.removeAt(index)
+        removeViewAt(index)
         setChildView(if (_children.isNotEmpty()) _children[0] else null)
     }
 
