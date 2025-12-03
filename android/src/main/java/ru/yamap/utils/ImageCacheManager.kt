@@ -32,6 +32,10 @@ class ImageCacheManager {
                 val bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.size)
 
                 return  bitmap
+            } else if (url.startsWith("file://")) {
+                val filePath = url.removePrefix("file://")
+                val bitmap = BitmapFactory.decodeFile(filePath)
+                return bitmap
             }
 
             val id = context.resources.getIdentifier(url, "drawable", context.packageName)
