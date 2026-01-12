@@ -2533,10 +2533,10 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - SocketRocket
-    - YandexMapsMobile (= 4.26.0-full)
+    - YandexMapsMobile (= 4.29.0-full)
     - Yoga
   - SocketRocket (0.7.1)
-  - YandexMapsMobile (4.26.0-full)
+  - YandexMapsMobile (4.29.0-full)
   - Yoga (0.0.0)
 
 DEPENDENCIES:
@@ -2866,9 +2866,9 @@ SPEC CHECKSUMS:
   ReactCodegen: 03fa265b76d2bb90996e2536fde27faba58ee296
   ReactCommon: 52d5fa3b83bb78ac8eedefa5d8e659d18bfa9eeb
   RNSVG: 9b6fe43a957af361c17f45f95cba726bfa73487f
-  RNYamap: efebd71fb7344b405427aa1cfaa44cb0bf23ae9a
+  RNYamap: 2fb604200d9f12241a940572c5f53d2ceb330292
   SocketRocket: d4aabe649be1e368d1318fdf28a022d714d65748
-  YandexMapsMobile: 763ceef6cb921898894ff2b684e4336967804ac7
+  YandexMapsMobile: 11cd25283d7ba0f3994ae90ac671981ae1b93438
   Yoga: cec68ad2cff7afc3e8f47ad6a056aa4b084cd1ac
 
 PODFILE CHECKSUM: 5b66a15e9a227b40738dfa5b086cc6d482ec5fce

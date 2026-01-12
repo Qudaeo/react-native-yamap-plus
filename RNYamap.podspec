@@ -15,10 +15,10 @@ Pod::Spec.new do |s|
     s.static_framework = true
 
     if ENV['USE_YANDEX_MAPS_LITE'] == '1' then
-        s.dependency "YandexMapsMobile", "4.26.0-lite"
+        s.dependency "YandexMapsMobile", "4.29.0-lite"
     else
         s.xcconfig = { 'GCC_PREPROCESSOR_DEFINITIONS' => '$(inherited) USE_YANDEX_MAPS_FULL=1' }
-        s.dependency "YandexMapsMobile", "4.26.0-full"
+        s.dependency "YandexMapsMobile", "4.29.0-full"
     end
 
     install_modules_dependencies(s)
