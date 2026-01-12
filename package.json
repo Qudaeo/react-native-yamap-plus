@@ -10,7 +10,10 @@
     "build": "tsc",
     "release": "release-it"
   },
-  "homepage": "https://github.com/qudaeo/react-native-yamap-plus",
+  "homepage": "https://github.com/Qudaeo/react-native-yamap-plus",
+  "repository": {
+    "url": "https://github.com/Qudaeo/react-native-yamap-plus"
+  },
   "keywords": [
     "react-native",
     "component",
