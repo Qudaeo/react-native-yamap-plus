@@ -2506,7 +2506,7 @@ PODS:
     - ReactCommon/turbomodule/core
     - SocketRocket
     - Yoga
-  - RNYamap (6.1.0):
+  - RNYamap (6.2.1):
     - boost
     - DoubleConversion
     - fast_float
@@ -2866,7 +2866,7 @@ SPEC CHECKSUMS:
   ReactCodegen: 03fa265b76d2bb90996e2536fde27faba58ee296
   ReactCommon: 52d5fa3b83bb78ac8eedefa5d8e659d18bfa9eeb
   RNSVG: 9b6fe43a957af361c17f45f95cba726bfa73487f
-  RNYamap: f122d1b46dce0f9bdcba175252927c5effccd93d
+  RNYamap: efebd71fb7344b405427aa1cfaa44cb0bf23ae9a
   SocketRocket: d4aabe649be1e368d1318fdf28a022d714d65748
   YandexMapsMobile: 763ceef6cb921898894ff2b684e4336967804ac7
   Yoga: cec68ad2cff7afc3e8f47ad6a056aa4b084cd1ac
