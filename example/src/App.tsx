@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+import {StyleSheet, View} from "react-native";
 import {YamapInstance} from './../../';
 import {SelectOption} from './components/SelectOption';
 
@@ -16,13 +17,19 @@ export default function App() {
   const [selectedScreen, setSelectedScreen] = useState(Screen.Map);
 
   return (
-    <>
+    <View style={styles.container}>
       <SelectOption selectedScreen={selectedScreen} setSelectedScreen={setSelectedScreen} />
       {selectedScreen === Screen.Map && <MapScreen />}
       {selectedScreen === Screen.ClusteredMap && <ClusteredMapScreen />}
       {selectedScreen === Screen.Search && <SearchScreen />}
       {selectedScreen === Screen.Suggest && <SuggestScreen />}
-    </>
+    </View>
   );
 }
 
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fafafa'
+  },
+})
