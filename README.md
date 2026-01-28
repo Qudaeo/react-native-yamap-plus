@@ -179,22 +179,121 @@ import {Yamap, Marker} from 'react-native-yamap-plus';
 
 #### Доступные `props` для примитива **Marker**:
 
-| Название | Тип | Описание |
-|--|--|--|
-| point | Point | Координаты точки для отображения маркера |
-| scale | number | Масштабирование иконки маркера. Не работает если использовать children у маркера |
-| source | ImageSource | Данные для изображения маркера |
-| children | ReactElement | Рендер маркера как компонента |
-| onPress | function | Действие при нажатии/клике |
-| anchor | {  x:  number,  y:  number  } | Якорь иконки маркера. Координаты принимают значения от 0 до 1 |
-| zIndex | number | zIndex для объекта на карте |
-| visible | boolean | Отображение маркера на карте |
+| Название | Тип | Описание                                                                                        |
+|--|--|-------------------------------------------------------------------------------------------------|
+| point | Point | Координаты точки для отображения маркера                                                        |
+| scale | number | Масштабирование иконки маркера. Не работает если использовать children у маркера                |
+| source | ImageSource | Данные для изображения маркера.                                                                 |
+| children | ReactElement | Рендер маркера как компонента. **DEPRECATED**. Используйте `source`.                                           |
+| onPress | function | Действие при нажатии/клике                                                                      |
+| anchor | {  x:  number,  y:  number  } | Якорь иконки маркера. Координаты принимают значения от 0 до 1                                   |
+| zIndex | number | zIndex для объекта на карте                                                                     |
+| visible | boolean | Отображение маркера на карте                                                                    |
 | handled | boolean | Включение(**false**)/отключение(**true**) всплытия события нажатия для родителя `default:false` |
 
 #### Доступные методы для примитива **Marker**:
 
 -  `animatedMoveTo(point: Point, duration: number)` - плавное изменение позиции маркера;
 -  `animatedRotateTo(angle: number, duration: number)` - плавное вращение маркера.
+
+#### Использование компонентов в качестве маркеров
+
+Существует два способа отобразить произвольный компонент в маркере:
+1. Передать компонент в children
+2. Выполнить snapshot компонента и полученное изображение передать в source
+
+##### Children
+Простой, но нежелательный способ. Помечен как deprecated.
+
+Поддержка `children` была добавлена для совместимости с API `react-native-maps`. [Комментарий автора оригинальной библиотеки.](https://github.com/volga-volga/react-native-yamap/issues/289#issuecomment-2396565966)
+
+При использовании `children` библиотека автоматически создаёт snapshot view-компонента на нативном уровне и использует его для отображения маркера. Особенности:
+
+1. **Некорректный внешний вид:** Из-за особенностей нативного snapshot вёрстка компонента внутри маркера может отличаться от его обычного рендера вне карты.
+
+2. **Нестабильное обновление:** При обновлении состояния компонента не гарантируется перерисовка содержимого маркера, особенно при изменении состояния вложенных элементов. Поведение на iOS и Android может отличаться.
+
+   **Workarounds для принудительного обновления:**
+  - Изменение `key` у *первого дочернего элемента* внутри `children` вызовет пересоздание снимка.
+  - Изменение `key` у самого `Marker` пересоздаст снимок, но вызовет заметное мерцание: маркер исчезнет и появится заново.
+
+3. **Производительность:** Для каждого маркера создаётся уникальный снимок, даже если маркеры визуально одинаковы. При большом количестве маркеров это приводит к просадкам производительности и расходу памяти.
+
+4. **Неконтролируемый момент снимка:** Снимок создаётся библиотекой автоматически, и асинхронный контент (например, изображения по URL) может не успеть загрузиться.
+
+##### Snapshot to source
+
+Надёжнее самостоятельно создать снимок компонента и передать его в `source`. Рекомендуется использовать [react-native-view-shot](https://github.com/gre/react-native-view-shot). Это работает стабильно на обеих платформах и позволяет переиспользовать один снимок для множества маркеров.
+
+Используйте `collapsable={false}` для `View`, с которого делается snapshot - это предотвратит возможные проблемы на Android.
+
+<details>
+  <summary>Примеры кода</summary>
+
+Простой компонент, доступный для рендера сразу (синхронный):
+
+<pre><code>const MyMarker = ({ point }) => {
+  const viewRef = useRef&lt;View&gt;(null);
+  const [source, setSource] = useState();
+  const handleLayout = useCallback(async () => {
+    if (!viewRef.current) return;
+    
+    const base64 = await captureRef(viewRef, {
+      format: 'png',
+      quality: 1,
+      result: 'base64',
+    });
+    setSource({ uri: `data:image/png;base64,${base64}` });
+  }, []);
+  
+  return (
+    &lt;&gt;
+      {!source && (
+        &lt;View style={{ position: 'absolute' }} ref={viewRef} collapsable={false} onLayout={handleLayout}&gt;
+          &lt;AnySyncLoadedComponent /&gt;
+        &lt;/View&gt;
+      )}
+      
+      {source && &lt;Marker point={point} source={source} /&gt;}
+    &lt;/&gt;
+  );
+};
+</code></pre>
+
+Компонент с ожиданием контента (асинхронная загрузка):
+
+<pre><code>const MyMarkerWithImage = ({ point, imageUrl }) => {
+  const viewRef = useRef&lt;View&gt;(null);
+  const [source, setSource] = useState();
+  const handleCapture = useCallback(async () => {
+    if (!viewRef.current) return;
+    
+    const base64 = await captureRef(viewRef, {
+      format: 'png',
+      quality: 1,
+      result: 'base64',
+    });
+    setSource({ uri: `data:image/png;base64,${base64}` });
+  }, []);
+  
+  return (
+    &lt;&gt;
+      {!source && (
+        &lt;View style={{ position: 'absolute' }} collapsable={false}&gt;
+          &lt;Image 
+            source={{ uri: imageUrl }}
+            onLoad={handleCapture} 
+          /&gt;
+        &lt;/View&gt;
+      )}
+      
+      {source && &lt;Marker point={point} source={source} /&gt;}
+    &lt;/&gt;
+  );
+};
+</code></pre>
+
+</details>
 
 ### Circle
 
