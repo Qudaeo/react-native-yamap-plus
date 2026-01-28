@@ -340,12 +340,12 @@ const find = async (query: string, options?: SuggestOptions) => {
   // можно использовать Point, BoundingBox, Polyline и Polygon (4 точки, без innerRings)
   const search = await Search.searchText(
     'Москва',
-    { type: GeoFigureType.POINT, value: {lat: 54, lon: 53}},
+    { point: { lat: 54, lon: 53 } },
     { disableSpellingCorrection: true, geometry: true },
   );
 
   // второй параметр это зум, определяющий на сколько малые объекты искать
-  const searchByPoint = await Search.searchPoint({lat: 54, lon: 53}, 10, {
+  const searchByPoint = await Search.searchPoint({ lat: 54, lon: 53 }, 10, {
     disableSpellingCorrection: true,
     geometry: true,
   });
