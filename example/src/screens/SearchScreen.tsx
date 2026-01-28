@@ -21,8 +21,11 @@ export const SearchScreen = () => {
           // await Search.searchPoint(point1, 10, {searchTypes: [SearchType.GEO]})
           //   .then(res => console.log('Search.searchPoint', res));
 
-          // await Search.searchText(searchText, {type: GeoFigureType.POINT, value: {lon: 50, lat: 50}}, {searchTypes: [SearchType.GEO]})
-          //   .then(res => console.log('Search.searchText', res));
+          // await Search.searchText(
+          //   searchText,
+          //   { point: { lon: 50, lat: 50 } },
+          //   { searchTypes: [SearchType.GEO] }
+          // ).then(res => console.log('Search.searchText', res))
         }
       }
     } catch (e) {
