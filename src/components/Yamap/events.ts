@@ -1,24 +1,28 @@
 import {type NativeSyntheticEvent} from "react-native";
-import type {Point, ScreenPoint, VisibleRegion} from '../../interfaces';
 import {CallbacksManager} from '../../utils';
-import {type CameraPosition} from '../../spec/YamapNativeComponent';
+import type {
+  CameraPositionNativeResponse,
+  VisibleRegionNativeResponse,
+  ScreenPointsNativeResponse,
+  WorldPointsNativeResponse
+} from '../../spec/YamapNativeComponent';
 
-export const onCameraPositionReceived = (event: NativeSyntheticEvent<{ id: string } & CameraPosition>) => {
+export const onCameraPositionReceived = (event: NativeSyntheticEvent<CameraPositionNativeResponse>) => {
   const { id, ...point } = event.nativeEvent;
   CallbacksManager.call(id, point);
 };
 
-export const onVisibleRegionReceived = (event: NativeSyntheticEvent<{ id: string } & VisibleRegion>) => {
+export const onVisibleRegionReceived = (event: NativeSyntheticEvent<VisibleRegionNativeResponse>) => {
   const { id, ...visibleRegion } = event.nativeEvent;
   CallbacksManager.call(id, visibleRegion);
 };
 
-export const onWorldToScreenPointsReceived = (event: NativeSyntheticEvent<{ id: string } & ScreenPoint[]>) => {
+export const onWorldToScreenPointsReceived = (event: NativeSyntheticEvent<ScreenPointsNativeResponse>) => {
   const { id, ...screenPoints } = event.nativeEvent;
   CallbacksManager.call(id, screenPoints);
 };
 
-export const onScreenToWorldPointsReceived = (event: NativeSyntheticEvent<{ id: string } & Point[]>) => {
+export const onScreenToWorldPointsReceived = (event: NativeSyntheticEvent<WorldPointsNativeResponse>) => {
   const { id, ...worldPoints } = event.nativeEvent;
   CallbacksManager.call(id, worldPoints);
 };

@@ -1,5 +1,3 @@
-import {type CameraPosition} from './spec/YamapNativeComponent'
-
 export interface Point {
   lat: number
   lon: number
@@ -38,6 +36,15 @@ export const ALL_MASSTRANSIT_VEHICLES: Vehicles[] = [
   'cable',
   'funicular',
 ]
+
+export interface CameraPosition {
+  point: Point
+  azimuth: number
+  finished: boolean
+  reason: 'APPLICATION' | 'GESTURES'
+  tilt: number
+  zoom: number
+}
 
 export type CameraPositionCallback = (position: CameraPosition) => void
 
