@@ -3,7 +3,7 @@ import {type ImageSourcePropType} from 'react-native';
 import {getImageUri, type OmitEx} from '../utils';
 import MarkerNativeComponent, {type MarkerNativeProps} from '../spec/MarkerNativeComponent';
 import {Commands} from '../spec/commands/marker';
-import {type Point} from '../interfaces';
+import type {Point} from "../";
 
 export type MarkerProps = OmitEx<MarkerNativeProps, 'source' | 'zI' | 'children'> & {
   source?: ImageSourcePropType;

@@ -2,7 +2,6 @@ import {type ImageSourcePropType} from 'react-native';
 import type {
   Animation,
   CameraPositionCallback,
-  Point,
   ScreenPoint,
   ScreenPointsCallback,
   VisibleRegionCallback,
@@ -10,6 +9,7 @@ import type {
 } from '../../interfaces';
 import {type OmitEx} from '../../utils';
 import {type YamapNativeProps} from '../../spec/YamapNativeComponent';
+import type {Point} from "../";
 
 export type YamapProps = OmitEx<YamapNativeProps,
   'userLocationAccuracyFillColor' |

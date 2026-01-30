@@ -20,17 +20,17 @@ export interface InitialRegion {
   tilt?: Double;
 }
 
-interface YandexLogoPosition {
+export interface YandexLogoPosition {
   horizontal?: WithDefault<'left' | 'center' | 'right', 'left'>;
   vertical?: WithDefault<'top' | 'bottom', 'bottom'>;
 }
 
-interface YandexLogoPadding {
+export interface YandexLogoPadding {
   horizontal?: Double;
   vertical?: Double;
 }
 
-interface Point {
+export interface Point {
   lat: Double;
   lon: Double;
 }

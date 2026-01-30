@@ -1,7 +1,4 @@
-export interface Point {
-  lat: number
-  lon: number
-}
+import type {Point} from "../";
 
 export type WorldPointsCallback = (result: {worldPoints: Point[]}) => void
 

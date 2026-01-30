@@ -4,7 +4,8 @@ import codegenNativeCommands from 'react-native/Libraries/Utilities/codegenNativ
 import {type Double} from 'react-native/Libraries/Types/CodegenTypes';
 import {type YamapComponentType} from '../YamapNativeComponent';
 import {type ClusteredYamapComponentType} from '../ClusteredYamapNativeComponent';
-import {Animation, type Point, type ScreenPoint} from '../../interfaces';
+import {Animation, type ScreenPoint} from '../../interfaces';
+import type {Point} from "../../";
 
 export interface YamapNativeCommands {
   setCenter: (

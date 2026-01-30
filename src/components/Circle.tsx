@@ -2,7 +2,7 @@ import React, {type FC, useMemo} from 'react';
 import {type OmitEx, processColorsToNative} from '../utils';
 import CircleNativeComponent, {type CircleNativeProps} from '../spec/CircleNativeComponent';
 
-type CircleProps = OmitEx<CircleNativeProps, 'fillColor' | 'strokeColor' | 'zI'> & {
+export type CircleProps = OmitEx<CircleNativeProps, 'fillColor' | 'strokeColor' | 'zI'> & {
   fillColor?: string;
   strokeColor?: string;
   zIndex?: number;
