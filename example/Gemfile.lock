@@ -86,7 +86,7 @@ GEM
     nanaimo (0.3.0)
     nap (1.1.0)
     netrc (0.11.0)
-    prism (1.7.0)
+    prism (1.9.0)
     public_suffix (4.0.7)
     rexml (3.4.4)
     ruby-macho (2.5.1)
@@ -120,4 +120,4 @@ RUBY VERSION
   ruby 3.3.0p0
 
 BUNDLED WITH
-  4.0.3
+  4.0.5
