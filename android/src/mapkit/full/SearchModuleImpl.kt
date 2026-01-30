@@ -183,7 +183,7 @@ class SearchModuleImpl {
         }
     }
 
-    fun searchByPoint(jsPoint: ReadableMap?, zoom: Double?, options: ReadableMap?, promise: Promise) {
+    fun searchByPoint(jsPoint: ReadableMap?, zoom: Double, options: ReadableMap?, promise: Promise) {
         if (jsPoint === null) {
             promise.reject(ERR_NO_REQUEST_ARG, "search request: text arg is not provided")
             return
@@ -191,7 +191,7 @@ class SearchModuleImpl {
 
         val point = PointUtil.readableMapToPoint(jsPoint)
         UiThreadUtil.runOnUiThread {
-            getSearchClient().searchPoint(point, (zoom?.toInt() ?: 10), getSearchOptions(options),
+            getSearchClient().searchPoint(point, (zoom.toInt()), getSearchOptions(options),
                 object : Callback<MapSearchItem?> {
                     override fun invoke(arg: MapSearchItem?) {
                         promise.resolve(searchArgsHelper.createSearchMapFrom(arg))

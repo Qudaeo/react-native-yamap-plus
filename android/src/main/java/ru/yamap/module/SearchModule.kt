@@ -23,7 +23,7 @@ class SearchModule(reactContext: ReactApplicationContext) : NativeSearchModuleSp
         implementation.searchByURI(searchQuery, options, promise)
     }
 
-    override fun searchByPoint(jsPoint: ReadableMap?, zoom: Double?, options: ReadableMap?, promise: Promise) {
+    override fun searchByPoint(jsPoint: ReadableMap?, zoom: Double, options: ReadableMap?, promise: Promise) {
         implementation.searchByPoint(jsPoint, zoom, options, promise)
     }
 
