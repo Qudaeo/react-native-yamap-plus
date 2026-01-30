@@ -1,27 +1,31 @@
-import {type CameraPosition} from './spec/YamapNativeComponent';
+import {type CameraPosition} from './spec/YamapNativeComponent'
 
 export interface Point {
-  lat: number;
-  lon: number;
-}
-
-export interface BoundingBox {
-  southWest: Point;
-  northEast: Point;
+  lat: number
+  lon: number
 }
 
 export type WorldPointsCallback = (result: {worldPoints: Point[]}) => void
 
 export interface ScreenPoint {
-  x: number;
-  y: number;
+  x: number
+  y: number
 }
 
 export type ScreenPointsCallback = (result: {screenPoints: ScreenPoint[]}) => void
 
-export type MasstransitVehicles = 'bus' | 'trolleybus' | 'tramway' | 'minibus' | 'suburban' | 'underground' | 'ferry' | 'cable' | 'funicular';
+export type MasstransitVehicles =
+  | 'bus'
+  | 'trolleybus'
+  | 'tramway'
+  | 'minibus'
+  | 'suburban'
+  | 'underground'
+  | 'ferry'
+  | 'cable'
+  | 'funicular'
 
-export type Vehicles = MasstransitVehicles | 'walk' | 'car';
+export type Vehicles = MasstransitVehicles | 'walk' | 'car'
 
 export const ALL_MASSTRANSIT_VEHICLES: Vehicles[] = [
   'bus',
@@ -33,22 +37,22 @@ export const ALL_MASSTRANSIT_VEHICLES: Vehicles[] = [
   'ferry',
   'cable',
   'funicular',
-];
+]
 
 export type CameraPositionCallback = (position: CameraPosition) => void
 
 export type VisibleRegion = {
-  bottomLeft: Point;
-  bottomRight: Point;
-  topLeft: Point;
-  topRight: Point;
+  bottomLeft: Point
+  bottomRight: Point
+  topLeft: Point
+  topRight: Point
 }
 
 export type VisibleRegionCallback = (visibleRegion: VisibleRegion) => void
 
 export enum Animation {
   SMOOTH,
-  LINEAR
+  LINEAR,
 }
 
 export enum AddressKind {
@@ -75,7 +79,10 @@ export enum AddressKind {
 }
 
 export interface Address {
-  Components: Array<{name: string; kind: AddressKind}>
+  Components: Array<{
+    name: string
+    kind: AddressKind
+  }>
   country_code: string
   formatted: string
   point: Point
@@ -83,31 +90,31 @@ export interface Address {
 }
 
 export interface RoutesFoundState {
-  id: string;
-  status: 'success' | 'error';
+  id: string
+  status: 'success' | 'error'
   routes: {
-    id: string;
+    id: string
     sections: {
-      points: {lat: number, lon: number}[];
+      points: {lat: number, lon: number}[]
       sectionInfo: {
-        time: string;
-        timeWithTraffic?: string;
-        distance?: number;
-        transferCount?: number;
-        walkingDistance?: number;
-      };
+        time: string
+        timeWithTraffic?: string
+        distance?: number
+        transferCount?: number
+        walkingDistance?: number
+      }
       routeInfo: {
-        time: string;
-        timeWithTraffic?: string;
-        distance?: number;
-        transferCount?: number;
-        walkingDistance?: number;
-      };
-      routeIndex: number;
-      stops: string[];
-      type: string;
-      transports: {type: string[]};
-      sectionColor?: string;
-    }[];
-  }[];
+        time: string
+        timeWithTraffic?: string
+        distance?: number
+        transferCount?: number
+        walkingDistance?: number
+      }
+      routeIndex: number
+      stops: string[]
+      type: string
+      transports: {type: string[]}
+      sectionColor?: string
+    }[]
+  }[]
 }

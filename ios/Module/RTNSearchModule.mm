@@ -65,24 +65,41 @@ NSString *ERR_SEARCH_FAILED = @"ERR_SEARCH_FAILED";
 }
 
 
-- (YMKGeometry *) getGeometry:(NSDictionary *) figure {
-    if (![figure isKindOfClass:[NSDictionary class]]) {
-        return [YMKGeometry geometryWithBoundingBox:_defaultBoundingBox];
+- (YMKGeometry *) getGeometry:(JS::NativeSearchModule::FigureParams &) figure {
+    if (figure.point()) {
+        JS::NativeSearchModule::Point jsPoint = figure.point().value();
+        YMKPoint *point = [YMKPoint pointWithLatitude:jsPoint.lat() longitude:jsPoint.lon()];
+        return [YMKGeometry geometryWithPoint:point];
     }
-    if ([figure[@"type"] isEqual:@"POINT"]) {
-        return [YMKGeometry geometryWithPoint:[RCTConvert YMKPoint:figure[@"value"]]];
-    }
-    if ([figure[@"type"] isEqual:@"BOUNDINGBOX"]) {
-        YMKPoint *southWest = [RCTConvert YMKPoint:figure[@"value"][@"southWest"]];
-        YMKPoint *northEast = [RCTConvert YMKPoint:figure[@"value"][@"northEast"]];
+    if (figure.boundingBox()) {
+        JS::NativeSearchModule::Point jsSouthWest = figure.boundingBox().value().southWest();
+        YMKPoint *southWest = [YMKPoint pointWithLatitude:jsSouthWest.lat() longitude:jsSouthWest.lon()];
+        JS::NativeSearchModule::Point jsNorthEast = figure.boundingBox().value().northEast();
+        YMKPoint *northEast = [YMKPoint pointWithLatitude:jsNorthEast.lat() longitude:jsNorthEast.lon()];
         return [YMKGeometry geometryWithBoundingBox:[YMKBoundingBox boundingBoxWithSouthWest:southWest northEast:northEast]];
     }
-    if ([figure[@"type"] isEqual:@"POLYLINE"]) {
-        NSArray<YMKPoint*> *points = [RCTConvert YMKPointArray:figure[@"value"]];
+    if (figure.polyline()) {
+        FB::LazyVector<JS::NativeSearchModule::Point, id> jsPoints = figure.polyline().value();
+        NSMutableArray* points = [[NSMutableArray alloc] init];
+
+        for (int i = 0; i < jsPoints.size(); i++) {
+            JS::NativeSearchModule::Point jsPoint = jsPoints.at(i);
+            YMKPoint *point = [YMKPoint pointWithLatitude:jsPoint.lat() longitude:jsPoint.lon()];
+            [points addObject:point];
+        }
+
         return [YMKGeometry geometryWithPolyline:[YMKPolyline polylineWithPoints:points]];
     }
-    if ([figure[@"type"] isEqual:@"POLYGON"]) {
-        NSArray<YMKPoint*> *points = [RCTConvert YMKPointArray:figure[@"value"]];
+    if (figure.polygon()) {
+        FB::LazyVector<JS::NativeSearchModule::Point, id> jsPoints = figure.polygon().value();
+        NSMutableArray* points = [[NSMutableArray alloc] init];
+
+        for (int i = 0; i < jsPoints.size(); i++) {
+            JS::NativeSearchModule::Point jsPoint = jsPoints.at(i);
+            YMKPoint *point = [YMKPoint pointWithLatitude:jsPoint.lat() longitude:jsPoint.lon()];
+            [points addObject:point];
+        }
+
         return [YMKGeometry geometryWithPolygon:[YMKPolygon polygonWithOuterRing:[YMKLinearRing linearRingWithPoints:points] innerRings:@[]]];
     }
     return [YMKGeometry geometryWithBoundingBox:_defaultBoundingBox];
@@ -125,7 +142,7 @@ NSString *ERR_SEARCH_FAILED = @"ERR_SEARCH_FAILED";
     return searchToPass;
 }
 
-- (void)searchByAddressImpl:(nonnull NSString*) searchQuery figure:(NSDictionary*)figure searchOptions:(YMKSearchOptions*) searchOptions resolver:(RCTPromiseResolveBlock) resolve rejecter:(RCTPromiseRejectBlock) reject  {
+- (void)searchByAddressImpl:(nonnull NSString*) searchQuery figure:(JS::NativeSearchModule::FigureParams &)figure searchOptions:(YMKSearchOptions*) searchOptions resolver:(RCTPromiseResolveBlock) resolve rejecter:(RCTPromiseRejectBlock) reject  {
     [self initSearchManager];
 
     YMKGeometry* geometry = [self getGeometry: figure];
@@ -257,7 +274,7 @@ NSString *ERR_SEARCH_FAILED = @"ERR_SEARCH_FAILED";
     return std::make_shared<facebook::react::NativeSearchModuleSpecJSI>(params);
 }
 
-- (void)searchByAddress:(nonnull NSString *)query figure:(nonnull NSDictionary *)figure options:(JS::NativeSearchModule::SearchOptions &)options resolve:(nonnull RCTPromiseResolveBlock)resolve reject:(nonnull RCTPromiseRejectBlock)reject {
+- (void)searchByAddress:(nonnull NSString *)query figure:(JS::NativeSearchModule::FigureParams &)figure options:(JS::NativeSearchModule::SearchOptions &)options resolve:(nonnull RCTPromiseResolveBlock)resolve reject:(nonnull RCTPromiseRejectBlock)reject {
 
 #ifdef USE_YANDEX_MAPS_FULL
 

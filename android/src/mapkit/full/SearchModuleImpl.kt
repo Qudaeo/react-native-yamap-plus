@@ -24,55 +24,40 @@ class SearchModuleImpl {
     private val searchArgsHelper = YandexSearchRNArgsHelper()
 
     private fun getGeometry(figure: ReadableMap?): Geometry {
-        if (figure?.getMap("value")!=null && figure.getString("type") !=null) {
-            return when (figure.getString("type")) {
-                "POINT" -> {
-                    val jsPoint = figure.getMap("value")
-                    val point = jsPoint?.let { PointUtil.readableMapToPoint(it) }
-                    Geometry.fromPoint(point ?: Point(0.0, 0.0))
-                }
-
-                "BOUNDINGBOX" -> {
-                    val value = figure.getMap("value") ?:
-                    return Geometry.fromPoint(Point(0.0, 0.0))
-
-                    val southWestJsPoint = value.getMap("southWest")
-                    val southWestPoint = southWestJsPoint?.let { PointUtil.readableMapToPoint(it) }
-
-                    val northEastJsPoint = value.getMap("northEast")
-                    val northEastPoint = northEastJsPoint?.let { PointUtil.readableMapToPoint(it) }
-
-                    Geometry.fromBoundingBox(BoundingBox(
-                        southWestPoint ?: Point(0.0, 0.0),
-                        northEastPoint ?: Point(0.0, 0.0)
-                    ))
-                }
-
-                "POLYLINE" -> {
-                    val value = figure.getMap("value") ?:
-                    return Geometry.fromPoint(Point(0.0, 0.0))
-
-                    val jsPoints = value.getArray("points") ?:
-                    return Geometry.fromPoint(Point(0.0, 0.0))
-
-                    val points = PointUtil.jsPointsToPoints(jsPoints)
-                    Geometry.fromPolyline(Polyline(points))
-                }
-
-                "POLYGON" -> {
-                    val value = figure.getMap("value") ?:
-                    return Geometry.fromPoint(Point(0.0, 0.0))
-
-                    val jsPoints = value.getArray("points") ?:
-                    return Geometry.fromPoint(Point(0.0, 0.0))
-
-                    val points = PointUtil.jsPointsToPoints(jsPoints)
-                    Geometry.fromPolygon(Polygon(LinearRing(points), ArrayList()));
-                }
-
-                else -> Geometry.fromPoint(Point(0.0, 0.0))
-            }
+        val jsPoint = figure?.getMap("point")
+        if (jsPoint != null) {
+            val point = PointUtil.readableMapToPoint(jsPoint)
+            return Geometry.fromPoint(point)
         }
+
+        val boundingBox = figure?.getMap("boundingBox")
+        if (boundingBox != null) {
+            val southWestJsPoint = boundingBox.getMap("southWest")
+            val southWestPoint = southWestJsPoint?.let { PointUtil.readableMapToPoint(it) }
+
+            val northEastJsPoint = boundingBox.getMap("northEast")
+            val northEastPoint = northEastJsPoint?.let { PointUtil.readableMapToPoint(it) }
+
+            return Geometry.fromBoundingBox(
+                BoundingBox(
+                    southWestPoint ?: Point(0.0, 0.0),
+                    northEastPoint ?: Point(0.0, 0.0)
+                )
+            )
+        }
+
+        val jsPolylinePoints = figure?.getArray("polyline")
+        if (jsPolylinePoints != null) {
+            val points = PointUtil.jsPointsToPoints(jsPolylinePoints)
+            return Geometry.fromPolyline(Polyline(points))
+        }
+
+        val jsPolygonPoints = figure?.getArray("polygon")
+        if (jsPolygonPoints != null) {
+            val points = PointUtil.jsPointsToPoints(jsPolygonPoints)
+            return Geometry.fromPolygon(Polygon(LinearRing(points), ArrayList()))
+        }
+
         return Geometry.fromPoint(Point(0.0, 0.0))
     }
 
