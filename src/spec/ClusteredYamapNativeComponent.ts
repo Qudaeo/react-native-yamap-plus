@@ -47,7 +47,7 @@ interface Point {
   lon: Double;
 }
 
-interface CameraPosition {
+interface CameraPositionResponse {
   id: string;
   point: {
     lat: Double;
@@ -60,7 +60,7 @@ interface CameraPosition {
   zoom: Double;
 }
 
-type VisibleRegion = {
+type VisibleRegionResponse = {
   id: string;
   bottomLeft: {
     lat: Double;
@@ -107,8 +107,8 @@ export interface ClusteredYamapNativeProps extends ViewProps {
   nightMode?: boolean;
   mapStyle?: string;
   mapType?: WithDefault<'none' | 'raster' | 'vector', 'none'>;
-  onCameraPositionChange?: DirectEventHandler<CameraPosition>;
-  onCameraPositionChangeEnd?: DirectEventHandler<CameraPosition>;
+  onCameraPositionChange?: DirectEventHandler<CameraPositionResponse>;
+  onCameraPositionChangeEnd?: DirectEventHandler<CameraPositionResponse>;
   onMapPress?: BubblingEventHandler<Point>;
   onMapLongPress?: BubblingEventHandler<Point>;
   onMapLoaded?: DirectEventHandler<MapLoaded>;
@@ -127,8 +127,8 @@ export interface ClusteredYamapNativeProps extends ViewProps {
   userLocationIcon: string | undefined;
   interactiveDisabled?: boolean;
 
-  onCameraPositionReceived: DirectEventHandler<CameraPosition>;
-  onVisibleRegionReceived: DirectEventHandler<VisibleRegion>;
+  onCameraPositionReceived: DirectEventHandler<CameraPositionResponse>;
+  onVisibleRegionReceived: DirectEventHandler<VisibleRegionResponse>;
   onWorldToScreenPointsReceived: DirectEventHandler<ScreenPointsResponse>;
   onScreenToWorldPointsReceived: DirectEventHandler<WorldPointsResponse>;
 

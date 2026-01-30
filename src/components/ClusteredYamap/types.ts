@@ -1,6 +1,6 @@
 import React from 'react';
 import {type ImageSourcePropType} from 'react-native';
-import {type Point} from '../../interfaces';
+import type {Point} from "../";
 import {type OmitEx} from '../../utils';
 import type {ClusteredYamapNativeProps, YandexClusterSizes} from '../../spec/ClusteredYamapNativeComponent';
 

@@ -1,5 +1,6 @@
 import NativeTransportModule from '../spec/NativeTransportModule';
-import {ALL_MASSTRANSIT_VEHICLES, type Point} from "../interfaces";
+import {ALL_MASSTRANSIT_VEHICLES} from "../interfaces";
+import type {Point} from "../";
 
 export const Transport = {
   findRoutes: NativeTransportModule.findRoutes,

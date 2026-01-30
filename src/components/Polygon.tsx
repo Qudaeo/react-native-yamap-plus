@@ -2,7 +2,7 @@ import React, {type FC, useMemo} from 'react';
 import {type OmitEx, processColorsToNative} from '../utils';
 import PolygonNativeComponent, {type PolygonNativeProps} from '../spec/PolygonNativeComponent';
 
-type PolygonProps = OmitEx<PolygonNativeProps, 'fillColor' | 'strokeColor' | 'zI'> & {
+export type PolygonProps = OmitEx<PolygonNativeProps, 'fillColor' | 'strokeColor' | 'zI'> & {
   fillColor?: string;
   strokeColor?: string;
   zIndex?: number;

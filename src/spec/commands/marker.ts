@@ -2,7 +2,7 @@ import type {Double, Float} from 'react-native/Libraries/Types/CodegenTypes';
 // eslint-disable-next-line @react-native/no-deep-imports
 import codegenNativeCommands from 'react-native/Libraries/Utilities/codegenNativeCommands';
 import {type MarkerComponentType} from '../MarkerNativeComponent';
-import {type Point} from '../../interfaces';
+import {type Point} from "../../";
 
 export interface MarkerNativeCommands {
   animatedMoveTo: (
