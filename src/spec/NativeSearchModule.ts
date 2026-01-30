@@ -41,12 +41,12 @@ export interface SearchOptions {
 }
 
 interface Spec extends TurboModule {
-  searchByAddress(query: string, figure?: FigureParams, options?: SearchOptions): Promise<Address>
-  searchByPoint(point: Point, zoom?: Double, options?: SearchOptions): Promise<Address>
+  searchByAddress(query: string, figure: FigureParams, options: SearchOptions): Promise<Address>
+  searchByPoint(point: Point, zoom: Double, options: SearchOptions): Promise<Address>
   geoToAddress(point: Point): Promise<Address>
   addressToGeo(address: string): Promise<Point>
-  resolveURI(query: string, options?: SearchOptions): Promise<Address>
-  searchByURI(query: string, options?: SearchOptions): Promise<Address>
+  resolveURI(query: string, options: SearchOptions): Promise<Address>
+  searchByURI(query: string, options: SearchOptions): Promise<Address>
 }
 
 export default TurboModuleRegistry.getEnforcing<Spec>('RTNSearchModule')
