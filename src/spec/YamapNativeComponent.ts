@@ -35,7 +35,7 @@ interface Point {
   lon: Double;
 }
 
-export interface CameraPosition {
+export interface CameraPositionNativeResponse {
   id: string;
   point: {
     lat: Double;
@@ -48,7 +48,7 @@ export interface CameraPosition {
   zoom: Double;
 }
 
-export type VisibleRegion = {
+export type VisibleRegionNativeResponse = {
   id: string;
   bottomLeft: {
     lat: Double;
@@ -68,7 +68,7 @@ export type VisibleRegion = {
   };
 }
 
-export type ScreenPointsResponse = {
+export type ScreenPointsNativeResponse = {
   id: string;
   screenPoints: {
     x: Double;
@@ -76,7 +76,7 @@ export type ScreenPointsResponse = {
   }[]
 }
 
-export type WorldPointsResponse = {
+export type WorldPointsNativeResponse = {
   id: string;
   worldPoints: {
     lat: Double;
@@ -102,8 +102,8 @@ export interface YamapNativeProps extends ViewProps {
   nightMode?: boolean;
   mapStyle?: string;
   mapType?: WithDefault<'none' | 'raster' | 'vector', 'vector'>;
-  onCameraPositionChange?: DirectEventHandler<CameraPosition>;
-  onCameraPositionChangeEnd?: DirectEventHandler<CameraPosition>;
+  onCameraPositionChange?: DirectEventHandler<CameraPositionNativeResponse>;
+  onCameraPositionChangeEnd?: DirectEventHandler<CameraPositionNativeResponse>;
   onMapPress?: BubblingEventHandler<Point>;
   onMapLongPress?: BubblingEventHandler<Point>;
   onMapLoaded?: DirectEventHandler<MapLoaded>;
@@ -122,10 +122,10 @@ export interface YamapNativeProps extends ViewProps {
   userLocationIcon: string | undefined;
   interactiveDisabled?: boolean;
 
-  onCameraPositionReceived: DirectEventHandler<CameraPosition>;
-  onVisibleRegionReceived: DirectEventHandler<VisibleRegion>;
-  onWorldToScreenPointsReceived: DirectEventHandler<ScreenPointsResponse>;
-  onScreenToWorldPointsReceived: DirectEventHandler<WorldPointsResponse>;
+  onCameraPositionReceived: DirectEventHandler<CameraPositionNativeResponse>;
+  onVisibleRegionReceived: DirectEventHandler<VisibleRegionNativeResponse>;
+  onWorldToScreenPointsReceived: DirectEventHandler<ScreenPointsNativeResponse>;
+  onScreenToWorldPointsReceived: DirectEventHandler<WorldPointsNativeResponse>;
 }
 
 export type YamapNativeRef = Component<YamapNativeProps, {}, any> & Readonly<NativeMethods>

@@ -1,27 +1,29 @@
-import {type CameraPosition} from './spec/YamapNativeComponent';
-
 export interface Point {
-  lat: number;
-  lon: number;
-}
-
-export interface BoundingBox {
-  southWest: Point;
-  northEast: Point;
+  lat: number
+  lon: number
 }
 
 export type WorldPointsCallback = (result: {worldPoints: Point[]}) => void
 
 export interface ScreenPoint {
-  x: number;
-  y: number;
+  x: number
+  y: number
 }
 
 export type ScreenPointsCallback = (result: {screenPoints: ScreenPoint[]}) => void
 
-export type MasstransitVehicles = 'bus' | 'trolleybus' | 'tramway' | 'minibus' | 'suburban' | 'underground' | 'ferry' | 'cable' | 'funicular';
+export type MasstransitVehicles =
+  | 'bus'
+  | 'trolleybus'
+  | 'tramway'
+  | 'minibus'
+  | 'suburban'
+  | 'underground'
+  | 'ferry'
+  | 'cable'
+  | 'funicular'
 
-export type Vehicles = MasstransitVehicles | 'walk' | 'car';
+export type Vehicles = MasstransitVehicles | 'walk' | 'car'
 
 export const ALL_MASSTRANSIT_VEHICLES: Vehicles[] = [
   'bus',
@@ -33,22 +35,31 @@ export const ALL_MASSTRANSIT_VEHICLES: Vehicles[] = [
   'ferry',
   'cable',
   'funicular',
-];
+]
+
+export interface CameraPosition {
+  point: Point
+  azimuth: number
+  finished: boolean
+  reason: 'APPLICATION' | 'GESTURES'
+  tilt: number
+  zoom: number
+}
 
 export type CameraPositionCallback = (position: CameraPosition) => void
 
 export type VisibleRegion = {
-  bottomLeft: Point;
-  bottomRight: Point;
-  topLeft: Point;
-  topRight: Point;
+  bottomLeft: Point
+  bottomRight: Point
+  topLeft: Point
+  topRight: Point
 }
 
 export type VisibleRegionCallback = (visibleRegion: VisibleRegion) => void
 
 export enum Animation {
   SMOOTH,
-  LINEAR
+  LINEAR,
 }
 
 export enum AddressKind {
