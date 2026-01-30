@@ -36,7 +36,7 @@
     "@types/react": "*",
     "@types/react-native": "*",
     "del-cli": "7.0.0",
-    "release-it": "19.2.3",
+    "release-it": "19.2.4",
     "typescript": "^5.8.3"
   },
   "peerDependencies": {
