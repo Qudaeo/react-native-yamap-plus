@@ -2,7 +2,6 @@ import React, {useEffect, useRef, useState} from 'react';
 import {StyleSheet} from 'react-native';
 import {Circle, Marker, MarkerRef, Polyline, Yamap, YamapRef} from '../../../';
 import {Polygon} from '../../../src';
-import MarkerIcon from '../assets/images/marker.svg';
 
 export const MapScreen = () => {
   const [mapLoaded, setMapLoaded] = useState(false);
@@ -80,9 +79,9 @@ export const MapScreen = () => {
            console.log('marker onPress');
         }}
         anchor={{x: 0.5, y: 1}}
-      >
-        <MarkerIcon width={100} height={100} />
-      </Marker>
+        scale={0.5}
+        source={require('../assets/images/marker.png')}
+      />
       <Circle
         center={{lat: 55.74, lon: 37.64}}
         radius={500}
