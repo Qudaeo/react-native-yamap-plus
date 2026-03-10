@@ -63,6 +63,12 @@ NSString *ERR_SUGGEST_FAILED = @"ERR_SUGGEST_FAILED";
                 if (suggestItem.uri) {
                     [suggestToPass setObject:suggestItem.uri forKey:@"uri"];
                 }
+                if (suggestItem.center) {
+                    NSMutableDictionary *center = [NSMutableDictionary new];
+                    [center setObject:[NSNumber numberWithDouble:suggestItem.center.latitude] forKey:@"lat"];
+                    [center setObject:[NSNumber numberWithDouble:suggestItem.center.longitude] forKey:@"lon"];
+                    [suggestToPass setObject:center forKey:@"center"];
+                }
                 [suggestsToPass addObject:suggestToPass];
             }
         }

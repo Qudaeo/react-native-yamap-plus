@@ -2,10 +2,16 @@
 import {type Double} from 'react-native/Libraries/Types/CodegenTypes';
 import {type TurboModule, TurboModuleRegistry} from 'react-native';
 
+interface Point {
+  lat: Double;
+  lon: Double;
+}
+
 export type YamapSuggest = {
   title: string;
   subtitle?: string;
   uri?: string;
+  center?: Point;
 }
 
 export enum SuggestType {
@@ -13,11 +19,6 @@ export enum SuggestType {
   GEO = 'GEO',
   BIZ = 'BIZ',
   TRANSIT = 'TRANSIT',
-}
-
-interface Point {
-  lat: Double;
-  lon: Double;
 }
 
 interface BoundingBox {

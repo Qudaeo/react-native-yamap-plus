@@ -407,10 +407,11 @@ import {Suggest} from 'react-native-yamap-plus';
 const find = async (query: string, options?: SuggestOptions) => {
   const suggestions = await Suggest.suggest(query, options);
 
-  // suggestion = [{
+  // suggestions = [{
   //   subtitle: "Москва, Россия"
   //   title: "улица Льва Толстого, 16"
   //   uri: "ymapsbm1://geo?data=xxxx"
+  //   center: {lat: 55.755863189697266, lon: 37.617698669433594}
   // }, ...]
 
   // After searh session is finished

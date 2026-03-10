@@ -23,6 +23,13 @@ class YandexSuggestRNArgsHelper {
         result.putString("subtitle", data.subtitle)
         result.putString("uri", data.uri)
 
+        data.center?.let {
+            val center = Arguments.createMap()
+            center.putDouble("lat", it.latitude)
+            center.putDouble("lon", it.longitude)
+            result.putMap("center", center)
+        }
+
         return result
     }
 }
