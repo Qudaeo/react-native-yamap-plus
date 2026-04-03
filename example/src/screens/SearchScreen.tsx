@@ -33,6 +33,13 @@ export const SearchScreen = () => {
     }
   });
 
+  useEffect(() => {
+    Search.searchPoint({ lat: 54, lon: 53 }, 18)
+      .then(address => {
+        console.log('Search.searchPoint', address)
+    });
+  }, []);
+
   useEffect( () => {
     setPoint({});
     setAddress({});

@@ -1747,7 +1747,7 @@ PODS:
     - React-utils (= 0.85.0-rc.1)
     - ReactNativeDependencies
   - ReactNativeDependencies (0.85.0-rc.1)
-  - RNYamap (6.5.0):
+  - RNYamap (6.6.0):
     - hermes-engine
     - RCTRequired
     - RCTTypeSafety
@@ -2078,7 +2078,7 @@ SPEC CHECKSUMS:
   ReactCodegen: b6ea7ce76e585fa99467b396e96482649ce68d76
   ReactCommon: 2f76f91c78f14d4a2c3bc841842a6145d3e99038
   ReactNativeDependencies: 94a7a2bdb5918891c3ed2f5512145b362fc1e69d
-  RNYamap: 516b6d19bf97508c2bb9747d71641418992c50dd
+  RNYamap: 14141372d5f65f1a2c9fa71fd28d946d915e632e
   YandexMapsMobile: 4d6dcd7171f3b5a374b6bfdef77ac1a9a322a930
   Yoga: 1bf7ba0aa6156e76d0f34c1de341508d40855f9f
 
