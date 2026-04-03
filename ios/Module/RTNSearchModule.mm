@@ -157,10 +157,10 @@ NSString *ERR_SEARCH_FAILED = @"ERR_SEARCH_FAILED";
     }];
 }
 
-- (void)searchByPointImpl:(nonnull YMKPoint*) point zoom:(nonnull NSNumber*) zoom searchOptions:(YMKSearchOptions*) searchOptions resolver:(RCTPromiseResolveBlock) resolve rejecter:(RCTPromiseRejectBlock) reject {
+- (void)searchByPointImpl:(nonnull YMKPoint*) point zoom:(double) zoom searchOptions:(YMKSearchOptions*) searchOptions resolver:(RCTPromiseResolveBlock) resolve rejecter:(RCTPromiseRejectBlock) reject {
     [self initSearchManager];
 
-    _searchSession = [self->_searchManager submitWithPoint:point zoom:zoom searchOptions:searchOptions responseHandler:^(YMKSearchResponse * _Nullable response, NSError * _Nullable error) {
+    _searchSession = [self->_searchManager submitWithPoint:point zoom:[NSNumber numberWithDouble:zoom] searchOptions:searchOptions responseHandler:^(YMKSearchResponse * _Nullable response, NSError * _Nullable error) {
         if (error) {
             reject(ERR_SEARCH_FAILED,  @"searchByPoint error:", error);
             return;
@@ -289,7 +289,7 @@ NSString *ERR_SEARCH_FAILED = @"ERR_SEARCH_FAILED";
 
 }
 
-- (void)searchByPoint:(JS::NativeSearchModule::Point &)point zoom:(nonnull NSNumber *)zoom options:(JS::NativeSearchModule::SearchOptions &)options resolve:(nonnull RCTPromiseResolveBlock)resolve reject:(nonnull RCTPromiseRejectBlock)reject {
+- (void)searchByPoint:(JS::NativeSearchModule::Point &)point zoom:(double)zoom options:(JS::NativeSearchModule::SearchOptions &)options resolve:(nonnull RCTPromiseResolveBlock)resolve reject:(nonnull RCTPromiseRejectBlock)reject {
 
 #ifdef USE_YANDEX_MAPS_FULL
 
