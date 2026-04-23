@@ -392,6 +392,15 @@ using namespace facebook::react;
                 .worldPoints = worldPoints
             });
         }
+    } else if ([commandName isEqual:@"appendClusterMarkers"]) {
+        NSArray *points = [RCTConvert YMKPointArray:args[0][0][@"points"]];
+        NSString *iconSource = args[0][0][@"iconSource"];
+        if ([iconSource isEqual:[NSNull null]]) {
+            iconSource = nil;
+        }
+        [self appendClusterMarkers:points iconSource:iconSource];
+    } else if ([commandName isEqual:@"clearClusterMarkers"]) {
+        [self clearClusterMarkers];
     }
 }
 
@@ -852,6 +861,37 @@ using namespace facebook::react;
     }
 
     [self clusterPlacemarks];
+}
+
+- (void)appendClusterMarkers:(NSArray<YMKPoint*>*)points iconSource:(NSString*)iconSource {
+    if (![self isKindOfClass:[ClusteredYamapView class]]) return;
+    if (points == nil || [points count] == 0) return;
+    if (![clusterCollection isValid]) {
+        clusterCollection = [mapView.mapWindow.map.mapObjects addClusterizedPlacemarkCollectionWithClusterListener:self];
+    }
+
+    void (^addBlock)(UIImage *) = ^(UIImage *image) {
+        UIImage *effectiveImage = image ?: [self clusterImage:@([points count])];
+        NSArray<YMKPlacemarkMapObject *> *added = [clusterCollection addPlacemarksWithPoints:points image:effectiveImage style:[YMKIconStyle new]];
+        [clusterPlacemarks addObjectsFromArray:added];
+        [self clusterPlacemarks];
+    };
+
+    if (iconSource && [iconSource length] > 0) {
+        [[ImageCacheManager instance] getWithSource:iconSource completion:^(UIImage *image) {
+            addBlock(image);
+        }];
+    } else {
+        addBlock(nil);
+    }
+}
+
+- (void)clearClusterMarkers {
+    if (![self isKindOfClass:[ClusteredYamapView class]]) return;
+    [clusterPlacemarks removeAllObjects];
+    if ([clusterCollection isValid]) {
+        [clusterCollection clear];
+    }
 }
 
 -(UIImage*)clusterImage:(NSNumber*) clusterSize {

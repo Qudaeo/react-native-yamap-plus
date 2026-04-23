@@ -22,8 +22,10 @@ export const ClusteredYamap = forwardRef<YamapRef, ClusteredYamapProps>(({
 
   useYamap(nativeRef, ref, Commands);
 
-  const nativeProps = useMemo(() =>
-    processColorsToNative({
+  const nativeProps = useMemo(() => {
+    const markers = props.clusteredMarkers ?? [];
+    const renderMarker = props.renderMarker;
+    return processColorsToNative({
       ...props,
       onCameraPositionReceived,
       onVisibleRegionReceived,
@@ -32,7 +34,7 @@ export const ClusteredYamap = forwardRef<YamapRef, ClusteredYamapProps>(({
       userLocationIcon: getImageUri(props.userLocationIcon),
       clusterIcon: getImageUri(props.clusterIcon),
       clusterColor,
-      clusteredMarkers: props.clusteredMarkers.map(mark => mark.point),
+      clusteredMarkers: markers.map(mark => mark.point),
       clusterSize: props.clusterSize ? {
         width:  props.clusterSize.width
           ? PixelRatio.getPixelSizeForLayoutSize(props.clusterSize.width)
@@ -50,13 +52,14 @@ export const ClusteredYamap = forwardRef<YamapRef, ClusteredYamapProps>(({
       clusterTextXOffset: props.clusterTextXOffset
         ? PixelRatio.getPixelSizeForLayoutSize(props.clusterTextXOffset)
         : props.clusterTextXOffset,
-      children: props.clusteredMarkers.map(props.renderMarker),
+      children: renderMarker ? markers.map(renderMarker) : undefined,
     }, [
       'clusterColor',
       'userLocationAccuracyFillColor',
       'userLocationAccuracyStrokeColor',
       'clusterTextColor'
-    ]),
+    ]);
+  },
     [clusterColor, props]
   );
 

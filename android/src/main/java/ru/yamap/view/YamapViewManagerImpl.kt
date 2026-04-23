@@ -59,6 +59,21 @@ class YamapViewManagerImpl() {
                 args.getArray("points"),
                 args.getString("id")
             )
+            "appendClusterMarkers" -> {
+                if (view is ClusteredYamapView) {
+                    @Suppress("UNCHECKED_CAST")
+                    val points = args.getArray("points")?.toArrayList()
+                        as? ArrayList<HashMap<String, Double>> ?: ArrayList()
+                    val iconSource = if (args.hasKey("iconSource") && !args.isNull("iconSource"))
+                        args.getString("iconSource") else null
+                    view.appendClusterMarkers(points, iconSource)
+                }
+            }
+            "clearClusterMarkers" -> {
+                if (view is ClusteredYamapView) {
+                    view.clearClusterMarkers()
+                }
+            }
 
             else -> throw IllegalArgumentException(
                 String.format(
@@ -233,6 +248,8 @@ class YamapViewManagerImpl() {
             "fitMarkers" to 7,
             "getScreenPoints" to 8,
             "getWorldPoints" to 9,
+            "appendClusterMarkers" to 10,
+            "clearClusterMarkers" to 11,
         )
     }
 }

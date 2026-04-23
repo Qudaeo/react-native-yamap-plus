@@ -21,12 +21,17 @@ export type ClusteredYamapProps<T = any> = OmitEx<ClusteredYamapNativeProps,
   userLocationAccuracyFillColor?: string;
   userLocationAccuracyStrokeColor?: string;
   userLocationIcon?: ImageSourcePropType;
-  clusteredMarkers: ReadonlyArray<{point: Point, data: T}>
+  /**
+   * Prop-based cluster markers. Optional — you can also drive the cluster
+   * collection imperatively via `ref.current.appendClusterMarkers(...)`.
+   */
+  clusteredMarkers?: ReadonlyArray<{point: Point, data: T}>
   clusterIcon?: ImageSourcePropType;
   clusterSize?: YandexClusterSizes;
   clusterTextSize?: number;
   clusterTextYOffset?: number;
   clusterTextXOffset?: number;
   clusterTextColor?: string;
-  renderMarker: (info: {point: Point, data: T}, index: number) => React.ReactElement
+  /** Required only when `clusteredMarkers` is provided. */
+  renderMarker?: (info: {point: Point, data: T}, index: number) => React.ReactElement
 }

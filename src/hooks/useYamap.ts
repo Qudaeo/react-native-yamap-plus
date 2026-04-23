@@ -1,6 +1,6 @@
 import {type ForwardedRef, type RefObject, useImperativeHandle} from 'react';
 import {Animation} from '../interfaces';
-import {CallbacksManager} from '../utils';
+import {CallbacksManager, getImageUri} from '../utils';
 import {type YamapRef} from '../components';
 import {type YamapNativeCommands} from '../spec/commands/yamap';
 import {type YamapNativeRef} from '../spec/YamapNativeComponent';
@@ -37,5 +37,12 @@ export const useYamap = (
       const id = CallbacksManager.addCallback(callback);
       nativeCommands.getWorldPoints(nativeRef.current!, [{points, id}]);
     },
+    appendClusterMarkers: (points, iconSource) =>
+      nativeCommands.appendClusterMarkers(nativeRef.current! as any, [{
+        points,
+        iconSource: getImageUri(iconSource),
+      }]),
+    clearClusterMarkers: () =>
+      nativeCommands.clearClusterMarkers(nativeRef.current! as any, [{}]),
   }), [nativeCommands, nativeRef]);
 };

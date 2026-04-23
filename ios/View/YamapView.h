@@ -26,6 +26,8 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)setClusterTextSize:(double)size;
 - (void)setClusterTextXOffset:(double)size;
 - (void)setClusterTextYOffset:(double)size;
+- (void)appendClusterMarkers:(NSArray<YMKPoint *> *)points iconSource:(NSString * _Nullable)iconSource;
+- (void)clearClusterMarkers;
 
 // REF
 

@@ -51,6 +51,51 @@ class ClusteredYamapView(context: Context?) : YamapView(context), ClusterListene
         clusterTextYOffset = offset
     }
 
+    fun appendClusterMarkers(points: ArrayList<HashMap<String, Double>>, iconSource: String?) {
+        if (points.isEmpty()) return
+        val pt = ArrayList<Point>()
+        for (p in points) {
+            pt.add(Point(p["lat"]!!, p["lon"]!!))
+        }
+
+        val addNow: (android.graphics.Bitmap?) -> Unit = { bitmap ->
+            val provider = if (bitmap != null) {
+                object : ImageProvider() {
+                    override fun getId(): String = "append_cluster_icon_${iconSource.hashCode()}"
+                    override fun getImage(): Bitmap = bitmap
+                }
+            } else {
+                TextImageProvider(points.size.toString())
+            }
+            val placemarks = clusterCollection.addPlacemarks(pt, provider, IconStyle())
+            pointsList.addAll(pt)
+            for (i in placemarks.indices) {
+                val placemark = placemarks[i]
+                placemarksMap["" + placemark.geometry.latitude + placemark.geometry.longitude] =
+                    placemark
+            }
+            clusterCollection.clusterPlacemarks(50.0, 12)
+        }
+
+        if (!iconSource.isNullOrEmpty()) {
+            val ctx = context ?: run { addNow(null); return }
+            try {
+                val bmp = ImageCacheManager.getBitmapSync(ctx, iconSource)
+                addNow(bmp)
+            } catch (_: Throwable) {
+                addNow(null)
+            }
+        } else {
+            addNow(null)
+        }
+    }
+
+    fun clearClusterMarkers() {
+        clusterCollection.clear()
+        placemarksMap.clear()
+        pointsList.clear()
+    }
+
     fun setClusteredMarkers(points: ArrayList<HashMap<String, Double>>) {
         clusterCollection.clear()
         placemarksMap.clear()
