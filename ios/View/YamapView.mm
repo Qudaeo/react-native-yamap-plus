@@ -63,6 +63,7 @@ using namespace facebook::react;
     NSMutableArray<YMKPlacemarkMapObject *> *clusterPlacemarks;
     YMKClusterizedPlacemarkCollection *clusterCollection;
     BOOL mapLoaded;
+    BOOL hasImperativePlacemarks;
 }
 
 - (instancetype)initWithFrame:(CGRect)frame {
@@ -398,7 +399,9 @@ using namespace facebook::react;
         if ([iconSource isEqual:[NSNull null]]) {
             iconSource = nil;
         }
-        [self appendClusterMarkers:points iconSource:iconSource];
+        id reclusterArg = args[0][0][@"recluster"];
+        BOOL recluster = (reclusterArg == nil || [reclusterArg isEqual:[NSNull null]]) ? YES : [reclusterArg boolValue];
+        [self appendClusterMarkers:points iconSource:iconSource recluster:recluster];
     } else if ([commandName isEqual:@"clearClusterMarkers"]) {
         [self clearClusterMarkers];
     }
@@ -842,6 +845,10 @@ using namespace facebook::react;
 }
 
 - (void)setClusteredMarkers:(NSArray<YMKPoint*>*) markers {
+    // Empty prop arrives on every re-render when the consumer drives this
+    // component imperatively — never clear in that case, it would wipe the
+    // markers added via appendClusterMarkers.
+    if ((markers == nil || [markers count] == 0) && hasImperativePlacemarks) return;
     [clusterPlacemarks removeAllObjects];
     if (![clusterCollection isValid]) {
         clusterCollection = [mapView.mapWindow.map.mapObjects addClusterizedPlacemarkCollectionWithClusterListener:self];
@@ -859,22 +866,29 @@ using namespace facebook::react;
             }
         }
     }
+    hasImperativePlacemarks = NO;
 
     [self clusterPlacemarks];
 }
 
-- (void)appendClusterMarkers:(NSArray<YMKPoint*>*)points iconSource:(NSString*)iconSource {
+- (void)appendClusterMarkers:(NSArray<YMKPoint*>*)points iconSource:(NSString*)iconSource recluster:(BOOL)recluster {
     if (![self isKindOfClass:[ClusteredYamapView class]]) return;
     if (points == nil || [points count] == 0) return;
     if (![clusterCollection isValid]) {
         clusterCollection = [mapView.mapWindow.map.mapObjects addClusterizedPlacemarkCollectionWithClusterListener:self];
     }
 
+    __weak typeof(self) weakSelf = self;
     void (^addBlock)(UIImage *) = ^(UIImage *image) {
-        UIImage *effectiveImage = image ?: [self clusterImage:@([points count])];
-        NSArray<YMKPlacemarkMapObject *> *added = [clusterCollection addPlacemarksWithPoints:points image:effectiveImage style:[YMKIconStyle new]];
-        [clusterPlacemarks addObjectsFromArray:added];
-        [self clusterPlacemarks];
+        typeof(self) strongSelf = weakSelf;
+        if (!strongSelf) return;
+        UIImage *effectiveImage = image ?: [strongSelf clusterImage:@(1)];
+        NSArray<YMKPlacemarkMapObject *> *added = [strongSelf->clusterCollection addPlacemarksWithPoints:points image:effectiveImage style:[YMKIconStyle new]];
+        [strongSelf->clusterPlacemarks addObjectsFromArray:added];
+        strongSelf->hasImperativePlacemarks = YES;
+        if (recluster) {
+            [strongSelf clusterPlacemarks];
+        }
     };
 
     if (iconSource && [iconSource length] > 0) {
@@ -892,6 +906,7 @@ using namespace facebook::react;
     if ([clusterCollection isValid]) {
         [clusterCollection clear];
     }
+    hasImperativePlacemarks = NO;
 }
 
 -(UIImage*)clusterImage:(NSNumber*) clusterSize {
