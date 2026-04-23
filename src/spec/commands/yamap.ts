@@ -74,11 +74,12 @@ export interface YamapNativeCommands {
     args: Array<Readonly<{
       points: Point[],
       iconSource?: string,
+      recluster?: boolean,
     }>>
   ) => void;
   clearClusterMarkers: (
     viewRef: React.ElementRef<ClusteredYamapComponentType>,
-    args: Array<Readonly<{}>>
+    args: Array<Readonly<Record<string, never>>>
   ) => void;
 }
 

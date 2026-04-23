@@ -3,6 +3,26 @@ import {type ImageSourcePropType} from 'react-native';
 import type {Point} from "../";
 import {type OmitEx} from '../../utils';
 import type {ClusteredYamapNativeProps, YandexClusterSizes} from '../../spec/ClusteredYamapNativeComponent';
+import type {YamapRef} from '../Yamap/types';
+
+export type AppendClusterMarkersOptions = {
+  /** Per-marker icon. Resolved to a URI internally. If omitted, a neutral placeholder is used. */
+  iconSource?: ImageSourcePropType;
+  /**
+   * Whether to run the clustering pass after adding points. Defaults to `true`.
+   * Pass `false` for intermediate batches when streaming many appends and call
+   * once more with the default for the final batch to avoid O(total) clustering
+   * work on every append.
+   */
+  recluster?: boolean;
+};
+
+export type ClusteredYamapRef = YamapRef & {
+  /** Append points to the cluster collection without clearing existing ones. */
+  appendClusterMarkers: (points: Point[], options?: AppendClusterMarkersOptions) => void;
+  /** Remove all imperatively-added points from the cluster collection. */
+  clearClusterMarkers: () => void;
+};
 
 export type ClusteredYamapProps<T = any> = OmitEx<ClusteredYamapNativeProps,
   'userLocationAccuracyFillColor' |

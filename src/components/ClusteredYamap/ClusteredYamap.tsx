@@ -7,20 +7,19 @@ import {
   onVisibleRegionReceived,
   onWorldToScreenPointsReceived,
 } from '../Yamap/events';
-import {type ClusteredYamapProps} from './types';
+import {type ClusteredYamapProps, type ClusteredYamapRef} from './types';
 import ClusteredYamapNativeComponent, {type ClusteredYamapNativeRef} from '../../spec/ClusteredYamapNativeComponent';
-import {useYamap} from '../../hooks/useYamap';
-import {type YamapRef} from '../Yamap/types';
+import {useClusteredYamap} from '../../hooks/useYamap';
 import {Commands} from '../../spec/commands/yamap';
 
-export const ClusteredYamap = forwardRef<YamapRef, ClusteredYamapProps>(({
+export const ClusteredYamap = forwardRef<ClusteredYamapRef, ClusteredYamapProps>(({
     clusterColor = 'red',
     ...props
   }, ref) => {
 
   const nativeRef = useRef<ClusteredYamapNativeRef | null>(null);
 
-  useYamap(nativeRef, ref, Commands);
+  useClusteredYamap(nativeRef, ref, Commands);
 
   const nativeProps = useMemo(() => {
     const markers = props.clusteredMarkers ?? [];

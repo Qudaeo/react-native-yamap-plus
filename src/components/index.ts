@@ -1,7 +1,11 @@
 export {Circle, type CircleProps} from './Circle';
 
 export {ClusteredYamap} from './ClusteredYamap/ClusteredYamap';
-export {type ClusteredYamapProps} from './ClusteredYamap/types';
+export {
+  type ClusteredYamapProps,
+  type ClusteredYamapRef,
+  type AppendClusterMarkersOptions,
+} from './ClusteredYamap/types';
 
 export {Marker, type MarkerRef, type MarkerProps} from './Marker';
 
