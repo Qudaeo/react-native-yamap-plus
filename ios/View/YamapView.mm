@@ -878,9 +878,9 @@ using namespace facebook::react;
         clusterCollection = [mapView.mapWindow.map.mapObjects addClusterizedPlacemarkCollectionWithClusterListener:self];
     }
 
-    __weak typeof(self) weakSelf = self;
+    __weak __typeof__(self) weakSelf = self;
     void (^addBlock)(UIImage *) = ^(UIImage *image) {
-        typeof(self) strongSelf = weakSelf;
+        __typeof__(self) strongSelf = weakSelf;
         if (!strongSelf) return;
         UIImage *effectiveImage = image ?: [strongSelf clusterImage:@(1)];
         NSArray<YMKPlacemarkMapObject *> *added = [strongSelf->clusterCollection addPlacemarksWithPoints:points image:effectiveImage style:[YMKIconStyle new]];
