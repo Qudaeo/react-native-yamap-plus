@@ -34,6 +34,7 @@ using namespace facebook::react;
     NSValue *anchor;
     BOOL visible;
     BOOL handled;
+    BOOL excludeFromCluster;
     NSMutableArray<UIView*> *_reactSubviews;
     YRTViewProvider *_markerViewProvider;
 }
@@ -48,6 +49,7 @@ using namespace facebook::react;
         rotated = NO;
         visible = YES;
         handled = NO;
+        excludeFromCluster = NO;
         _reactSubviews = [[NSMutableArray alloc] init];
         source = @"";
         lastSource = @"";
@@ -88,6 +90,7 @@ using namespace facebook::react;
     visible = newViewProps.visible;
     rotated = newViewProps.rotated;
     handled = newViewProps.handled;
+    excludeFromCluster = newViewProps.excludeFromCluster;
 
     [self updateMarker];
 }
@@ -114,9 +117,14 @@ using namespace facebook::react;
     rotated = NO;
     visible = YES;
     handled = NO;
+    excludeFromCluster = NO;
     source = nil;
     lastSource = nil;
     _reactSubviews = [[NSMutableArray alloc] init];
+}
+
+- (BOOL)excludeFromCluster {
+    return excludeFromCluster;
 }
 
 - (BOOL)onMapObjectTapWithMapObject:(nonnull YMKMapObject*)_mapObject point:(nonnull YMKPoint*)point {

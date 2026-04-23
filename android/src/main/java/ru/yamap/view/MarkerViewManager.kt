@@ -64,6 +64,10 @@ class MarkerViewManager : ViewGroupManager<MarkerView>(), MarkerViewManagerInter
         view.setAnchor(pointF)
     }
 
+    override fun setExcludeFromCluster(view: MarkerView, value: Boolean) {
+        view.setExcludeFromCluster(value)
+    }
+
     override fun addView(parent: MarkerView, child: View, index: Int) {
         parent.addChildView(child, index)
     }

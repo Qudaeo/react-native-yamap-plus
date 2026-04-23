@@ -740,7 +740,8 @@ using namespace facebook::react;
         [polyline setMapObject:obj];
     } else if ([subview isKindOfClass:[MarkerView class]]) {
         MarkerView *marker = (MarkerView *) subview;
-        if ([self isKindOfClass:[ClusteredYamapView class]]) {
+        BOOL inClusterHost = [self isKindOfClass:[ClusteredYamapView class]];
+        if (inClusterHost && ![marker excludeFromCluster]) {
             if (index<[clusterPlacemarks count]) {
                 [marker setClusterMapObject:[clusterPlacemarks objectAtIndex:index]];
             }
@@ -780,9 +781,10 @@ using namespace facebook::react;
         YMKMapObjectCollection *objects = mapView.mapWindow.map.mapObjects;
         MarkerView *marker = (MarkerView *) subview;
         YMKPlacemarkMapObject *mapObject = [marker getMapObject];
-        if ([self isKindOfClass:[ClusteredYamapView class]]) {
+        BOOL inClusterHost = [self isKindOfClass:[ClusteredYamapView class]];
+        if (inClusterHost && ![marker excludeFromCluster]) {
             [clusterPlacemarks removeObject:mapObject];
-        } else {
+        } else if (mapObject != nil && [mapObject isValid]) {
             [objects removeWithMapObject:mapObject];
         }
     } else if ([subview isKindOfClass:[CircleView class]]) {

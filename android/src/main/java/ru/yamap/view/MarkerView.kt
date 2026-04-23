@@ -27,6 +27,8 @@ class MarkerView(context: Context?) : ReactViewGroup(context), MapObjectTapListe
     ReactMapObject {
     @JvmField
     var point: Point? = null
+    @JvmField
+    var excludeFromCluster: Boolean = false
     private var _zIndex = 1f
     private var _scale = 1f
     private var _visible = true
@@ -83,6 +85,10 @@ class MarkerView(context: Context?) : ReactViewGroup(context), MapObjectTapListe
     fun setAnchor(anchor: PointF?) {
         _markerAnchor = anchor
         updateMarker()
+    }
+
+    fun setExcludeFromCluster(value: Boolean) {
+        excludeFromCluster = value
     }
 
     private fun updateMarker() {
