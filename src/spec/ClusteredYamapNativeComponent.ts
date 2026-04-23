@@ -101,6 +101,12 @@ export interface YandexClusterSizes {
   height?: Double;
 }
 
+export interface ClusterPlacemarkPress {
+  lat: Double;
+  lon: Double;
+  index: Int32;
+}
+
 export interface ClusteredYamapNativeProps extends ViewProps {
   userLocationIconScale?: Float;
   showUserPosition?: boolean;
@@ -140,6 +146,7 @@ export interface ClusteredYamapNativeProps extends ViewProps {
   clusterTextYOffset?: Int32;
   clusterTextXOffset?: Int32;
   clusterTextColor?: Int32;
+  onClusterPlacemarkPress?: BubblingEventHandler<ClusterPlacemarkPress>;
 }
 
 export type ClusteredYamapNativeRef = Component<ClusteredYamapNativeProps, {}, any> & Readonly<NativeMethods>

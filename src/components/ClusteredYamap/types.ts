@@ -1,8 +1,8 @@
 import React from 'react';
-import {type ImageSourcePropType} from 'react-native';
+import {type ImageSourcePropType, type NativeSyntheticEvent} from 'react-native';
 import type {Point} from "../";
 import {type OmitEx} from '../../utils';
-import type {ClusteredYamapNativeProps, YandexClusterSizes} from '../../spec/ClusteredYamapNativeComponent';
+import type {ClusterPlacemarkPress, ClusteredYamapNativeProps, YandexClusterSizes} from '../../spec/ClusteredYamapNativeComponent';
 import type {YamapRef} from '../Yamap/types';
 
 export type AppendClusterMarkersOptions = {
@@ -35,7 +35,8 @@ export type ClusteredYamapProps<T = any> = OmitEx<ClusteredYamapNativeProps,
   'onCameraPositionReceived' |
   'onVisibleRegionReceived' |
   'onWorldToScreenPointsReceived' |
-  'onScreenToWorldPointsReceived'
+  'onScreenToWorldPointsReceived' |
+  'onClusterPlacemarkPress'
 > & {
   clusterColor?: string;
   userLocationAccuracyFillColor?: string;
@@ -54,4 +55,13 @@ export type ClusteredYamapProps<T = any> = OmitEx<ClusteredYamapNativeProps,
   clusterTextColor?: string;
   /** Required only when `clusteredMarkers` is provided. */
   renderMarker?: (info: {point: Point, data: T}, index: number) => React.ReactElement
+  /**
+   * Fires when the user taps a placemark added via
+   * `ref.current.appendClusterMarkers(...)`. Does not fire for clusters of
+   * size ≥ 2 (those go to the cluster collapse handler) and does not fire
+   * for `<Marker>` children. `index` is the zero-based append-order index
+   * across all `appendClusterMarkers` batches; it resets after
+   * `clearClusterMarkers()`.
+   */
+  onClusterPlacemarkPress?: (event: NativeSyntheticEvent<ClusterPlacemarkPress>) => void
 }

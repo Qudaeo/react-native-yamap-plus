@@ -8,21 +8,27 @@ import android.graphics.Paint
 import android.graphics.Rect
 import android.graphics.Typeface
 import android.view.View
+import com.facebook.react.uimanager.ThemedReactContext
+import com.facebook.react.uimanager.UIManagerHelper
+import com.facebook.react.uimanager.UIManagerHelper.getSurfaceId
 import com.yandex.mapkit.geometry.Point
 import com.yandex.mapkit.map.Cluster
 import com.yandex.mapkit.map.ClusterListener
 import com.yandex.mapkit.map.ClusterTapListener
 import com.yandex.mapkit.map.IconStyle
+import com.yandex.mapkit.map.MapObject
+import com.yandex.mapkit.map.MapObjectTapListener
 import com.yandex.mapkit.map.PlacemarkMapObject
 import com.yandex.runtime.image.ImageProvider
 import kotlin.math.abs
 import kotlin.math.sqrt
 import androidx.core.graphics.createBitmap
 import com.facebook.react.bridge.ReadableMap
+import ru.yamap.events.yamap.YamapClusterPlacemarkPressEvent
 import ru.yamap.utils.ImageCacheManager
 
 class ClusteredYamapView(context: Context?) : YamapView(context), ClusterListener,
-    ClusterTapListener {
+    ClusterTapListener, MapObjectTapListener {
     private val clusterCollection = mapWindow.map.mapObjects.addClusterizedPlacemarkCollection(this)
     private var clusterColor = 0
     private val placemarksMap = HashMap<String?, PlacemarkMapObject?>()
@@ -35,6 +41,8 @@ class ClusteredYamapView(context: Context?) : YamapView(context), ClusterListene
     private var clusterTextXOffset = 0
     private var clusterTextYOffset = 0
     private var hasImperativePlacemarks = false
+    private val imperativeIndexMap = HashMap<PlacemarkMapObject, Int>()
+    private var imperativePlacemarkCounter = 0
 
     fun setClusterTextSize(size: Float) {
         clusterTextSize = size
@@ -79,6 +87,8 @@ class ClusteredYamapView(context: Context?) : YamapView(context), ClusterListene
                 val placemark = placemarks[i]
                 placemarksMap["" + placemark.geometry.latitude + placemark.geometry.longitude] =
                     placemark
+                imperativeIndexMap[placemark] = imperativePlacemarkCounter++
+                placemark.addTapListener(this)
             }
             hasImperativePlacemarks = true
             if (recluster) {
@@ -100,6 +110,8 @@ class ClusteredYamapView(context: Context?) : YamapView(context), ClusterListene
         clusterCollection.clear()
         placemarksMap.clear()
         pointsList.clear()
+        imperativeIndexMap.clear()
+        imperativePlacemarkCounter = 0
         hasImperativePlacemarks = false
     }
 
@@ -110,6 +122,8 @@ class ClusteredYamapView(context: Context?) : YamapView(context), ClusterListene
         if (points.isEmpty() && hasImperativePlacemarks) return
         clusterCollection.clear()
         placemarksMap.clear()
+        imperativeIndexMap.clear()
+        imperativePlacemarkCounter = 0
         val pt = ArrayList<Point>()
         for (i in points.indices) {
             val point = points[i]
@@ -150,6 +164,8 @@ class ClusteredYamapView(context: Context?) : YamapView(context), ClusterListene
 
     private fun updateUserMarkersColor() {
         clusterCollection.clear()
+        imperativeIndexMap.clear()
+        imperativePlacemarkCounter = 0
         val placemarks = clusterCollection.addPlacemarks(
             pointsList,
             TextImageProvider(pointsList.size.toString()),
@@ -204,6 +220,23 @@ class ClusteredYamapView(context: Context?) : YamapView(context), ClusterListene
             points.add(placemark.geometry)
         }
         fitMarkers(points, 0.7f, 0)
+        return true
+    }
+
+    override fun onMapObjectTap(mapObject: MapObject, point: Point): Boolean {
+        if (mapObject !is PlacemarkMapObject) return false
+        val index = imperativeIndexMap[mapObject] ?: return false
+        val themedContext = context as? ThemedReactContext ?: return false
+        val dispatcher = UIManagerHelper.getEventDispatcherForReactTag(themedContext, id) ?: return false
+        dispatcher.dispatchEvent(
+            YamapClusterPlacemarkPressEvent(
+                getSurfaceId(themedContext),
+                id,
+                point.latitude,
+                point.longitude,
+                index,
+            )
+        )
         return true
     }
 

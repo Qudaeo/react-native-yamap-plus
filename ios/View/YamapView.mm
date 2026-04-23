@@ -25,7 +25,7 @@
 
 using namespace facebook::react;
 
-@interface YamapView () <YMKUserLocationObjectListener, YMKMapCameraListener, YMKMapLoadedListener, YMKTrafficDelegate, YMKClusterListener, YMKClusterTapListener>
+@interface YamapView () <YMKUserLocationObjectListener, YMKMapCameraListener, YMKMapLoadedListener, YMKTrafficDelegate, YMKClusterListener, YMKClusterTapListener, YMKMapObjectTapListener>
 
 @end
 
@@ -64,6 +64,8 @@ using namespace facebook::react;
     YMKClusterizedPlacemarkCollection *clusterCollection;
     BOOL mapLoaded;
     BOOL hasImperativePlacemarks;
+    NSMutableDictionary<NSValue *, NSNumber *> *imperativeIndexMap;
+    NSInteger imperativePlacemarkCounter;
 }
 
 - (instancetype)initWithFrame:(CGRect)frame {
@@ -89,6 +91,8 @@ using namespace facebook::react;
         [mapView.mapWindow.map setMapLoadedListenerWithMapLoadedListener:self];
         initializedRegion = NO;
         clusterPlacemarks = [[NSMutableArray alloc] init];
+        imperativeIndexMap = [[NSMutableDictionary alloc] init];
+        imperativePlacemarkCounter = 0;
         clusterCollection = [mapView.mapWindow.map.mapObjects addClusterizedPlacemarkCollectionWithClusterListener:self];
         clusterColor = UIColor.redColor;
         mapLoaded = NO;
@@ -412,6 +416,10 @@ using namespace facebook::react;
     [super prepareForRecycle];
 
     [self removeAllSections];
+    [clusterPlacemarks removeAllObjects];
+    [imperativeIndexMap removeAllObjects];
+    imperativePlacemarkCounter = 0;
+    hasImperativePlacemarks = NO;
 
     static const auto defaultProps = std::make_shared<const YamapViewProps>();
     _props = defaultProps;
@@ -852,6 +860,8 @@ using namespace facebook::react;
     // markers added via appendClusterMarkers.
     if ((markers == nil || [markers count] == 0) && hasImperativePlacemarks) return;
     [clusterPlacemarks removeAllObjects];
+    [imperativeIndexMap removeAllObjects];
+    imperativePlacemarkCounter = 0;
     if (![clusterCollection isValid]) {
         clusterCollection = [mapView.mapWindow.map.mapObjects addClusterizedPlacemarkCollectionWithClusterListener:self];
     }
@@ -887,6 +897,11 @@ using namespace facebook::react;
         UIImage *effectiveImage = image ?: [strongSelf clusterImage:@(1)];
         NSArray<YMKPlacemarkMapObject *> *added = [strongSelf->clusterCollection addPlacemarksWithPoints:points image:effectiveImage style:[YMKIconStyle new]];
         [strongSelf->clusterPlacemarks addObjectsFromArray:added];
+        for (YMKPlacemarkMapObject *pm in added) {
+            NSValue *key = [NSValue valueWithNonretainedObject:pm];
+            strongSelf->imperativeIndexMap[key] = @(strongSelf->imperativePlacemarkCounter++);
+            [pm addTapListenerWithTapListener:strongSelf];
+        }
         strongSelf->hasImperativePlacemarks = YES;
         if (recluster) {
             [strongSelf clusterPlacemarks];
@@ -905,6 +920,8 @@ using namespace facebook::react;
 - (void)clearClusterMarkers {
     if (![self isKindOfClass:[ClusteredYamapView class]]) return;
     [clusterPlacemarks removeAllObjects];
+    [imperativeIndexMap removeAllObjects];
+    imperativePlacemarkCounter = 0;
     if ([clusterCollection isValid]) {
         [clusterCollection clear];
     }
@@ -1017,6 +1034,25 @@ using namespace facebook::react;
         [lastKnownMarkers addObject:[placemark geometry]];
     }
     [self fitMarkers:lastKnownMarkers duration:0.7 animation:0];
+    return YES;
+}
+
+- (BOOL)onMapObjectTapWithMapObject:(nonnull YMKMapObject *)mapObject point:(nonnull YMKPoint *)point {
+    if (![mapObject isKindOfClass:[YMKPlacemarkMapObject class]]) {
+        return NO;
+    }
+    NSValue *key = [NSValue valueWithNonretainedObject:mapObject];
+    NSNumber *idx = imperativeIndexMap[key];
+    if (idx == nil) {
+        return NO;
+    }
+    if (_eventEmitter && [self isKindOfClass:[ClusteredYamapView class]]) {
+        std::dynamic_pointer_cast<const ClusteredYamapViewEventEmitter>(_eventEmitter)->onClusterPlacemarkPress({
+            .lat = point.latitude,
+            .lon = point.longitude,
+            .index = [idx intValue],
+        });
+    }
     return YES;
 }
 

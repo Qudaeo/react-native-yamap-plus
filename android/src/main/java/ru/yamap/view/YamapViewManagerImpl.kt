@@ -13,6 +13,7 @@ import ru.yamap.events.yamap.GetScreenToWorldPointsEvent
 import ru.yamap.events.yamap.GetVisibleRegionEvent
 import ru.yamap.events.yamap.GetWorldToScreenPointsEvent
 import ru.yamap.events.yamap.MapLoadedEvent
+import ru.yamap.events.yamap.YamapClusterPlacemarkPressEvent
 import ru.yamap.events.yamap.YamapLongPressEvent
 import ru.yamap.events.yamap.YamapPressEvent
 import ru.yamap.utils.PointUtil
@@ -219,6 +220,8 @@ class YamapViewManagerImpl() {
                     mapOf("phasedRegistrationNames" to mapOf("bubbled" to "onMapPress")),
             YamapLongPressEvent.EVENT_NAME to
                     mapOf("phasedRegistrationNames" to mapOf("bubbled" to "onMapLongPress")),
+            YamapClusterPlacemarkPressEvent.EVENT_NAME to
+                    mapOf("phasedRegistrationNames" to mapOf("bubbled" to "onClusterPlacemarkPress")),
         )
 
         val exportedCustomDirectEventTypeConstants = mutableMapOf(
