@@ -64,6 +64,8 @@ export const useClusteredYamap = (
       nativeCommands.appendClusterMarkers(nativeRef.current!, [{
         points,
         iconSource: getImageUri(options?.iconSource),
+        anchorX: options?.anchor?.x,
+        anchorY: options?.anchor?.y,
         recluster: options?.recluster ?? true,
       }]),
     clearClusterMarkers: () =>

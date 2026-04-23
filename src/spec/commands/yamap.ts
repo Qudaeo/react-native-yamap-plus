@@ -74,6 +74,8 @@ export interface YamapNativeCommands {
     args: Array<Readonly<{
       points: Point[],
       iconSource?: string,
+      anchorX?: Double,
+      anchorY?: Double,
       recluster?: boolean,
     }>>
   ) => void;

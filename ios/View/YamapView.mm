@@ -404,8 +404,16 @@ using namespace facebook::react;
             iconSource = nil;
         }
         id reclusterArg = args[0][0][@"recluster"];
+        NSNumber *anchorX = args[0][0][@"anchorX"];
+        NSNumber *anchorY = args[0][0][@"anchorY"];
         BOOL recluster = (reclusterArg == nil || [reclusterArg isEqual:[NSNull null]]) ? YES : [reclusterArg boolValue];
-        [self appendClusterMarkers:points iconSource:iconSource recluster:recluster];
+        if ([anchorX isEqual:[NSNull null]]) {
+            anchorX = nil;
+        }
+        if ([anchorY isEqual:[NSNull null]]) {
+            anchorY = nil;
+        }
+        [self appendClusterMarkers:points iconSource:iconSource anchorX:anchorX anchorY:anchorY recluster:recluster];
     } else if ([commandName isEqual:@"clearClusterMarkers"]) {
         [self clearClusterMarkers];
     }
@@ -883,7 +891,7 @@ using namespace facebook::react;
     [self clusterPlacemarks];
 }
 
-- (void)appendClusterMarkers:(NSArray<YMKPoint*>*)points iconSource:(NSString*)iconSource recluster:(BOOL)recluster {
+- (void)appendClusterMarkers:(NSArray<YMKPoint*>*)points iconSource:(NSString*)iconSource anchorX:(NSNumber*)anchorX anchorY:(NSNumber*)anchorY recluster:(BOOL)recluster {
     if (![self isKindOfClass:[ClusteredYamapView class]]) return;
     if (points == nil || [points count] == 0) return;
     if (![clusterCollection isValid]) {
@@ -895,7 +903,11 @@ using namespace facebook::react;
         __typeof__(self) strongSelf = weakSelf;
         if (!strongSelf) return;
         UIImage *effectiveImage = image ?: [strongSelf clusterImage:@(1)];
-        NSArray<YMKPlacemarkMapObject *> *added = [strongSelf->clusterCollection addPlacemarksWithPoints:points image:effectiveImage style:[YMKIconStyle new]];
+        YMKIconStyle *iconStyle = [YMKIconStyle new];
+        if (anchorX != nil && anchorY != nil) {
+            [iconStyle setAnchor:[NSValue valueWithCGPoint:CGPointMake(anchorX.doubleValue, anchorY.doubleValue)]];
+        }
+        NSArray<YMKPlacemarkMapObject *> *added = [strongSelf->clusterCollection addPlacemarksWithPoints:points image:effectiveImage style:iconStyle];
         [strongSelf->clusterPlacemarks addObjectsFromArray:added];
         for (YMKPlacemarkMapObject *pm in added) {
             NSValue *key = [NSValue valueWithNonretainedObject:pm];

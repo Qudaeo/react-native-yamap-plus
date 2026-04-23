@@ -9,6 +9,14 @@ export type AppendClusterMarkersOptions = {
   /** Per-marker icon. Resolved to a URI internally. If omitted, a neutral placeholder is used. */
   iconSource?: ImageSourcePropType;
   /**
+   * Icon anchor in image-relative space. (0.5, 0.5) = center, (0.5, 1) =
+   * bottom-center (e.g. tail-tip of a pin). Values outside 0..1 are passed
+   * through to Yandex MapKit. Applied as the `YMKIconStyle` anchor for every
+   * placemark in this append batch. Defaults to Yandex's built-in (0.5, 0.5)
+   * when omitted.
+   */
+  anchor?: { x: number; y: number };
+  /**
    * Whether to run the clustering pass after adding points. Defaults to `true`.
    * Pass `false` for intermediate batches when streaming many appends and call
    * once more with the default for the final batch to avoid O(total) clustering

@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import android.graphics.PointF
 import android.graphics.Rect
 import android.graphics.Typeface
 import android.view.View
@@ -63,6 +64,8 @@ class ClusteredYamapView(context: Context?) : YamapView(context), ClusterListene
     fun appendClusterMarkers(
         points: ArrayList<HashMap<String, Double>>,
         iconSource: String?,
+        anchorX: Float?,
+        anchorY: Float?,
         recluster: Boolean,
     ) {
         if (points.isEmpty()) return
@@ -81,7 +84,11 @@ class ClusteredYamapView(context: Context?) : YamapView(context), ClusterListene
             } else {
                 TextImageProvider("")
             }
-            val placemarks = clusterCollection.addPlacemarks(pt, provider, IconStyle())
+            val iconStyle = IconStyle()
+            if (anchorX != null && anchorY != null) {
+                iconStyle.anchor = PointF(anchorX, anchorY)
+            }
+            val placemarks = clusterCollection.addPlacemarks(pt, provider, iconStyle)
             pointsList.addAll(pt)
             for (i in placemarks.indices) {
                 val placemark = placemarks[i]
