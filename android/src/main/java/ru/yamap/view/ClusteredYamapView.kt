@@ -34,6 +34,7 @@ class ClusteredYamapView(context: Context?) : YamapView(context), ClusterListene
     private var clusterTextColor = Color.BLACK
     private var clusterTextXOffset = 0
     private var clusterTextYOffset = 0
+    private var hasImperativePlacemarks = false
 
     fun setClusterTextSize(size: Float) {
         clusterTextSize = size
@@ -51,7 +52,11 @@ class ClusteredYamapView(context: Context?) : YamapView(context), ClusterListene
         clusterTextYOffset = offset
     }
 
-    fun appendClusterMarkers(points: ArrayList<HashMap<String, Double>>, iconSource: String?) {
+    fun appendClusterMarkers(
+        points: ArrayList<HashMap<String, Double>>,
+        iconSource: String?,
+        recluster: Boolean,
+    ) {
         if (points.isEmpty()) return
         val pt = ArrayList<Point>()
         for (p in points) {
@@ -59,13 +64,14 @@ class ClusteredYamapView(context: Context?) : YamapView(context), ClusterListene
         }
 
         val addNow: (android.graphics.Bitmap?) -> Unit = { bitmap ->
-            val provider = if (bitmap != null) {
+            val provider = if (bitmap != null && !iconSource.isNullOrEmpty()) {
+                val id = "append_cluster_icon_$iconSource"
                 object : ImageProvider() {
-                    override fun getId(): String = "append_cluster_icon_${iconSource.hashCode()}"
+                    override fun getId(): String = id
                     override fun getImage(): Bitmap = bitmap
                 }
             } else {
-                TextImageProvider(points.size.toString())
+                TextImageProvider("")
             }
             val placemarks = clusterCollection.addPlacemarks(pt, provider, IconStyle())
             pointsList.addAll(pt)
@@ -74,16 +80,16 @@ class ClusteredYamapView(context: Context?) : YamapView(context), ClusterListene
                 placemarksMap["" + placemark.geometry.latitude + placemark.geometry.longitude] =
                     placemark
             }
-            clusterCollection.clusterPlacemarks(50.0, 12)
+            hasImperativePlacemarks = true
+            if (recluster) {
+                clusterCollection.clusterPlacemarks(CLUSTER_RADIUS, CLUSTER_MIN_ZOOM)
+            }
         }
 
         if (!iconSource.isNullOrEmpty()) {
             val ctx = context ?: run { addNow(null); return }
-            try {
-                val bmp = ImageCacheManager.getBitmapSync(ctx, iconSource)
-                addNow(bmp)
-            } catch (_: Throwable) {
-                addNow(null)
+            ImageCacheManager.getImage(ctx, iconSource) { bitmap ->
+                addNow(bitmap)
             }
         } else {
             addNow(null)
@@ -94,9 +100,14 @@ class ClusteredYamapView(context: Context?) : YamapView(context), ClusterListene
         clusterCollection.clear()
         placemarksMap.clear()
         pointsList.clear()
+        hasImperativePlacemarks = false
     }
 
     fun setClusteredMarkers(points: ArrayList<HashMap<String, Double>>) {
+        // Empty prop arrives on every re-render when the consumer drives this
+        // component imperatively — never clear in that case, it would wipe the
+        // markers added via appendClusterMarkers.
+        if (points.isEmpty() && hasImperativePlacemarks) return
         clusterCollection.clear()
         placemarksMap.clear()
         val pt = ArrayList<Point>()
@@ -115,7 +126,8 @@ class ClusteredYamapView(context: Context?) : YamapView(context), ClusterListene
                 child.setMarkerMapObject(placemark)
             }
         }
-        clusterCollection.clusterPlacemarks(50.0, 12)
+        hasImperativePlacemarks = false
+        clusterCollection.clusterPlacemarks(CLUSTER_RADIUS, CLUSTER_MIN_ZOOM)
     }
 
     fun setClusterIcon(source: String) {
@@ -152,7 +164,7 @@ class ClusteredYamapView(context: Context?) : YamapView(context), ClusterListene
                 child.setMarkerMapObject(placemark)
             }
         }
-        clusterCollection.clusterPlacemarks(50.0, 12)
+        clusterCollection.clusterPlacemarks(CLUSTER_RADIUS, CLUSTER_MIN_ZOOM)
     }
 
     override fun addFeature(child: View?, index: Int) {
@@ -272,5 +284,7 @@ class ClusteredYamapView(context: Context?) : YamapView(context), ClusterListene
         private const val FONT_SIZE = 45f
         private const val MARGIN_SIZE = 9f
         private const val STROKE_SIZE = 9f
+        private const val CLUSTER_RADIUS = 50.0
+        private const val CLUSTER_MIN_ZOOM = 12
     }
 }

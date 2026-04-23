@@ -66,7 +66,9 @@ class YamapViewManagerImpl() {
                         as? ArrayList<HashMap<String, Double>> ?: ArrayList()
                     val iconSource = if (args.hasKey("iconSource") && !args.isNull("iconSource"))
                         args.getString("iconSource") else null
-                    view.appendClusterMarkers(points, iconSource)
+                    val recluster = if (args.hasKey("recluster") && !args.isNull("recluster"))
+                        args.getBoolean("recluster") else true
+                    view.appendClusterMarkers(points, iconSource, recluster)
                 }
             }
             "clearClusterMarkers" -> {
