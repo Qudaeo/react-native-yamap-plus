@@ -13,6 +13,7 @@ import ru.yamap.events.yamap.GetScreenToWorldPointsEvent
 import ru.yamap.events.yamap.GetVisibleRegionEvent
 import ru.yamap.events.yamap.GetWorldToScreenPointsEvent
 import ru.yamap.events.yamap.MapLoadedEvent
+import ru.yamap.events.yamap.YamapClusterPlacemarkPressEvent
 import ru.yamap.events.yamap.YamapLongPressEvent
 import ru.yamap.events.yamap.YamapPressEvent
 import ru.yamap.utils.PointUtil
@@ -59,6 +60,27 @@ class YamapViewManagerImpl() {
                 args.getArray("points"),
                 args.getString("id")
             )
+            "appendClusterMarkers" -> {
+                if (view is ClusteredYamapView) {
+                    @Suppress("UNCHECKED_CAST")
+                    val points = args.getArray("points")?.toArrayList()
+                        as? ArrayList<HashMap<String, Double>> ?: ArrayList()
+                    val iconSource = if (args.hasKey("iconSource") && !args.isNull("iconSource"))
+                        args.getString("iconSource") else null
+                    val anchorX = if (args.hasKey("anchorX") && !args.isNull("anchorX"))
+                        args.getDouble("anchorX").toFloat() else null
+                    val anchorY = if (args.hasKey("anchorY") && !args.isNull("anchorY"))
+                        args.getDouble("anchorY").toFloat() else null
+                    val recluster = if (args.hasKey("recluster") && !args.isNull("recluster"))
+                        args.getBoolean("recluster") else true
+                    view.appendClusterMarkers(points, iconSource, anchorX, anchorY, recluster)
+                }
+            }
+            "clearClusterMarkers" -> {
+                if (view is ClusteredYamapView) {
+                    view.clearClusterMarkers()
+                }
+            }
 
             else -> throw IllegalArgumentException(
                 String.format(
@@ -202,6 +224,8 @@ class YamapViewManagerImpl() {
                     mapOf("phasedRegistrationNames" to mapOf("bubbled" to "onMapPress")),
             YamapLongPressEvent.EVENT_NAME to
                     mapOf("phasedRegistrationNames" to mapOf("bubbled" to "onMapLongPress")),
+            YamapClusterPlacemarkPressEvent.EVENT_NAME to
+                    mapOf("phasedRegistrationNames" to mapOf("bubbled" to "onClusterPlacemarkPress")),
         )
 
         val exportedCustomDirectEventTypeConstants = mutableMapOf(
@@ -233,6 +257,8 @@ class YamapViewManagerImpl() {
             "fitMarkers" to 7,
             "getScreenPoints" to 8,
             "getWorldPoints" to 9,
+            "appendClusterMarkers" to 10,
+            "clearClusterMarkers" to 11,
         )
     }
 }

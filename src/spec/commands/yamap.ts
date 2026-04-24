@@ -69,6 +69,20 @@ export interface YamapNativeCommands {
       id: string
     }>>
   ) => void;
+  appendClusterMarkers: (
+    viewRef: React.ElementRef<ClusteredYamapComponentType>,
+    args: Array<Readonly<{
+      points: Point[],
+      iconSource?: string,
+      anchorX?: Double,
+      anchorY?: Double,
+      recluster?: boolean,
+    }>>
+  ) => void;
+  clearClusterMarkers: (
+    viewRef: React.ElementRef<ClusteredYamapComponentType>,
+    args: Array<Readonly<Record<string, never>>>
+  ) => void;
 }
 
 export const Commands = codegenNativeCommands<YamapNativeCommands>({
@@ -82,5 +96,7 @@ export const Commands = codegenNativeCommands<YamapNativeCommands>({
     'setTrafficVisible',
     'getScreenPoints',
     'getWorldPoints',
+    'appendClusterMarkers',
+    'clearClusterMarkers',
   ],
 });

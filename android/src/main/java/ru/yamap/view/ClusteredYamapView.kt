@@ -5,24 +5,31 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import android.graphics.PointF
 import android.graphics.Rect
 import android.graphics.Typeface
 import android.view.View
+import com.facebook.react.uimanager.ThemedReactContext
+import com.facebook.react.uimanager.UIManagerHelper
+import com.facebook.react.uimanager.UIManagerHelper.getSurfaceId
 import com.yandex.mapkit.geometry.Point
 import com.yandex.mapkit.map.Cluster
 import com.yandex.mapkit.map.ClusterListener
 import com.yandex.mapkit.map.ClusterTapListener
 import com.yandex.mapkit.map.IconStyle
+import com.yandex.mapkit.map.MapObject
+import com.yandex.mapkit.map.MapObjectTapListener
 import com.yandex.mapkit.map.PlacemarkMapObject
 import com.yandex.runtime.image.ImageProvider
 import kotlin.math.abs
 import kotlin.math.sqrt
 import androidx.core.graphics.createBitmap
 import com.facebook.react.bridge.ReadableMap
+import ru.yamap.events.yamap.YamapClusterPlacemarkPressEvent
 import ru.yamap.utils.ImageCacheManager
 
 class ClusteredYamapView(context: Context?) : YamapView(context), ClusterListener,
-    ClusterTapListener {
+    ClusterTapListener, MapObjectTapListener {
     private val clusterCollection = mapWindow.map.mapObjects.addClusterizedPlacemarkCollection(this)
     private var clusterColor = 0
     private val placemarksMap = HashMap<String?, PlacemarkMapObject?>()
@@ -34,6 +41,9 @@ class ClusteredYamapView(context: Context?) : YamapView(context), ClusterListene
     private var clusterTextColor = Color.BLACK
     private var clusterTextXOffset = 0
     private var clusterTextYOffset = 0
+    private var hasImperativePlacemarks = false
+    private val imperativeIndexMap = HashMap<PlacemarkMapObject, Int>()
+    private var imperativePlacemarkCounter = 0
 
     fun setClusterTextSize(size: Float) {
         clusterTextSize = size
@@ -51,9 +61,76 @@ class ClusteredYamapView(context: Context?) : YamapView(context), ClusterListene
         clusterTextYOffset = offset
     }
 
-    fun setClusteredMarkers(points: ArrayList<HashMap<String, Double>>) {
+    fun appendClusterMarkers(
+        points: ArrayList<HashMap<String, Double>>,
+        iconSource: String?,
+        anchorX: Float?,
+        anchorY: Float?,
+        recluster: Boolean,
+    ) {
+        if (points.isEmpty()) return
+        val pt = ArrayList<Point>()
+        for (p in points) {
+            pt.add(Point(p["lat"]!!, p["lon"]!!))
+        }
+
+        val addNow: (android.graphics.Bitmap?) -> Unit = { bitmap ->
+            val provider = if (bitmap != null && !iconSource.isNullOrEmpty()) {
+                val id = "append_cluster_icon_$iconSource"
+                object : ImageProvider() {
+                    override fun getId(): String = id
+                    override fun getImage(): Bitmap = bitmap
+                }
+            } else {
+                TextImageProvider("")
+            }
+            val iconStyle = IconStyle()
+            if (anchorX != null && anchorY != null) {
+                iconStyle.anchor = PointF(anchorX, anchorY)
+            }
+            val placemarks = clusterCollection.addPlacemarks(pt, provider, iconStyle)
+            pointsList.addAll(pt)
+            for (i in placemarks.indices) {
+                val placemark = placemarks[i]
+                placemarksMap["" + placemark.geometry.latitude + placemark.geometry.longitude] =
+                    placemark
+                imperativeIndexMap[placemark] = imperativePlacemarkCounter++
+                placemark.addTapListener(this)
+            }
+            hasImperativePlacemarks = true
+            if (recluster) {
+                clusterCollection.clusterPlacemarks(CLUSTER_RADIUS, CLUSTER_MIN_ZOOM)
+            }
+        }
+
+        if (!iconSource.isNullOrEmpty()) {
+            val ctx = context ?: run { addNow(null); return }
+            ImageCacheManager.getImage(ctx, iconSource) { bitmap ->
+                addNow(bitmap)
+            }
+        } else {
+            addNow(null)
+        }
+    }
+
+    fun clearClusterMarkers() {
         clusterCollection.clear()
         placemarksMap.clear()
+        pointsList.clear()
+        imperativeIndexMap.clear()
+        imperativePlacemarkCounter = 0
+        hasImperativePlacemarks = false
+    }
+
+    fun setClusteredMarkers(points: ArrayList<HashMap<String, Double>>) {
+        // Empty prop arrives on every re-render when the consumer drives this
+        // component imperatively — never clear in that case, it would wipe the
+        // markers added via appendClusterMarkers.
+        if (points.isEmpty() && hasImperativePlacemarks) return
+        clusterCollection.clear()
+        placemarksMap.clear()
+        imperativeIndexMap.clear()
+        imperativePlacemarkCounter = 0
         val pt = ArrayList<Point>()
         for (i in points.indices) {
             val point = points[i]
@@ -70,7 +147,8 @@ class ClusteredYamapView(context: Context?) : YamapView(context), ClusterListene
                 child.setMarkerMapObject(placemark)
             }
         }
-        clusterCollection.clusterPlacemarks(50.0, 12)
+        hasImperativePlacemarks = false
+        clusterCollection.clusterPlacemarks(CLUSTER_RADIUS, CLUSTER_MIN_ZOOM)
     }
 
     fun setClusterIcon(source: String) {
@@ -93,6 +171,8 @@ class ClusteredYamapView(context: Context?) : YamapView(context), ClusterListene
 
     private fun updateUserMarkersColor() {
         clusterCollection.clear()
+        imperativeIndexMap.clear()
+        imperativePlacemarkCounter = 0
         val placemarks = clusterCollection.addPlacemarks(
             pointsList,
             TextImageProvider(pointsList.size.toString()),
@@ -107,10 +187,14 @@ class ClusteredYamapView(context: Context?) : YamapView(context), ClusterListene
                 child.setMarkerMapObject(placemark)
             }
         }
-        clusterCollection.clusterPlacemarks(50.0, 12)
+        clusterCollection.clusterPlacemarks(CLUSTER_RADIUS, CLUSTER_MIN_ZOOM)
     }
 
     override fun addFeature(child: View?, index: Int) {
+        if (child is MarkerView && child.excludeFromCluster) {
+            super.addFeature(child, index)
+            return
+        }
         val marker = child as MarkerView?
         val placemark = placemarksMap["" + marker!!.point!!.latitude + marker.point!!.longitude]
         if (placemark != null) {
@@ -121,6 +205,10 @@ class ClusteredYamapView(context: Context?) : YamapView(context), ClusterListene
     override fun removeChild(index: Int) {
         val child = getChildAt(index)
         if (child is MarkerView) {
+            if (child.excludeFromCluster) {
+                super.removeChild(index)
+                return
+            }
             val mapObject = child.rnMapObject
             if (mapObject == null || !mapObject.isValid) return
             clusterCollection.remove(mapObject)
@@ -139,6 +227,23 @@ class ClusteredYamapView(context: Context?) : YamapView(context), ClusterListene
             points.add(placemark.geometry)
         }
         fitMarkers(points, 0.7f, 0)
+        return true
+    }
+
+    override fun onMapObjectTap(mapObject: MapObject, point: Point): Boolean {
+        if (mapObject !is PlacemarkMapObject) return false
+        val index = imperativeIndexMap[mapObject] ?: return false
+        val themedContext = context as? ThemedReactContext ?: return false
+        val dispatcher = UIManagerHelper.getEventDispatcherForReactTag(themedContext, id) ?: return false
+        dispatcher.dispatchEvent(
+            YamapClusterPlacemarkPressEvent(
+                getSurfaceId(themedContext),
+                id,
+                point.latitude,
+                point.longitude,
+                index,
+            )
+        )
         return true
     }
 
@@ -227,5 +332,7 @@ class ClusteredYamapView(context: Context?) : YamapView(context), ClusterListene
         private const val FONT_SIZE = 45f
         private const val MARGIN_SIZE = 9f
         private const val STROKE_SIZE = 9f
+        private const val CLUSTER_RADIUS = 50.0
+        private const val CLUSTER_MIN_ZOOM = 12
     }
 }

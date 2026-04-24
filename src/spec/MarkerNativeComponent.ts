@@ -24,6 +24,14 @@ export interface MarkerNativeProps extends ViewProps {
   handled?: boolean;
   source?: string;
   zI?: Float;
+  /**
+   * Only meaningful when this Marker is a child of ClusteredYamap.
+   * When true, the marker is added to the map's root object collection
+   * instead of the cluster collection — it stays visible on every zoom
+   * level and never merges into a cluster. Read once at mount; toggling
+   * at runtime has no effect.
+   */
+  excludeFromCluster?: boolean;
 }
 
 export type MarkerComponentType = NativeComponentType<MarkerNativeProps> & Readonly<MarkerNativeCommands>;
