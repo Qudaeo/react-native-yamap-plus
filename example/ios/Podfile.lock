@@ -1844,9 +1844,9 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - ReactNativeDependencies
-    - YandexMapsMobile (= 4.33.1-full)
+    - YandexMapsMobile (= 4.29.0-full)
     - Yoga
-  - YandexMapsMobile (4.33.1-full)
+  - YandexMapsMobile (4.29.0-full)
   - Yoga (0.0.0)
 
 DEPENDENCIES:
@@ -2162,8 +2162,8 @@ SPEC CHECKSUMS:
   ReactCodegen: bf21d6c76a5786c0c1b67adcfd08c4a60aad6dde
   ReactCommon: 7a064b6c71cb734ea99678cbf9ce2d7041632c61
   ReactNativeDependencies: d2d66e926981c0aa210c4995fc455d264eca1dcc
-  RNYamap: 099b91e94814b6e466718c5324282a9277b7db46
-  YandexMapsMobile: 5c3746f6f6b341fee0ecdd4c4fef8612e490e421
+  RNYamap: 6048badb976a96ab9560d68b693ff8cf043b82e5
+  YandexMapsMobile: 11cd25283d7ba0f3994ae90ac671981ae1b93438
   Yoga: c756e845bf83b698119ac97e3bfe6ed27d82b35a
 
 PODFILE CHECKSUM: 5b66a15e9a227b40738dfa5b086cc6d482ec5fce
