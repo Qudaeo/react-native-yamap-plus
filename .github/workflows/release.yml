@@ -43,6 +43,7 @@ jobs:
         run: |
           git config user.name "${{ github.actor }}"
           git config user.email "${{ github.actor }}@users.noreply.github.com"
+          npm config delete always-auth
           yarn release ${{ github.event.inputs.release_type }}
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
