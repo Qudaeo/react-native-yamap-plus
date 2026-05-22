@@ -14,7 +14,7 @@ buildscript {
 
 def kotlin_version = getExtOrDefault("kotlinVersion")
 def play_services_location_version = getExtOrDefault("playServicesLocationVersion")
-def use_yandex_maps_lite = getExtOrDefault("useYandexMapsLite")
+def use_yandex_maps_lite = project.findProperty('EXPO_useYandexMapKitLite') ?: getExtOrDefault("useYandexMapsLite")
 def maps_mobile_full_version = getExtOrDefault("mapsMobileFullVersion")
 def maps_mobile_lite_version = getExtOrDefault("mapsMobileLiteVersion")
 
@@ -47,7 +47,7 @@ android {
 
   sourceSets {
     main {
-      if (use_yandex_maps_lite == true) {
+      if (use_yandex_maps_lite.toBoolean()) {
         java.srcDirs += [
                 'src/mapkit/lite'
         ]
@@ -70,7 +70,7 @@ dependencies {
   implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
   implementation "com.google.android.gms:play-services-location:$play_services_location_version"
-  if (use_yandex_maps_lite == true) {
+  if (use_yandex_maps_lite.toBoolean()) {
     println "maps_mobile_version=" + maps_mobile_lite_version
     implementation "com.yandex.android:maps.mobile:$maps_mobile_lite_version"
   } else {
