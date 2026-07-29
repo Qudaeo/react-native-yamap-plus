@@ -13,6 +13,7 @@ import com.yandex.mapkit.map.MapObject
 import com.yandex.mapkit.map.MapObjectTapListener
 import ru.yamap.events.YamapCirclePressEvent
 import ru.yamap.models.ReactMapObject
+import java.lang.ref.WeakReference
 
 class CircleView(context: Context?) : ViewGroup(context), MapObjectTapListener, ReactMapObject {
     @JvmField
@@ -87,7 +88,7 @@ class CircleView(context: Context?) : ViewGroup(context), MapObjectTapListener, 
 
     fun setCircleMapObject(obj: MapObject?) {
         rnMapObject = obj as CircleMapObject?
-        rnMapObject!!.addTapListener(this)
+        rnMapObject!!.addTapListener(WeakReference(this))
         updateCircle()
     }
 

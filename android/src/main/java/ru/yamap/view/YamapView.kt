@@ -53,6 +53,7 @@ import ru.yamap.events.yamap.YamapPressEvent
 import ru.yamap.models.ReactMapObject
 import ru.yamap.utils.ImageCacheManager
 import ru.yamap.utils.PointUtil
+import java.lang.ref.WeakReference
 import javax.annotation.Nonnull
 
 open class YamapView(context: Context?) : MapView(context), UserLocationObjectListener,
@@ -70,9 +71,9 @@ open class YamapView(context: Context?) : MapView(context), UserLocationObjectLi
     private var userLocationView: UserLocationView? = null
 
     init {
-        mapWindow.map.addCameraListener(this)
-        mapWindow.map.addInputListener(this)
-        mapWindow.map.setMapLoadedListener(this)
+        mapWindow.map.addCameraListener(WeakReference(this))
+        mapWindow.map.addInputListener(WeakReference(this))
+        mapWindow.map.setMapLoadedListener(WeakReference(this))
     }
 
     // REF
@@ -434,11 +435,11 @@ open class YamapView(context: Context?) : MapView(context), UserLocationObjectLi
         }
 
         if (isVisible) {
-            trafficLayer!!.addTrafficListener(this)
+            trafficLayer!!.addTrafficListener(WeakReference(this))
             trafficLayer!!.isTrafficVisible = true
         } else {
             trafficLayer!!.isTrafficVisible = false
-            trafficLayer!!.removeTrafficListener(this)
+            trafficLayer!!.removeTrafficListener(WeakReference(this))
         }
     }
 
@@ -448,7 +449,7 @@ open class YamapView(context: Context?) : MapView(context), UserLocationObjectLi
         }
 
         if (show) {
-            userLocationLayer!!.setObjectListener(this)
+            userLocationLayer!!.setObjectListener(WeakReference(this))
             userLocationLayer!!.isVisible = true
             userLocationLayer!!.isHeadingModeActive = true
         } else {

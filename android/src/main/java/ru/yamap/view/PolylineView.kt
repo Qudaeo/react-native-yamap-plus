@@ -14,6 +14,7 @@ import com.yandex.mapkit.map.MapObjectTapListener
 import com.yandex.mapkit.map.PolylineMapObject
 import ru.yamap.events.YamapPolylinePressEvent
 import ru.yamap.models.ReactMapObject
+import java.lang.ref.WeakReference
 
 class PolylineView(context: Context?) : ViewGroup(context), MapObjectTapListener, ReactMapObject {
     @JvmField
@@ -103,7 +104,7 @@ class PolylineView(context: Context?) : ViewGroup(context), MapObjectTapListener
 
     fun setPolylineMapObject(obj: MapObject?) {
         rnMapObject = obj as PolylineMapObject?
-        rnMapObject!!.addTapListener(this)
+        rnMapObject!!.addTapListener(WeakReference(this))
         updatePolyline()
     }
 

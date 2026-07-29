@@ -14,6 +14,7 @@ import com.yandex.mapkit.map.MapObjectTapListener
 import com.yandex.mapkit.map.PolygonMapObject
 import ru.yamap.events.YamapPolygonPressEvent
 import ru.yamap.models.ReactMapObject
+import java.lang.ref.WeakReference
 
 class PolygonView(context: Context?) : ViewGroup(context), MapObjectTapListener, ReactMapObject {
     @JvmField
@@ -89,7 +90,7 @@ class PolygonView(context: Context?) : ViewGroup(context), MapObjectTapListener,
 
     fun setPolygonMapObject(obj: MapObject?) {
         rnMapObject = obj as PolygonMapObject?
-        rnMapObject!!.addTapListener(this)
+        rnMapObject!!.addTapListener(WeakReference(this))
         updatePolygon()
     }
 

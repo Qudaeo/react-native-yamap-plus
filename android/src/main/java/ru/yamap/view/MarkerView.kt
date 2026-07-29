@@ -22,6 +22,7 @@ import com.facebook.react.uimanager.UIManagerHelper
 import com.facebook.react.uimanager.UIManagerHelper.getSurfaceId
 import ru.yamap.events.YamapMarkerPressEvent
 import ru.yamap.utils.ImageCacheManager
+import java.lang.ref.WeakReference
 
 class MarkerView(context: Context?) : ReactViewGroup(context), MapObjectTapListener,
     ReactMapObject {
@@ -130,7 +131,7 @@ class MarkerView(context: Context?) : ReactViewGroup(context), MapObjectTapListe
 
     fun setMarkerMapObject(obj: MapObject?) {
         rnMapObject = obj as PlacemarkMapObject?
-        rnMapObject!!.addTapListener(this)
+        rnMapObject!!.addTapListener(WeakReference(this))
         updateMarker()
     }
 

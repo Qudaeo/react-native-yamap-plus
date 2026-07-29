@@ -27,10 +27,13 @@ import androidx.core.graphics.createBitmap
 import com.facebook.react.bridge.ReadableMap
 import ru.yamap.events.yamap.YamapClusterPlacemarkPressEvent
 import ru.yamap.utils.ImageCacheManager
+import java.lang.ref.WeakReference
 
 class ClusteredYamapView(context: Context?) : YamapView(context), ClusterListener,
     ClusterTapListener, MapObjectTapListener {
-    private val clusterCollection = mapWindow.map.mapObjects.addClusterizedPlacemarkCollection(this)
+    private val clusterCollection = mapWindow.map.mapObjects.addClusterizedPlacemarkCollection(
+        WeakReference(this)
+    )
     private var clusterColor = 0
     private val placemarksMap = HashMap<String?, PlacemarkMapObject?>()
     private var pointsList = ArrayList<Point>()
@@ -95,7 +98,7 @@ class ClusteredYamapView(context: Context?) : YamapView(context), ClusterListene
                 placemarksMap["" + placemark.geometry.latitude + placemark.geometry.longitude] =
                     placemark
                 imperativeIndexMap[placemark] = imperativePlacemarkCounter++
-                placemark.addTapListener(this)
+                placemark.addTapListener(WeakReference(this))
             }
             hasImperativePlacemarks = true
             if (recluster) {
@@ -218,7 +221,7 @@ class ClusteredYamapView(context: Context?) : YamapView(context), ClusterListene
 
     override fun onClusterAdded(cluster: Cluster) {
         cluster.appearance.setIcon(TextImageProvider(cluster.size.toString()))
-        cluster.addClusterTapListener(this)
+        cluster.addClusterTapListener(WeakReference(this))
     }
 
     override fun onClusterTap(cluster: Cluster): Boolean {
