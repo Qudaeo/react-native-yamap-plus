@@ -73,7 +73,7 @@ using namespace facebook::react;
 #if TARGET_OS_SIMULATOR
         const NXArchInfo *archInfo = NXGetLocalArchInfo();
         NSString *cpuArch = [NSString stringWithUTF8String:archInfo->description];
-        mapView = [[YMKMapView alloc] initWithFrame:frame vulkanPreferred:[cpuArch hasPrefix:@"ARM64"]];
+        mapView = [[YMKMapView alloc] initWithFrame:frame vulkanPreferred:[cpuArch hasPrefix:@"ARM64"] transparencySupport:NO];
 #else
         mapView = [[YMKMapView alloc] initWithFrame:frame];
 #endif
