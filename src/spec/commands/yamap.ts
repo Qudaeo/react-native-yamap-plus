@@ -2,14 +2,13 @@
 import codegenNativeCommands from 'react-native/Libraries/Utilities/codegenNativeCommands';
 // eslint-disable-next-line @react-native/no-deep-imports
 import {type Double} from 'react-native/Libraries/Types/CodegenTypes';
-import {type YamapComponentType} from '../YamapNativeComponent';
-import {type ClusteredYamapComponentType} from '../ClusteredYamapNativeComponent';
+import {type YamapNativeRef} from '../YamapNativeComponent';
 import {Animation, type ScreenPoint} from '../../interfaces';
 import type {Point} from "../../";
 
-export interface YamapNativeCommands {
+export interface YamapNativeCommands<T = YamapNativeRef> {
   setCenter: (
-    viewRef: React.ElementRef<YamapComponentType | ClusteredYamapComponentType>,
+    viewRef: T,
     args: Array<Readonly<{
       duration: Double;
       center: Point,
@@ -20,20 +19,20 @@ export interface YamapNativeCommands {
     }>>,
   ) => void;
   fitAllMarkers: (
-    viewRef: React.ElementRef<YamapComponentType | ClusteredYamapComponentType>,
+    viewRef: T,
     args: Array<Readonly<{
       duration?: number,
       animation?: Animation,
     }>>) => void;
   fitMarkers: (
-    viewRef: React.ElementRef<YamapComponentType | ClusteredYamapComponentType>,
+    viewRef: T,
     args: Array<Readonly<{
       points: Point[],
       duration?: number,
       animation?: Animation,
     }>>) => void;
   setZoom: (
-    viewRef: React.ElementRef<YamapComponentType | ClusteredYamapComponentType>,
+    viewRef: T,
     args: Array<Readonly<{
       zoom: Double
       duration: Double,
@@ -41,36 +40,36 @@ export interface YamapNativeCommands {
     }>>
   ) => void;
   getCameraPosition: (
-    viewRef: React.ElementRef<YamapComponentType | ClusteredYamapComponentType>,
+    viewRef: T,
     args: Array<Readonly<{
       id: string,
     }>>) => void;
   getVisibleRegion: (
-    viewRef: React.ElementRef<YamapComponentType | ClusteredYamapComponentType>,
+    viewRef: T,
     args: Array<Readonly<{
       id: string,
     }>>) => void;
   setTrafficVisible: (
-    viewRef: React.ElementRef<YamapComponentType | ClusteredYamapComponentType>,
+    viewRef: T,
     args: Array<Readonly<{
       isVisible: boolean,
     }>>) => void;
   getScreenPoints: (
-    viewRef: React.ElementRef<YamapComponentType | ClusteredYamapComponentType>,
+    viewRef: T,
     args: Array<Readonly<{
       points: Point[]
       id: string
     }>>
   ) => void;
   getWorldPoints: (
-    viewRef: React.ElementRef<YamapComponentType | ClusteredYamapComponentType>,
+    viewRef: T,
     args: Array<Readonly<{
       points: ScreenPoint[]
       id: string
     }>>
   ) => void;
   appendClusterMarkers: (
-    viewRef: React.ElementRef<ClusteredYamapComponentType>,
+    viewRef: T,
     args: Array<Readonly<{
       points: Point[],
       iconSource?: string,
@@ -80,7 +79,7 @@ export interface YamapNativeCommands {
     }>>
   ) => void;
   clearClusterMarkers: (
-    viewRef: React.ElementRef<ClusteredYamapComponentType>,
+    viewRef: T,
     args: Array<Readonly<Record<string, never>>>
   ) => void;
 }

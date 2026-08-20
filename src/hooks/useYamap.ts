@@ -1,17 +1,14 @@
 import {type ForwardedRef, type RefObject, useImperativeHandle} from 'react';
 import {Animation} from '../interfaces';
 import {CallbacksManager, getImageUri} from '../utils';
-import {type YamapRef} from '../components';
-import {type ClusteredYamapRef} from '../components/ClusteredYamap/types';
+import type {YamapRef, ClusteredYamapRef} from '../components';
 import {type YamapNativeCommands} from '../spec/commands/yamap';
 import {type YamapNativeRef} from '../spec/YamapNativeComponent';
 import {type ClusteredYamapNativeRef} from '../spec/ClusteredYamapNativeComponent';
 
-type AnyYamapNativeRef = YamapNativeRef | ClusteredYamapNativeRef;
-
-const buildBaseHandle = <R extends AnyYamapNativeRef>(
+const buildBaseHandle = <R extends YamapNativeRef | ClusteredYamapNativeRef>(
   nativeRef: RefObject<R | null>,
-  nativeCommands: YamapNativeCommands,
+  nativeCommands: YamapNativeCommands<R>,
 ): YamapRef => ({
   setCenter: (center, zoom = 10, azimuth = 0, tilt = 0, duration = 0, animation = Animation.SMOOTH) =>
     nativeCommands.setCenter(nativeRef.current!, [{center, zoom, azimuth, tilt, duration, animation}]),

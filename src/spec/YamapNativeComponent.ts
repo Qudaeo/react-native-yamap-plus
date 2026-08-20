@@ -1,6 +1,5 @@
 // eslint-disable-next-line @react-native/no-deep-imports
-import codegenNativeComponent, {type NativeComponentType} from 'react-native/Libraries/Utilities/codegenNativeComponent';
-import {type YamapNativeCommands} from './commands/yamap';
+import codegenNativeComponent from 'react-native/Libraries/Utilities/codegenNativeComponent';
 import type {
   BubblingEventHandler,
   DirectEventHandler,
@@ -129,7 +128,6 @@ export interface YamapNativeProps extends ViewProps {
 }
 
 export type YamapNativeRef = Component<YamapNativeProps, {}, any> & Readonly<NativeMethods>
-export type YamapComponentType = NativeComponentType<YamapNativeProps> & Readonly<YamapNativeCommands>;
 
 require('./commands/yamap');
 

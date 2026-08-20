@@ -1,5 +1,5 @@
 // eslint-disable-next-line @react-native/no-deep-imports
-import codegenNativeComponent, {type NativeComponentType} from 'react-native/Libraries/Utilities/codegenNativeComponent';
+import codegenNativeComponent from 'react-native/Libraries/Utilities/codegenNativeComponent';
 import type {
   BubblingEventHandler,
   DirectEventHandler,
@@ -10,7 +10,6 @@ import type {
 } from 'react-native/Libraries/Types/CodegenTypes';
 import type {NativeMethods, ViewProps} from 'react-native';
 import {Component} from 'react';
-import {type YamapNativeCommands} from './commands/yamap';
 
 interface MapLoaded {
   renderObjectCount: Double;
@@ -150,7 +149,6 @@ export interface ClusteredYamapNativeProps extends ViewProps {
 }
 
 export type ClusteredYamapNativeRef = Component<ClusteredYamapNativeProps, {}, any> & Readonly<NativeMethods>
-export type ClusteredYamapComponentType = NativeComponentType<ClusteredYamapNativeProps> & Readonly<YamapNativeCommands>;
 
 require('./commands/yamap');
 
