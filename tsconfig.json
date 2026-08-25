@@ -1,19 +1,20 @@
 {
   "compilerOptions": {
-    "declaration": true,
-    "strict": true,
+    "rootDir": ".",
+    "paths": {
+      "react-native-yamap-plus": ["./src/index"]
+    },
     "esModuleInterop": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "jsx": "react",
+    "jsx": "react-jsx",
     "lib": ["esnext"],
-    "module": "esnext",
-    "moduleResolution": "node",
-    "target": "esnext",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "target": "ESNext",
     "outDir": "lib",
-    "rootDir": "./src",
-    "sourceMap": true,
     "skipLibCheck": true,
+    "strict": true,
     "verbatimModuleSyntax": true
   },
   "exclude": ["example", "lib", "**/node_modules", "**/Pods"],

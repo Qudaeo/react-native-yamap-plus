@@ -1,7 +1,4 @@
-// eslint-disable-next-line @react-native/no-deep-imports
-import codegenNativeCommands from 'react-native/Libraries/Utilities/codegenNativeCommands';
-// eslint-disable-next-line @react-native/no-deep-imports
-import {type Double} from 'react-native/Libraries/Types/CodegenTypes';
+import {codegenNativeCommands, type CodegenTypes} from 'react-native';
 import {type YamapNativeRef} from '../YamapNativeComponent';
 import {Animation, type ScreenPoint} from '../../interfaces';
 import type {Point} from "../../";
@@ -10,11 +7,11 @@ export interface YamapNativeCommands<T = YamapNativeRef> {
   setCenter: (
     viewRef: T,
     args: Array<Readonly<{
-      duration: Double;
+      duration: CodegenTypes.Double;
       center: Point,
-      zoom: Double;
-      azimuth: Double;
-      tilt: Double;
+      zoom: CodegenTypes.Double;
+      azimuth: CodegenTypes.Double;
+      tilt: CodegenTypes.Double;
       animation: Animation
     }>>,
   ) => void;
@@ -34,8 +31,8 @@ export interface YamapNativeCommands<T = YamapNativeRef> {
   setZoom: (
     viewRef: T,
     args: Array<Readonly<{
-      zoom: Double
-      duration: Double,
+      zoom: CodegenTypes.Double
+      duration: CodegenTypes.Double,
       animation: Animation,
     }>>
   ) => void;
@@ -73,8 +70,8 @@ export interface YamapNativeCommands<T = YamapNativeRef> {
     args: Array<Readonly<{
       points: Point[],
       iconSource?: string,
-      anchorX?: Double,
-      anchorY?: Double,
+      anchorX?: CodegenTypes.Double,
+      anchorY?: CodegenTypes.Double,
       recluster?: boolean,
     }>>
   ) => void;

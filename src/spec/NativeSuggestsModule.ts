@@ -1,10 +1,8 @@
-// eslint-disable-next-line @react-native/no-deep-imports
-import {type Double} from 'react-native/Libraries/Types/CodegenTypes';
-import {type TurboModule, TurboModuleRegistry} from 'react-native';
+import {type CodegenTypes, type TurboModule, TurboModuleRegistry} from 'react-native'
 
 interface Point {
-  lat: Double;
-  lon: Double;
+  lat: CodegenTypes.Double;
+  lon: CodegenTypes.Double;
 }
 
 export type YamapSuggest = {

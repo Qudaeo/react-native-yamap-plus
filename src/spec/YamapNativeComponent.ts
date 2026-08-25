@@ -1,114 +1,104 @@
-// eslint-disable-next-line @react-native/no-deep-imports
-import codegenNativeComponent from 'react-native/Libraries/Utilities/codegenNativeComponent';
-import type {
-  BubblingEventHandler,
-  DirectEventHandler,
-  Double,
-  Float,
-  Int32,
-  WithDefault,
-} from 'react-native/Libraries/Types/CodegenTypes';
-import type {NativeMethods, ViewProps} from 'react-native';
 import {Component} from 'react';
+import {codegenNativeComponent, type HostInstance, type CodegenTypes, type ViewProps} from 'react-native';
 
 export interface InitialRegion {
-  lat: Double;
-  lon: Double;
-  zoom?: Double;
-  azimuth?: Double;
-  tilt?: Double;
+  lat: CodegenTypes.Double;
+  lon: CodegenTypes.Double;
+  zoom?: CodegenTypes.Double;
+  azimuth?: CodegenTypes.Double;
+  tilt?: CodegenTypes.Double;
 }
 
 export interface YandexLogoPosition {
-  horizontal?: WithDefault<'left' | 'center' | 'right', 'left'>;
-  vertical?: WithDefault<'top' | 'bottom', 'bottom'>;
+  horizontal?: CodegenTypes.WithDefault<'left' | 'center' | 'right', 'left'>;
+  vertical?: CodegenTypes.WithDefault<'top' | 'bottom', 'bottom'>;
 }
 
 export interface YandexLogoPadding {
-  horizontal?: Double;
-  vertical?: Double;
+  horizontal?: CodegenTypes.Double;
+  vertical?: CodegenTypes.Double;
 }
 
 export interface Point {
-  lat: Double;
-  lon: Double;
+  lat: CodegenTypes.Double;
+  lon: CodegenTypes.Double;
 }
 
 export interface CameraPositionNativeResponse {
   id: string;
   point: {
-    lat: Double;
-    lon: Double;
+    lat: CodegenTypes.Double;
+    lon: CodegenTypes.Double;
   }
-  azimuth: Double;
+  azimuth: CodegenTypes.Double;
   finished: boolean;
   reason: string;
-  tilt: Double;
-  zoom: Double;
+  tilt: CodegenTypes.Double;
+  zoom: CodegenTypes.Double;
 }
 
 export type VisibleRegionNativeResponse = {
   id: string;
   bottomLeft: {
-    lat: Double;
-    lon: Double;
+    lat: CodegenTypes.Double;
+    lon: CodegenTypes.Double;
   };
   bottomRight: {
-    lat: Double;
-    lon: Double;
+    lat: CodegenTypes.Double;
+    lon: CodegenTypes.Double;
   };
   topLeft: {
-    lat: Double;
-    lon: Double;
+    lat: CodegenTypes.Double;
+    lon: CodegenTypes.Double;
   };
   topRight: {
-    lat: Double;
-    lon: Double;
+    lat: CodegenTypes.Double;
+    lon: CodegenTypes.Double;
   };
 }
 
 export type ScreenPointsNativeResponse = {
   id: string;
   screenPoints: {
-    x: Double;
-    y: Double;
+    x: CodegenTypes.Double;
+    y: CodegenTypes.Double;
   }[]
 }
 
 export type WorldPointsNativeResponse = {
   id: string;
   worldPoints: {
-    lat: Double;
-    lon: Double;
+    lat: CodegenTypes.Double;
+    lon: CodegenTypes.Double;
   }[]
 }
 
 export interface MapLoaded {
-  renderObjectCount: Double;
-  curZoomModelsLoaded: Double;
-  curZoomPlacemarksLoaded: Double;
-  curZoomLabelsLoaded: Double;
-  curZoomGeometryLoaded: Double;
-  tileMemoryUsage: Double;
-  delayedGeometryLoaded: Double;
-  fullyAppeared: Double;
-  fullyLoaded: Double;
+  renderObjectCount: CodegenTypes.Double;
+  curZoomModelsLoaded: CodegenTypes.Double;
+  curZoomPlacemarksLoaded: CodegenTypes.Double;
+  curZoomLabelsLoaded: CodegenTypes.Double;
+  curZoomGeometryLoaded: CodegenTypes.Double;
+  tileMemoryUsage: CodegenTypes.Double;
+  delayedGeometryLoaded: CodegenTypes.Double;
+  fullyAppeared: CodegenTypes.Double;
+  fullyLoaded: CodegenTypes.Double;
 }
 
 export interface YamapNativeProps extends ViewProps {
-  userLocationIconScale?: Float;
+  userLocationIconScale?: CodegenTypes.Float;
   showUserPosition?: boolean;
   nightMode?: boolean;
   mapStyle?: string;
-  mapType?: WithDefault<'none' | 'raster' | 'vector', 'vector'>;
-  onCameraPositionChange?: DirectEventHandler<CameraPositionNativeResponse>;
-  onCameraPositionChangeEnd?: DirectEventHandler<CameraPositionNativeResponse>;
-  onMapPress?: BubblingEventHandler<Point>;
-  onMapLongPress?: BubblingEventHandler<Point>;
-  onMapLoaded?: DirectEventHandler<MapLoaded>;
-  userLocationAccuracyFillColor?: Int32;
-  userLocationAccuracyStrokeColor?: Int32;
-  userLocationAccuracyStrokeWidth?: Float;
+  mapType?: CodegenTypes.WithDefault<'none' | 'raster' | 'vector', 'vector'>;
+  onCameraPositionChange?: CodegenTypes.DirectEventHandler<CameraPositionNativeResponse>;
+  onCameraPositionChangeEnd?: CodegenTypes.DirectEventHandler<CameraPositionNativeResponse>;
+  onMapPress?: CodegenTypes.BubblingEventHandler<Point>;
+  onMapLongPress?: CodegenTypes.BubblingEventHandler<Point>;
+  onMapLoaded?: CodegenTypes.DirectEventHandler<MapLoaded>;
+  userLocationAccuracyFillColor?: CodegenTypes.Int32;
+  userLocationAccuracyStrokeColor?: CodegenTypes.Int32;
+  userLocationAccuracyStrokeWidth?: CodegenTypes.Float;
   scrollGesturesDisabled?: boolean;
   zoomGesturesDisabled?: boolean;
   tiltGesturesDisabled?: boolean;
@@ -121,13 +111,13 @@ export interface YamapNativeProps extends ViewProps {
   userLocationIcon: string | undefined;
   interactiveDisabled?: boolean;
 
-  onCameraPositionReceived: DirectEventHandler<CameraPositionNativeResponse>;
-  onVisibleRegionReceived: DirectEventHandler<VisibleRegionNativeResponse>;
-  onWorldToScreenPointsReceived: DirectEventHandler<ScreenPointsNativeResponse>;
-  onScreenToWorldPointsReceived: DirectEventHandler<WorldPointsNativeResponse>;
+  onCameraPositionReceived: CodegenTypes.DirectEventHandler<CameraPositionNativeResponse>;
+  onVisibleRegionReceived: CodegenTypes.DirectEventHandler<VisibleRegionNativeResponse>;
+  onWorldToScreenPointsReceived: CodegenTypes.DirectEventHandler<ScreenPointsNativeResponse>;
+  onScreenToWorldPointsReceived: CodegenTypes.DirectEventHandler<WorldPointsNativeResponse>;
 }
 
-export type YamapNativeRef = Component<YamapNativeProps, {}, any> & Readonly<NativeMethods>
+export type YamapNativeRef = Component<YamapNativeProps, {}, any> & HostInstance;
 
 require('./commands/yamap');
 

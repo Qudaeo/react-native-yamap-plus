@@ -1,8 +1,7 @@
 import React, {useRef} from 'react';
-import {StyleSheet} from 'react-native';
-import {DirectEventHandler} from "react-native/Libraries/Types/CodegenTypes";
-import {ClusteredYamap, Marker, YamapRef} from '../../../';
-import {MapLoaded} from "../../../src/spec/YamapNativeComponent.ts";
+import {StyleSheet, type CodegenTypes} from 'react-native';
+import {ClusteredYamap, Marker, ClusteredYamapRef} from '../../../';
+import {MapLoaded} from '../../../src';
 
 const markers = [
   {
@@ -22,9 +21,9 @@ const markers = [
 ];
 
 export const ClusteredMapScreen = () => {
-  const clusteredMapRef = useRef<YamapRef | null>(null);
+  const clusteredMapRef = useRef<ClusteredYamapRef | null>(null);
 
-  const onMapLoaded: DirectEventHandler<MapLoaded> = (event) => {
+  const onMapLoaded: CodegenTypes.DirectEventHandler<MapLoaded> = (event) => {
     console.log('clustered onMapLoaded', event.nativeEvent);
     // clusteredMapRef.current?.getCameraPosition(e => {
     //   console.log('clustered getCameraPosition', e);

@@ -1,6 +1,4 @@
-// eslint-disable-next-line @react-native/no-deep-imports
-import {type Double} from 'react-native/Libraries/Types/CodegenTypes'
-import {type TurboModule, TurboModuleRegistry} from 'react-native'
+import {type CodegenTypes, type TurboModule, TurboModuleRegistry} from 'react-native'
 import type {Address} from '../interfaces'
 
 export interface BoundingBox {
@@ -22,8 +20,8 @@ export enum SearchType {
 }
 
 export interface Point {
-  lat: Double
-  lon: Double
+  lat: CodegenTypes.Double
+  lon: CodegenTypes.Double
 }
 
 export type FigureParams = {
@@ -42,7 +40,7 @@ export interface SearchOptions {
 
 interface Spec extends TurboModule {
   searchByAddress(query: string, figure: FigureParams, options: SearchOptions): Promise<Address>
-  searchByPoint(point: Point, zoom: Double, options: SearchOptions): Promise<Address>
+  searchByPoint(point: Point, zoom: CodegenTypes.Double, options: SearchOptions): Promise<Address>
   geoToAddress(point: Point): Promise<Address>
   addressToGeo(address: string): Promise<Point>
   resolveURI(query: string, options: SearchOptions): Promise<Address>

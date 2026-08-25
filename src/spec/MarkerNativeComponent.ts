@@ -1,29 +1,26 @@
-// eslint-disable-next-line @react-native/no-deep-imports
-import codegenNativeComponent, {type NativeComponentType} from 'react-native/Libraries/Utilities/codegenNativeComponent';
-import type {BubblingEventHandler, Double, Float} from 'react-native/Libraries/Types/CodegenTypes';
-import {type ViewProps} from 'react-native';
+import {codegenNativeComponent, type CodegenTypes, type HostComponent, type ViewProps} from 'react-native';
 import {type MarkerNativeCommands} from './commands/marker';
 
 interface Point {
-  lat: Double;
-  lon: Double;
+  lat: CodegenTypes.Double;
+  lon: CodegenTypes.Double;
 }
 
 type Anchor = {
-  x: Double;
-  y: Double;
+  x: CodegenTypes.Double;
+  y: CodegenTypes.Double;
 }
 
 export interface MarkerNativeProps extends ViewProps {
-  scale?: Float;
+  scale?: CodegenTypes.Float;
   rotated?: boolean;
-  onPress?: BubblingEventHandler<undefined>;
+  onPress?: CodegenTypes.BubblingEventHandler<undefined>;
   point: Point;
   anchor?: Anchor;
   visible?: boolean;
   handled?: boolean;
   source?: string;
-  zI?: Float;
+  zI?: CodegenTypes.Float;
   /**
    * Only meaningful when this Marker is a child of ClusteredYamap.
    * When true, the marker is added to the map's root object collection
@@ -34,7 +31,7 @@ export interface MarkerNativeProps extends ViewProps {
   excludeFromCluster?: boolean;
 }
 
-export type MarkerComponentType = NativeComponentType<MarkerNativeProps> & Readonly<MarkerNativeCommands>;
+export type MarkerComponentType = HostComponent<MarkerNativeProps> & Readonly<MarkerNativeCommands>;
 
 require('./commands/marker');
 

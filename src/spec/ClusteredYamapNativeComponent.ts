@@ -1,125 +1,115 @@
-// eslint-disable-next-line @react-native/no-deep-imports
-import codegenNativeComponent from 'react-native/Libraries/Utilities/codegenNativeComponent';
-import type {
-  BubblingEventHandler,
-  DirectEventHandler,
-  Double,
-  Float,
-  Int32,
-  WithDefault,
-} from 'react-native/Libraries/Types/CodegenTypes';
-import type {NativeMethods, ViewProps} from 'react-native';
 import {Component} from 'react';
+import {codegenNativeComponent, type CodegenTypes, type HostInstance, type ViewProps} from 'react-native';
 
 interface MapLoaded {
-  renderObjectCount: Double;
-  curZoomModelsLoaded: Double;
-  curZoomPlacemarksLoaded: Double;
-  curZoomLabelsLoaded: Double;
-  curZoomGeometryLoaded: Double;
-  tileMemoryUsage: Double;
-  delayedGeometryLoaded: Double;
-  fullyAppeared: Double;
-  fullyLoaded: Double;
+  renderObjectCount: CodegenTypes.Double;
+  curZoomModelsLoaded: CodegenTypes.Double;
+  curZoomPlacemarksLoaded: CodegenTypes.Double;
+  curZoomLabelsLoaded: CodegenTypes.Double;
+  curZoomGeometryLoaded: CodegenTypes.Double;
+  tileMemoryUsage: CodegenTypes.Double;
+  delayedGeometryLoaded: CodegenTypes.Double;
+  fullyAppeared: CodegenTypes.Double;
+  fullyLoaded: CodegenTypes.Double;
 }
 
 interface InitialRegion {
-  lat: Double;
-  lon: Double;
-  zoom?: Double;
-  azimuth?: Double;
-  tilt?: Double;
+  lat: CodegenTypes.Double;
+  lon: CodegenTypes.Double;
+  zoom?: CodegenTypes.Double;
+  azimuth?: CodegenTypes.Double;
+  tilt?: CodegenTypes.Double;
 }
 
 interface YandexLogoPosition {
-  horizontal?: WithDefault<'left' | 'center' | 'right', 'left'>;
-  vertical?: WithDefault<'top' | 'bottom', 'bottom'>;
+  horizontal?: CodegenTypes.WithDefault<'left' | 'center' | 'right', 'left'>;
+  vertical?: CodegenTypes.WithDefault<'top' | 'bottom', 'bottom'>;
 }
 
 interface YandexLogoPadding {
-  horizontal?: Double;
-  vertical?: Double;
+  horizontal?: CodegenTypes.Double;
+  vertical?: CodegenTypes.Double;
 }
 
 interface Point {
-  lat: Double;
-  lon: Double;
+  lat: CodegenTypes.Double;
+  lon: CodegenTypes.Double;
 }
 
 interface CameraPositionResponse {
   id: string;
   point: {
-    lat: Double;
-    lon: Double;
+    lat: CodegenTypes.Double;
+    lon: CodegenTypes.Double;
   }
-  azimuth: Double;
+  azimuth: CodegenTypes.Double;
   finished: boolean;
   reason: string;
-  tilt: Double;
-  zoom: Double;
+  tilt: CodegenTypes.Double;
+  zoom: CodegenTypes.Double;
 }
 
 type VisibleRegionResponse = {
   id: string;
   bottomLeft: {
-    lat: Double;
-    lon: Double;
+    lat: CodegenTypes.Double;
+    lon: CodegenTypes.Double;
   };
   bottomRight: {
-    lat: Double;
-    lon: Double;
+    lat: CodegenTypes.Double;
+    lon: CodegenTypes.Double;
   };
   topLeft: {
-    lat: Double;
-    lon: Double;
+    lat: CodegenTypes.Double;
+    lon: CodegenTypes.Double;
   };
   topRight: {
-    lat: Double;
-    lon: Double;
+    lat: CodegenTypes.Double;
+    lon: CodegenTypes.Double;
   };
 }
 
 type ScreenPointsResponse = {
   id: string;
   screenPoints: {
-    x: Double;
-    y: Double;
+    x: CodegenTypes.Double;
+    y: CodegenTypes.Double;
   }[]
 }
 
 type WorldPointsResponse = {
   id: string;
   worldPoints: {
-    lat: Double;
-    lon: Double;
+    lat: CodegenTypes.Double;
+    lon: CodegenTypes.Double;
   }[]
 }
 
 export interface YandexClusterSizes {
-  width?: Double;
-  height?: Double;
+  width?: CodegenTypes.Double;
+  height?: CodegenTypes.Double;
 }
 
 export interface ClusterPlacemarkPress {
-  lat: Double;
-  lon: Double;
-  index: Int32;
+  lat: CodegenTypes.Double;
+  lon: CodegenTypes.Double;
+  index: CodegenTypes.Int32;
 }
 
 export interface ClusteredYamapNativeProps extends ViewProps {
-  userLocationIconScale?: Float;
+  userLocationIconScale?: CodegenTypes.Float;
   showUserPosition?: boolean;
   nightMode?: boolean;
   mapStyle?: string;
-  mapType?: WithDefault<'none' | 'raster' | 'vector', 'none'>;
-  onCameraPositionChange?: DirectEventHandler<CameraPositionResponse>;
-  onCameraPositionChangeEnd?: DirectEventHandler<CameraPositionResponse>;
-  onMapPress?: BubblingEventHandler<Point>;
-  onMapLongPress?: BubblingEventHandler<Point>;
-  onMapLoaded?: DirectEventHandler<MapLoaded>;
-  userLocationAccuracyFillColor?: Int32;
-  userLocationAccuracyStrokeColor?: Int32;
-  userLocationAccuracyStrokeWidth?: Float;
+  mapType?: CodegenTypes.WithDefault<'none' | 'raster' | 'vector', 'none'>;
+  onCameraPositionChange?: CodegenTypes.DirectEventHandler<CameraPositionResponse>;
+  onCameraPositionChangeEnd?: CodegenTypes.DirectEventHandler<CameraPositionResponse>;
+  onMapPress?: CodegenTypes.BubblingEventHandler<Point>;
+  onMapLongPress?: CodegenTypes.BubblingEventHandler<Point>;
+  onMapLoaded?: CodegenTypes.DirectEventHandler<MapLoaded>;
+  userLocationAccuracyFillColor?: CodegenTypes.Int32;
+  userLocationAccuracyStrokeColor?: CodegenTypes.Int32;
+  userLocationAccuracyStrokeWidth?: CodegenTypes.Float;
   scrollGesturesDisabled?: boolean;
   zoomGesturesDisabled?: boolean;
   tiltGesturesDisabled?: boolean;
@@ -132,23 +122,23 @@ export interface ClusteredYamapNativeProps extends ViewProps {
   userLocationIcon: string | undefined;
   interactiveDisabled?: boolean;
 
-  onCameraPositionReceived: DirectEventHandler<CameraPositionResponse>;
-  onVisibleRegionReceived: DirectEventHandler<VisibleRegionResponse>;
-  onWorldToScreenPointsReceived: DirectEventHandler<ScreenPointsResponse>;
-  onScreenToWorldPointsReceived: DirectEventHandler<WorldPointsResponse>;
+  onCameraPositionReceived: CodegenTypes.DirectEventHandler<CameraPositionResponse>;
+  onVisibleRegionReceived: CodegenTypes.DirectEventHandler<VisibleRegionResponse>;
+  onWorldToScreenPointsReceived: CodegenTypes.DirectEventHandler<ScreenPointsResponse>;
+  onScreenToWorldPointsReceived: CodegenTypes.DirectEventHandler<WorldPointsResponse>;
 
   clusteredMarkers: Point[];
-  clusterColor?: Int32;
+  clusterColor?: CodegenTypes.Int32;
   clusterIcon?: string | undefined;
   clusterSize?: YandexClusterSizes;
-  clusterTextSize?: Float;
-  clusterTextYOffset?: Int32;
-  clusterTextXOffset?: Int32;
-  clusterTextColor?: Int32;
-  onClusterPlacemarkPress?: BubblingEventHandler<ClusterPlacemarkPress>;
+  clusterTextSize?: CodegenTypes.Float;
+  clusterTextYOffset?: CodegenTypes.Int32;
+  clusterTextXOffset?: CodegenTypes.Int32;
+  clusterTextColor?: CodegenTypes.Int32;
+  onClusterPlacemarkPress?: CodegenTypes.BubblingEventHandler<ClusterPlacemarkPress>;
 }
 
-export type ClusteredYamapNativeRef = Component<ClusteredYamapNativeProps, {}, any> & Readonly<NativeMethods>
+export type ClusteredYamapNativeRef = Component<ClusteredYamapNativeProps, {}, any> & HostInstance;
 
 require('./commands/yamap');
 
