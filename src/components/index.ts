@@ -20,6 +20,7 @@ export type {
   InitialRegion,
   YandexLogoPosition,
   YandexLogoPadding,
+  FocusInsets,
   Point,
   MapLoaded,
 } from '../spec/YamapNativeComponent';

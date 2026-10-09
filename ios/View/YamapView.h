@@ -8,6 +8,7 @@
 #import <YandexMapsMobile/YMKRequestPoint.h>
 #import <YandexMapsMobile/YMKMapCameraListener.h>
 #import <YandexMapsMobile/YMKMapLoadedListener.h>
+#import <YandexMapsMobile/YMKMapSizeChangedListener.h>
 #import <YandexMapsMobile/YMKTrafficListener.h>
 #import <YandexMapsMobile/YMKClusterListener.h>
 #import <YandexMapsMobile/YMKClusterTapListener.h>

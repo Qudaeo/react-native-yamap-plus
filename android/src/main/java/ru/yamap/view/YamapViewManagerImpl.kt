@@ -212,6 +212,10 @@ class YamapViewManagerImpl() {
         }
     }
 
+    fun setFocusInsets(view: YamapView, params: ReadableMap?) {
+        view.setFocusInsets(params)
+    }
+
     fun setFollowUser(view: YamapView, value: Boolean) {
         view.setFollowUser(value)
     }
