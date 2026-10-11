@@ -33,9 +33,9 @@
   "author": "Aleksey Pekhterev",
   "license": "MIT",
   "devDependencies": {
+    "@types/react": "*",
+    "@types/react-native": "*",
     "del-cli": "7.0.0",
-    "react": "19.2.3",
-    "react-native": "0.87.0",
     "release-it": "21.0.2",
     "typescript": "^5.8.3"
   },
