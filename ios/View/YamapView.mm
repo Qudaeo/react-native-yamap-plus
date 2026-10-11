@@ -25,7 +25,7 @@
 
 using namespace facebook::react;
 
-@interface YamapView () <YMKUserLocationObjectListener, YMKMapCameraListener, YMKMapLoadedListener, YMKTrafficDelegate, YMKClusterListener, YMKClusterTapListener, YMKMapObjectTapListener>
+@interface YamapView () <YMKUserLocationObjectListener, YMKMapCameraListener, YMKMapLoadedListener, YMKMapSizeChangedListener, YMKTrafficDelegate, YMKClusterListener, YMKClusterTapListener, YMKMapObjectTapListener>
 
 @end
 
@@ -39,6 +39,7 @@ using namespace facebook::react;
 #import <YandexMapsMobile/YMKMapLoadStatistics.h>
 #import <YandexMapsMobile/YMKCluster.h>
 #import <YandexMapsMobile/YMKClusterizedPlacemarkCollection.h>
+#import <YandexMapsMobile/YMKScreenTypes.h>
 
 @implementation YamapView {
     YMKMapView *mapView;
@@ -66,6 +67,7 @@ using namespace facebook::react;
     BOOL hasImperativePlacemarks;
     NSMutableDictionary<NSValue *, NSNumber *> *imperativeIndexMap;
     NSInteger imperativePlacemarkCounter;
+    UIEdgeInsets focusInsets;
 }
 
 - (instancetype)initWithFrame:(CGRect)frame {
@@ -89,6 +91,7 @@ using namespace facebook::react;
         [mapView.mapWindow.map addCameraListenerWithCameraListener:self];
         [mapView.mapWindow.map addInputListenerWithInputListener:(id<YMKMapInputListener>) self];
         [mapView.mapWindow.map setMapLoadedListenerWithMapLoadedListener:self];
+        [mapView.mapWindow addSizeChangedListenerWithSizeChangedListener:self];
         initializedRegion = NO;
         clusterPlacemarks = [[NSMutableArray alloc] init];
         imperativeIndexMap = [[NSMutableDictionary alloc] init];
@@ -213,6 +216,13 @@ using namespace facebook::react;
 
     if (oldViewProps.logoPadding.vertical != newViewProps.logoPadding.vertical || oldViewProps.logoPadding.horizontal != newViewProps.logoPadding.horizontal) {
         [mapView.mapWindow.map.logo setPaddingWithPadding:[YMKLogoPadding paddingWithHorizontalPadding:newViewProps.logoPadding.horizontal verticalPadding:newViewProps.logoPadding.vertical]];
+    }
+
+    UIEdgeInsets newFocusInsets = UIEdgeInsetsMake(newViewProps.focusInsets.top, newViewProps.focusInsets.left, newViewProps.focusInsets.bottom, newViewProps.focusInsets.right);
+
+    if (!UIEdgeInsetsEqualToEdgeInsets(focusInsets, newFocusInsets)) {
+        focusInsets = newFocusInsets;
+        [self applyFocusRectWithWidth:mapView.mapWindow.width height:mapView.mapWindow.height];
     }
 
     if (needUpdateUserIcon) {
@@ -668,6 +678,28 @@ using namespace facebook::react;
 
     YMKLogoPadding *padding = [YMKLogoPadding paddingWithHorizontalPadding:horizontalPadding verticalPadding:verticalPadding];
     [mapView.mapWindow.map.logo setPaddingWithPadding:padding];
+}
+
+- (void)onMapWindowSizeChangedWithMapWindow:(nonnull YMKMapWindow *)mapWindow newWidth:(NSInteger)newWidth newHeight:(NSInteger)newHeight {
+    [self applyFocusRectWithWidth:newWidth height:newHeight];
+}
+
+- (void)applyFocusRectWithWidth:(NSInteger)width height:(NSInteger)height {
+    if (UIEdgeInsetsEqualToEdgeInsets(focusInsets, UIEdgeInsetsZero)) {
+        mapView.mapWindow.focusRect = nil;
+        return;
+    }
+
+    CGFloat viewWidth = mapView.bounds.size.width;
+
+    if (width == 0 || height == 0 || viewWidth == 0) {
+        return;
+    }
+
+    CGFloat scale = width / viewWidth;
+    YMKScreenPoint *topLeft = [YMKScreenPoint screenPointWithX:focusInsets.left * scale y:focusInsets.top * scale];
+    YMKScreenPoint *bottomRight = [YMKScreenPoint screenPointWithX:width - focusInsets.right * scale y:height - focusInsets.bottom * scale];
+    mapView.mapWindow.focusRect = [YMKScreenRect screenRectWithTopLeft:topLeft bottomRight:bottomRight];
 }
 
 // PROPS

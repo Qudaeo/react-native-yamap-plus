@@ -1,5 +1,5 @@
 import React, {useRef} from 'react';
-import {StyleSheet, type CodegenTypes} from 'react-native';
+import {StyleSheet, View, type CodegenTypes} from 'react-native';
 import {ClusteredYamap, Marker, ClusteredYamapRef} from '../../../';
 import {MapLoaded} from '../../../src';
 
@@ -19,6 +19,8 @@ const markers = [
     data: {},
   },
 ];
+
+const PANEL_HEIGHT = 240;
 
 export const ClusteredMapScreen = () => {
   const clusteredMapRef = useRef<ClusteredYamapRef | null>(null);
@@ -45,43 +47,56 @@ export const ClusteredMapScreen = () => {
   }
 
   return (
-    <ClusteredYamap
-      ref={clusteredMapRef}
-      clusterColor="green"
-      clusterIcon={require('../assets/images/octagon.png')}
-      clusterSize={{width: 35, height: 35}}
-      clusterTextColor={'red'}
-      initialRegion={{lat: 56.754215, lon: 38.421242, zoom: 6}}
-      onMapLoaded={onMapLoaded}
-      onCameraPositionChange={e => {
-        console.log('clustered onCameraPositionChange', e.nativeEvent);
-      }}
-      onCameraPositionChangeEnd={e => {
-        console.log('clustered onCameraPositionChangeEnd', e.nativeEvent);
-      }}
-      onMapPress={e => {
-        console.log('clustered map onPress', e.nativeEvent);
-      }}
-      onMapLongPress={(e) => {
-        console.log('clustered map onLongPress', e.nativeEvent);
-      }}
-      clusteredMarkers={markers}
-      renderMarker={(info) => (
-        <Marker
-          key={`${info.point.lat}_${info.point.lon}`}
-          point={info.point}
-          scale={0.3}
-          source={require('../assets/images/marker.png')}
-          anchor={{x: 0.5, y: 1}}
-        />
-      )}
-      style={styles.container}
-    />
+    <View style={styles.container}>
+      <ClusteredYamap
+        ref={clusteredMapRef}
+        clusterColor="green"
+        clusterIcon={require('../assets/images/octagon.png')}
+        clusterSize={{width: 35, height: 35}}
+        clusterTextColor={'red'}
+        initialRegion={{lat: 56.754215, lon: 38.421242, zoom: 6}}
+        onMapLoaded={onMapLoaded}
+        onCameraPositionChange={e => {
+          console.log('clustered onCameraPositionChange', e.nativeEvent);
+        }}
+        onCameraPositionChangeEnd={e => {
+          console.log('clustered onCameraPositionChangeEnd', e.nativeEvent);
+        }}
+        onMapPress={e => {
+          console.log('clustered map onPress', e.nativeEvent);
+        }}
+        onMapLongPress={(e) => {
+          console.log('clustered map onLongPress', e.nativeEvent);
+        }}
+        clusteredMarkers={markers}
+        renderMarker={(info) => (
+          <Marker
+            key={`${info.point.lat}_${info.point.lon}`}
+            point={info.point}
+            scale={0.3}
+            source={require('../assets/images/marker.png')}
+            anchor={{x: 0.5, y: 1}}
+          />
+        )}
+        focusInsets={{bottom: PANEL_HEIGHT}}
+        style={styles.container}
+      />
+      <View style={styles.panel} />
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  panel: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    height: PANEL_HEIGHT,
+    backgroundColor: 'rgba(255, 255, 255, 0.85)',
+    pointerEvents: 'none',
   },
 });

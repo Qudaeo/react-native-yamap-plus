@@ -31,6 +31,13 @@ interface YandexLogoPadding {
   vertical?: CodegenTypes.Double;
 }
 
+interface FocusInsets {
+  top?: CodegenTypes.Double;
+  right?: CodegenTypes.Double;
+  bottom?: CodegenTypes.Double;
+  left?: CodegenTypes.Double;
+}
+
 interface Point {
   lat: CodegenTypes.Double;
   lon: CodegenTypes.Double;
@@ -121,6 +128,7 @@ export interface ClusteredYamapNativeProps extends ViewProps {
   logoPadding?: YandexLogoPadding;
   userLocationIcon: string | undefined;
   interactiveDisabled?: boolean;
+  focusInsets?: FocusInsets;
 
   onCameraPositionReceived: CodegenTypes.DirectEventHandler<CameraPositionResponse>;
   onVisibleRegionReceived: CodegenTypes.DirectEventHandler<VisibleRegionResponse>;

@@ -132,6 +132,7 @@ const Map = () => {
 | fastTapDisabled | boolean | false | Убрана ли задержка в 300мс при клике/тапе |
 | logoPosition | YandexLogoPosition | {} | Позиция логотипа Яндекса на карте |
 | logoPadding | YandexLogoPadding | {} | Отступ логотипа Яндекса на карте |
+| focusInsets | FocusInsets | {} | Отступы области фокуса камеры от краёв карты `{top, right, bottom, left}` в dp. Камера (`setCenter`, `fitMarkers`, `fitAllMarkers`, тап по кластеру) центрирует и вписывает объекты в оставшуюся область - например, над панелью или шторкой поверх карты |
 | mapType | string | 'vector' | Тип карты |
 | mapStyle | string | {} | Стили карты согласно [документации](https://yandex.ru/dev/maps/mapkit/doc/dg/concepts/style.html) |
 

@@ -3,6 +3,7 @@ package ru.yamap.view
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.PointF
+import android.graphics.RectF
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewParent
@@ -17,6 +18,7 @@ import com.facebook.react.uimanager.UIManagerHelper.getSurfaceId
 import com.yandex.mapkit.Animation
 import com.yandex.mapkit.MapKitFactory
 import com.yandex.mapkit.ScreenPoint
+import com.yandex.mapkit.ScreenRect
 import com.yandex.mapkit.geometry.BoundingBox
 import com.yandex.mapkit.geometry.Geometry
 import com.yandex.mapkit.geometry.Point
@@ -33,6 +35,8 @@ import com.yandex.mapkit.map.InputListener
 import com.yandex.mapkit.map.MapLoadStatistics
 import com.yandex.mapkit.map.MapLoadedListener
 import com.yandex.mapkit.map.MapType
+import com.yandex.mapkit.map.MapWindow
+import com.yandex.mapkit.map.SizeChangedListener
 import com.yandex.mapkit.mapview.MapView
 import com.yandex.mapkit.traffic.TrafficLayer
 import com.yandex.mapkit.traffic.TrafficLevel
@@ -57,7 +61,7 @@ import java.lang.ref.WeakReference
 import javax.annotation.Nonnull
 
 open class YamapView(context: Context?) : MapView(context), UserLocationObjectListener,
-    CameraListener, InputListener, TrafficListener, MapLoadedListener {
+    CameraListener, InputListener, TrafficListener, MapLoadedListener, SizeChangedListener {
     private var mViewParent: ViewParent? = null
     private var userLocationIcon = ""
     private var userLocationIconScale = 1f
@@ -69,11 +73,13 @@ open class YamapView(context: Context?) : MapView(context), UserLocationObjectLi
     private var trafficLayer: TrafficLayer? = null
     private var initializedRegion = false
     private var userLocationView: UserLocationView? = null
+    private var focusInsets = RectF()
 
     init {
         mapWindow.map.addCameraListener(WeakReference(this))
         mapWindow.map.addInputListener(WeakReference(this))
         mapWindow.map.setMapLoadedListener(WeakReference(this))
+        mapWindow.addSizeChangedListener(WeakReference(this))
     }
 
     // REF
@@ -399,6 +405,33 @@ open class YamapView(context: Context?) : MapView(context), UserLocationObjectLi
         val verticalPadding =
             if ((params.hasKey("vertical") && !params.isNull("vertical"))) params.getInt("vertical") else 0
         mapWindow.map.logo.setPadding(Padding(horizontalPadding, verticalPadding))
+    }
+
+    fun setFocusInsets(params: ReadableMap?) {
+        val inset = { key: String ->
+            if (params != null && params.hasKey(key) && !params.isNull(key)) params.getDouble(key).toFloat() else 0f
+        }
+        focusInsets = RectF(inset("left"), inset("top"), inset("right"), inset("bottom"))
+        applyFocusRect(mapWindow.width(), mapWindow.height())
+    }
+
+    override fun onMapWindowSizeChanged(mapWindow: MapWindow, newWidth: Int, newHeight: Int) {
+        applyFocusRect(newWidth, newHeight)
+    }
+
+    private fun applyFocusRect(windowWidth: Int, windowHeight: Int) {
+        if (focusInsets == RectF()) {
+            mapWindow.focusRect = null
+            return
+        }
+
+        if (windowWidth == 0 || windowHeight == 0) return
+
+        val density = resources.displayMetrics.density
+        mapWindow.focusRect = ScreenRect(
+            ScreenPoint(focusInsets.left * density, focusInsets.top * density),
+            ScreenPoint(windowWidth - focusInsets.right * density, windowHeight - focusInsets.bottom * density),
+        )
     }
 
     fun setInteractiveDisabled(value: Boolean) {

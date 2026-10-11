@@ -144,6 +144,10 @@ class ClusteredYamapViewManager : ViewGroupManager<ClusteredYamapView>(),
         implementation.setLogoPadding(view, params)
     }
 
+    override fun setFocusInsets(view: ClusteredYamapView, params: ReadableMap?) {
+        implementation.setFocusInsets(view, params)
+    }
+
     override fun addView(parent: ClusteredYamapView, child: View, index: Int) {
         parent.addFeature(child, index)
         super.addView(parent, child, index)

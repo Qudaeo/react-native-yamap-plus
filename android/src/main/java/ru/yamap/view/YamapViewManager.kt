@@ -105,6 +105,10 @@ class YamapViewManager : ViewGroupManager<YamapView>(), YamapViewManagerInterfac
         implementation.setLogoPadding(view, params)
     }
 
+    override fun setFocusInsets(view: YamapView, params: ReadableMap?) {
+        implementation.setFocusInsets(view, params)
+    }
+
     override fun setFollowUser(view: YamapView, value: Boolean) {
         implementation.setFollowUser(view, value)
     }
