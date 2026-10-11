@@ -11,6 +11,7 @@
 		0C80B921A6F3F58F76C31292 /* libPods-YamapExample.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5DCACB8F33CDC322A6C60F78 /* libPods-YamapExample.a */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		389C5FDE2DBA2A7A00E0EFAA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 389C5FDD2DBA2A7A00E0EFAA /* AppDelegate.swift */; };
+		389C5FDE2DBA2A7A00E0EFAB /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 389C5FDD2DBA2A7A00E0EFAB /* SceneDelegate.swift */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 /* End PBXBuildFile section */
 
@@ -20,6 +21,7 @@
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = YamapExample/Info.plist; sourceTree = "<group>"; };
 		19F6CBCC0A4E27FBF8BF4A61 /* libPods-YamapExample-YamapExampleTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-YamapExample-YamapExampleTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		389C5FDD2DBA2A7A00E0EFAA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = YamapExample/AppDelegate.swift; sourceTree = "<group>"; };
+		389C5FDD2DBA2A7A00E0EFAB /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SceneDelegate.swift; path = YamapExample/SceneDelegate.swift; sourceTree = "<group>"; };
 		3B4392A12AC88292D35C810B /* Pods-YamapExample.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-YamapExample.debug.xcconfig"; path = "Target Support Files/Pods-YamapExample/Pods-YamapExample.debug.xcconfig"; sourceTree = "<group>"; };
 		5709B34CF0A7D63546082F79 /* Pods-YamapExample.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-YamapExample.release.xcconfig"; path = "Target Support Files/Pods-YamapExample/Pods-YamapExample.release.xcconfig"; sourceTree = "<group>"; };
 		5DCACB8F33CDC322A6C60F78 /* libPods-YamapExample.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-YamapExample.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -48,6 +50,7 @@
 				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
 				87E4C81D2E18E5CB7B70C35D /* PrivacyInfo.xcprivacy */,
 				389C5FDD2DBA2A7A00E0EFAA /* AppDelegate.swift */,
+				389C5FDD2DBA2A7A00E0EFAB /* SceneDelegate.swift */,
 			);
 			name = YamapExample;
 			sourceTree = "<group>";
@@ -249,6 +252,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				389C5FDE2DBA2A7A00E0EFAA /* AppDelegate.swift in Sources */,
+				389C5FDE2DBA2A7A00E0EFAB /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
