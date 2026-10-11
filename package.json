@@ -48,7 +48,6 @@
     "ios",
     "app.plugin.js",
     "*.podspec",
-    "tsconfig.json",
     "!ios/build",
     "!android/build",
     "!android/local.properties",

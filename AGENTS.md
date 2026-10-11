@@ -6,13 +6,15 @@ React Native binding for Yandex MapKit SDK — a fork of `react-native-yamap`, N
 
 - Install deps: `yarn install` (Yarn 4.18.0, `nodeLinker: node-modules`, workspace root)
 - Node: `>= 22.11.0` (CI uses 24); enable Corepack first
-- Typecheck/build: `yarn build` (tsc → `lib/`) — see caveat below
+- Typecheck/build: `yarn build` (tsc → `lib/`) — clean, 0 errors
 - Lint: `npx eslint src --ext .ts,.tsx`
 - Run example app: `yarn example start` / `yarn example ios` / `yarn example android`
 - Native builds: `yarn example build:ios` / `yarn example build:android`
 - Release: `yarn release <patch|minor|major>` via `.github/workflows/release.yml` (manual dispatch only)
 
-**Typecheck caveat:** root `yarn build` currently exits 2 (~21 errors, mostly `Cannot find module 'react-native'`). `react`/`react-native` are only installed in the `example` workspace (root devDeps were dropped for `@types` only), so root-level module resolution fails. `example` typecheck has its own pre-existing errors too. Don't treat a red typecheck as caused by your change — compare against the baseline.
+**Single-copy invariant:** there must be exactly ONE `react` and ONE `react-native` on disk, both in `example/node_modules`. Do **not** add them (or anything pulling them in) as root `devDependencies` — yarn will hoist a second copy to root `node_modules`, Metro then bundles two Reacts, and the app dies at runtime with `Invalid hook call` / `Cannot read property 'useRef' of null` (`example/metro.config.js` relies on this: it aliases every `peerDependencies` entry into `example/node_modules`). Keep the root `peerDependencies` as-is.
+
+**Typecheck types:** root `tsc` cannot resolve `react-native` from `src/` on its own, because the only copy lives under `example/`. Both `tsconfig.json` (root) and `example/tsconfig.json` map it explicitly via `paths` → `./node_modules/react-native/types_generated/index.d.ts`. Don't add `@types/react-native`: RN >= 0.71 ships its own types. `react` needs no mapping — `@types/react` (a root devDep) covers it. If typecheck suddenly reports `Cannot find module 'react-native'`, those two `paths` entries are the cause. Root `tsconfig.json` is deliberately **not** in the npm `files` field — it must not be published, or that `paths` entry ships as a dangling reference to a directory that isn't in the tarball (`example/` is excluded).
 
 ## Project layout
 

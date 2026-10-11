@@ -2,7 +2,8 @@
   "compilerOptions": {
     "rootDir": ".",
     "paths": {
-      "react-native-yamap-plus": ["./src/index"]
+      "react-native-yamap-plus": ["./src/index"],
+      "react-native": ["./example/node_modules/react-native/types_generated/index.d.ts"]
     },
     "esModuleInterop": true,
     "emitDecoratorMetadata": true,
