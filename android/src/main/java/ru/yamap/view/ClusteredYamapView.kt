@@ -47,6 +47,8 @@ class ClusteredYamapView(context: Context?) : YamapView(context), ClusterListene
     private var hasImperativePlacemarks = false
     private val imperativeIndexMap = HashMap<PlacemarkMapObject, Int>()
     private var imperativePlacemarkCounter = 0
+    private var clusterPlacemarks: List<PlacemarkMapObject> = emptyList()
+    private var clusterBindScheduled = false
 
     fun setClusterTextSize(size: Float) {
         clusterTextSize = size
@@ -118,6 +120,7 @@ class ClusteredYamapView(context: Context?) : YamapView(context), ClusterListene
 
     fun clearClusterMarkers() {
         clusterCollection.clear()
+        clusterPlacemarks = emptyList()
         placemarksMap.clear()
         pointsList.clear()
         imperativeIndexMap.clear()
@@ -141,17 +144,36 @@ class ClusteredYamapView(context: Context?) : YamapView(context), ClusterListene
         }
         val placemarks = clusterCollection.addPlacemarks(pt, TextImageProvider(""), IconStyle())
         pointsList = pt
+        clusterPlacemarks = placemarks
         for (i in placemarks.indices) {
             val placemark = placemarks[i]
             placemarksMap["" + placemark.geometry.latitude + placemark.geometry.longitude] =
                 placemark
-            val child: Any? = getChildAt(i)
-            if (child != null && child is MarkerView) {
-                child.setMarkerMapObject(placemark)
-            }
         }
         hasImperativePlacemarks = false
         clusterCollection.clusterPlacemarks(CLUSTER_RADIUS, CLUSTER_MIN_ZOOM)
+        scheduleClusterMarkersBind()
+    }
+
+    // Fabric sets clusteredMarkers before it removes and inserts marker children,
+    // so placemarks are bound to children only after the whole mount batch
+    private fun scheduleClusterMarkersBind() {
+        if (clusterBindScheduled) return
+        clusterBindScheduled = true
+        post {
+            clusterBindScheduled = false
+            bindClusterMarkers()
+        }
+    }
+
+    private fun bindClusterMarkers() {
+        var placemarkIndex = 0
+        for (i in 0 until childCount) {
+            val child = getChildAt(i)
+            if (child !is MarkerView || child.excludeFromCluster) continue
+            val placemark = clusterPlacemarks.getOrNull(placemarkIndex++) ?: return
+            if (placemark.isValid) child.setMarkerMapObject(placemark)
+        }
     }
 
     fun setClusterIcon(source: String) {
@@ -181,16 +203,14 @@ class ClusteredYamapView(context: Context?) : YamapView(context), ClusterListene
             TextImageProvider(pointsList.size.toString()),
             IconStyle()
         )
+        clusterPlacemarks = placemarks
         for (i in placemarks.indices) {
             val placemark = placemarks[i]
             placemarksMap["" + placemark.geometry.latitude + placemark.geometry.longitude] =
                 placemark
-            val child: Any? = getChildAt(i)
-            if (child != null && child is MarkerView) {
-                child.setMarkerMapObject(placemark)
-            }
         }
         clusterCollection.clusterPlacemarks(CLUSTER_RADIUS, CLUSTER_MIN_ZOOM)
+        scheduleClusterMarkersBind()
     }
 
     override fun addFeature(child: View?, index: Int) {
