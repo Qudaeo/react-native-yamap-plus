@@ -12,7 +12,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (YMKPoint*)getPoint;
 - (YMKPlacemarkMapObject*)getMapObject;
 - (void)setMapObject:(YMKPlacemarkMapObject*)mapObject;
-- (void)setClusterMapObject:(YMKPlacemarkMapObject*)mapObject;
+- (void)setClusterMapObject:(nullable YMKPlacemarkMapObject*)mapObject;
 - (BOOL)excludeFromCluster;
 
 @end

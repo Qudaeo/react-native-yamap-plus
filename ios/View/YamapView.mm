@@ -68,6 +68,7 @@ using namespace facebook::react;
     NSMutableDictionary<NSValue *, NSNumber *> *imperativeIndexMap;
     NSInteger imperativePlacemarkCounter;
     UIEdgeInsets focusInsets;
+    BOOL clusterBindScheduled;
 }
 
 - (instancetype)initWithFrame:(CGRect)frame {
@@ -790,9 +791,7 @@ using namespace facebook::react;
         MarkerView *marker = (MarkerView *) subview;
         BOOL inClusterHost = [self isKindOfClass:[ClusteredYamapView class]];
         if (inClusterHost && ![marker excludeFromCluster]) {
-            if (index<[clusterPlacemarks count]) {
-                [marker setClusterMapObject:[clusterPlacemarks objectAtIndex:index]];
-            }
+            [self scheduleClusterMarkersBind];
         } else {
             YMKMapObjectCollection *objects = mapView.mapWindow.map.mapObjects;
             YMKPlacemarkMapObject *obj = [objects addPlacemark];
@@ -831,7 +830,8 @@ using namespace facebook::react;
         YMKPlacemarkMapObject *mapObject = [marker getMapObject];
         BOOL inClusterHost = [self isKindOfClass:[ClusteredYamapView class]];
         if (inClusterHost && ![marker excludeFromCluster]) {
-            [clusterPlacemarks removeObject:mapObject];
+            [marker setClusterMapObject:nil];
+            [self scheduleClusterMarkersBind];
         } else if (mapObject != nil && [mapObject isValid]) {
             [objects removeWithMapObject:mapObject];
         }
@@ -909,18 +909,36 @@ using namespace facebook::react;
     UIImage *image = [self clusterImage:[NSNumber numberWithFloat:[markers count]]];
     NSArray<YMKPlacemarkMapObject *>* newPlacemarks = [clusterCollection addPlacemarksWithPoints:markers image:image style:[YMKIconStyle new]];
     [clusterPlacemarks addObjectsFromArray:newPlacemarks];
-    for (int i=0; i<[clusterPlacemarks count]; i++) {
-        if (i<[_reactSubviews count]) {
-            UIView *subview = [_reactSubviews objectAtIndex:i];
-            if ([subview isKindOfClass:[MarkerView class]]) {
-                MarkerView *marker = (MarkerView*) subview;
-                [marker setClusterMapObject:[clusterPlacemarks objectAtIndex:i]];
-            }
-        }
-    }
     hasImperativePlacemarks = NO;
 
     [self clusterPlacemarks];
+    [self scheduleClusterMarkersBind];
+}
+
+// Fabric sets clusteredMarkers before it removes and inserts marker children,
+// so placemarks are bound to children only after the whole mount transaction
+- (void)scheduleClusterMarkersBind {
+    if (clusterBindScheduled) return;
+    clusterBindScheduled = YES;
+    __weak __typeof__(self) weakSelf = self;
+    dispatch_async(dispatch_get_main_queue(), ^{
+        __typeof__(self) strongSelf = weakSelf;
+        if (!strongSelf) return;
+        strongSelf->clusterBindScheduled = NO;
+        [strongSelf bindClusterMarkers];
+    });
+}
+
+- (void)bindClusterMarkers {
+    NSUInteger placemarkIndex = 0;
+    for (UIView *subview in _reactSubviews) {
+        if (![subview isKindOfClass:[MarkerView class]]) continue;
+        MarkerView *marker = (MarkerView *) subview;
+        if ([marker excludeFromCluster]) continue;
+        if (placemarkIndex >= [clusterPlacemarks count]) return;
+        [marker setClusterMapObject:[clusterPlacemarks objectAtIndex:placemarkIndex]];
+        placemarkIndex++;
+    }
 }
 
 - (void)appendClusterMarkers:(NSArray<YMKPoint*>*)points iconSource:(NSString*)iconSource anchorX:(NSNumber*)anchorX anchorY:(NSNumber*)anchorY recluster:(BOOL)recluster {

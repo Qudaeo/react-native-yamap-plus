@@ -209,7 +209,10 @@ using namespace facebook::react;
 }
 
 - (void)setClusterMapObject:(YMKPlacemarkMapObject *)_mapObject {
+    if (_mapObject == mapObject) return;
     mapObject = _mapObject;
+    // A new placemark has no icon yet, even when the source is unchanged
+    lastSource = nil;
     if ([mapObject isValid]) {
         [mapObject addTapListenerWithTapListener:self];
     }

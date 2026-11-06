@@ -130,6 +130,7 @@ class MarkerView(context: Context?) : ReactViewGroup(context), MapObjectTapListe
     }
 
     fun setMarkerMapObject(obj: MapObject?) {
+        if (obj === rnMapObject) return
         rnMapObject = obj as PlacemarkMapObject?
         rnMapObject!!.addTapListener(WeakReference(this))
         updateMarker()
