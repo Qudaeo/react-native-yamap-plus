@@ -62,6 +62,7 @@ using namespace facebook::react;
     double clusterTextYOffset;
     double clusterTextXOffset;
     NSMutableArray<YMKPlacemarkMapObject *> *clusterPlacemarks;
+    NSMutableDictionary<NSString *, YMKPlacemarkMapObject *> *clusterPlacemarksByPoint;
     YMKClusterizedPlacemarkCollection *clusterCollection;
     BOOL mapLoaded;
     BOOL hasImperativePlacemarks;
@@ -95,6 +96,7 @@ using namespace facebook::react;
         [mapView.mapWindow addSizeChangedListenerWithSizeChangedListener:self];
         initializedRegion = NO;
         clusterPlacemarks = [[NSMutableArray alloc] init];
+        clusterPlacemarksByPoint = [[NSMutableDictionary alloc] init];
         imperativeIndexMap = [[NSMutableDictionary alloc] init];
         imperativePlacemarkCounter = 0;
         clusterCollection = [mapView.mapWindow.map.mapObjects addClusterizedPlacemarkCollectionWithClusterListener:self];
@@ -900,6 +902,7 @@ using namespace facebook::react;
     // markers added via appendClusterMarkers.
     if ((markers == nil || [markers count] == 0) && hasImperativePlacemarks) return;
     [clusterPlacemarks removeAllObjects];
+    [clusterPlacemarksByPoint removeAllObjects];
     [imperativeIndexMap removeAllObjects];
     imperativePlacemarkCounter = 0;
     if (![clusterCollection isValid]) {
@@ -909,6 +912,9 @@ using namespace facebook::react;
     UIImage *image = [self clusterImage:[NSNumber numberWithFloat:[markers count]]];
     NSArray<YMKPlacemarkMapObject *>* newPlacemarks = [clusterCollection addPlacemarksWithPoints:markers image:image style:[YMKIconStyle new]];
     [clusterPlacemarks addObjectsFromArray:newPlacemarks];
+    for (NSUInteger i = 0; i < newPlacemarks.count && i < markers.count; i++) {
+        clusterPlacemarksByPoint[[self clusterPointKey:markers[i]]] = newPlacemarks[i];
+    }
     hasImperativePlacemarks = NO;
 
     [self clusterPlacemarks];
@@ -929,15 +935,25 @@ using namespace facebook::react;
     });
 }
 
+- (NSString *)clusterPointKey:(YMKPoint *)point {
+    return [NSString stringWithFormat:@"%.17g,%.17g", point.latitude, point.longitude];
+}
+
+- (nullable YMKPlacemarkMapObject *)clusterPlacemarkForPoint:(nullable YMKPoint *)point {
+    if (point == nil) {
+        return nil;
+    }
+    return clusterPlacemarksByPoint[[self clusterPointKey:point]];
+}
+
 - (void)bindClusterMarkers {
-    NSUInteger placemarkIndex = 0;
     for (UIView *subview in _reactSubviews) {
         if (![subview isKindOfClass:[MarkerView class]]) continue;
         MarkerView *marker = (MarkerView *) subview;
         if ([marker excludeFromCluster]) continue;
-        if (placemarkIndex >= [clusterPlacemarks count]) return;
-        [marker setClusterMapObject:[clusterPlacemarks objectAtIndex:placemarkIndex]];
-        placemarkIndex++;
+        YMKPlacemarkMapObject *placemark = [self clusterPlacemarkForPoint:[marker getPoint]];
+        if (placemark == nil) continue;
+        [marker setClusterMapObject:placemark];
     }
 }
 
@@ -982,6 +998,7 @@ using namespace facebook::react;
 - (void)clearClusterMarkers {
     if (![self isKindOfClass:[ClusteredYamapView class]]) return;
     [clusterPlacemarks removeAllObjects];
+    [clusterPlacemarksByPoint removeAllObjects];
     [imperativeIndexMap removeAllObjects];
     imperativePlacemarkCounter = 0;
     if ([clusterCollection isValid]) {

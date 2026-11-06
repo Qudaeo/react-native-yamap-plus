@@ -35,7 +35,7 @@ class ClusteredYamapView(context: Context?) : YamapView(context), ClusterListene
         WeakReference(this)
     )
     private var clusterColor = 0
-    private val placemarksMap = HashMap<String?, PlacemarkMapObject?>()
+    private val placemarksMap = HashMap<String, MapObject>()
     private var pointsList = ArrayList<Point>()
     private var clusterIconSource = ""
     private var clusterWidth = 32
@@ -47,8 +47,9 @@ class ClusteredYamapView(context: Context?) : YamapView(context), ClusterListene
     private var hasImperativePlacemarks = false
     private val imperativeIndexMap = HashMap<PlacemarkMapObject, Int>()
     private var imperativePlacemarkCounter = 0
-    private var clusterPlacemarks: List<PlacemarkMapObject> = emptyList()
     private var clusterBindScheduled = false
+
+    private fun pointKey(point: Point): String = "" + point.latitude + point.longitude
 
     fun setClusterTextSize(size: Float) {
         clusterTextSize = size
@@ -97,8 +98,6 @@ class ClusteredYamapView(context: Context?) : YamapView(context), ClusterListene
             pointsList.addAll(pt)
             for (i in placemarks.indices) {
                 val placemark = placemarks[i]
-                placemarksMap["" + placemark.geometry.latitude + placemark.geometry.longitude] =
-                    placemark
                 imperativeIndexMap[placemark] = imperativePlacemarkCounter++
                 placemark.addTapListener(WeakReference(this))
             }
@@ -120,7 +119,6 @@ class ClusteredYamapView(context: Context?) : YamapView(context), ClusterListene
 
     fun clearClusterMarkers() {
         clusterCollection.clear()
-        clusterPlacemarks = emptyList()
         placemarksMap.clear()
         pointsList.clear()
         imperativeIndexMap.clear()
@@ -144,11 +142,9 @@ class ClusteredYamapView(context: Context?) : YamapView(context), ClusterListene
         }
         val placemarks = clusterCollection.addPlacemarks(pt, TextImageProvider(""), IconStyle())
         pointsList = pt
-        clusterPlacemarks = placemarks
         for (i in placemarks.indices) {
             val placemark = placemarks[i]
-            placemarksMap["" + placemark.geometry.latitude + placemark.geometry.longitude] =
-                placemark
+            placemarksMap[pointKey(placemark.geometry)] = placemark
         }
         hasImperativePlacemarks = false
         clusterCollection.clusterPlacemarks(CLUSTER_RADIUS, CLUSTER_MIN_ZOOM)
@@ -167,11 +163,11 @@ class ClusteredYamapView(context: Context?) : YamapView(context), ClusterListene
     }
 
     private fun bindClusterMarkers() {
-        var placemarkIndex = 0
         for (i in 0 until childCount) {
-            val child = getChildAt(i)
-            if (child !is MarkerView || child.excludeFromCluster) continue
-            val placemark = clusterPlacemarks.getOrNull(placemarkIndex++) ?: return
+            val child = getChildAt(i) as? MarkerView ?: continue
+            if (child.excludeFromCluster) continue
+            val point = child.point ?: continue
+            val placemark = placemarksMap[pointKey(point)] ?: continue
             if (placemark.isValid) child.setMarkerMapObject(placemark)
         }
     }
@@ -203,23 +199,22 @@ class ClusteredYamapView(context: Context?) : YamapView(context), ClusterListene
             TextImageProvider(pointsList.size.toString()),
             IconStyle()
         )
-        clusterPlacemarks = placemarks
         for (i in placemarks.indices) {
             val placemark = placemarks[i]
-            placemarksMap["" + placemark.geometry.latitude + placemark.geometry.longitude] =
-                placemark
+            placemarksMap[pointKey(placemark.geometry)] = placemark
         }
         clusterCollection.clusterPlacemarks(CLUSTER_RADIUS, CLUSTER_MIN_ZOOM)
         scheduleClusterMarkersBind()
     }
 
     override fun addFeature(child: View?, index: Int) {
-        if (child is MarkerView && child.excludeFromCluster) {
+        val marker = child as? MarkerView
+        if (marker == null || marker.excludeFromCluster) {
             super.addFeature(child, index)
             return
         }
-        val marker = child as MarkerView?
-        val placemark = placemarksMap["" + marker!!.point!!.latitude + marker.point!!.longitude]
+        val point = marker.point ?: return
+        val placemark = placemarksMap[pointKey(point)]
         if (placemark != null) {
             marker.setMarkerMapObject(placemark)
         }
@@ -235,7 +230,10 @@ class ClusteredYamapView(context: Context?) : YamapView(context), ClusterListene
             val mapObject = child.rnMapObject
             if (mapObject == null || !mapObject.isValid) return
             clusterCollection.remove(mapObject)
-            placemarksMap.remove("" + child.point!!.latitude + child.point!!.longitude)
+            val point = child.point
+            if (point != null) {
+                placemarksMap.remove(pointKey(point))
+            }
         }
     }
 
