@@ -25,6 +25,14 @@ class ClusteredYamapViewManagerImpl() {
         }
     }
 
+    fun setClusterRadius(view: ClusteredYamapView, radius: Double) {
+        view.setClusterRadius(radius)
+    }
+
+    fun setClusterMinZoom(view: ClusteredYamapView, minZoom: Int) {
+        view.setClusterMinZoom(minZoom)
+    }
+
     fun setClusterSize(view: ClusteredYamapView, size: ReadableMap?) {
         size?.let {
             view.setClusterSize(it)

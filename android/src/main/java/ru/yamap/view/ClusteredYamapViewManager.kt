@@ -44,6 +44,14 @@ class ClusteredYamapViewManager : ViewGroupManager<ClusteredYamapView>(),
         clusteredImplementation.setClusterIcon(view, source)
     }
 
+    override fun setClusterRadius(view: ClusteredYamapView, radius: Double) {
+        clusteredImplementation.setClusterRadius(view, radius)
+    }
+
+    override fun setClusterMinZoom(view: ClusteredYamapView, minZoom: Int) {
+        clusteredImplementation.setClusterMinZoom(view, minZoom)
+    }
+
     override fun setClusterSize(view: ClusteredYamapView, size: ReadableMap?) {
         clusteredImplementation.setClusterSize(view, size)
     }

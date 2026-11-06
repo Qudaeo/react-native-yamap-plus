@@ -25,6 +25,9 @@
 
 using namespace facebook::react;
 
+static const double DEFAULT_CLUSTER_RADIUS = 50;
+static const int DEFAULT_CLUSTER_MIN_ZOOM = 12;
+
 @interface YamapView () <YMKUserLocationObjectListener, YMKMapCameraListener, YMKMapLoadedListener, YMKMapSizeChangedListener, YMKTrafficDelegate, YMKClusterListener, YMKClusterTapListener, YMKMapObjectTapListener>
 
 @end
@@ -57,6 +60,8 @@ using namespace facebook::react;
     UIImage* clusImage;
     CGFloat clusterWidth;
     CGFloat clusterHeight;
+    double clusterRadius;
+    int clusterMinZoom;
     UIColor* clusterTextColor;
     double clusterTextSize;
     double clusterTextYOffset;
@@ -104,6 +109,8 @@ using namespace facebook::react;
         mapLoaded = NO;
         clusterWidth = 32;
         clusterHeight = 32;
+        clusterRadius = DEFAULT_CLUSTER_RADIUS;
+        clusterMinZoom = DEFAULT_CLUSTER_MIN_ZOOM;
         clusterTextColor = UIColor.blackColor;
         clusterTextSize = 45;
         clusterTextYOffset = 0;
@@ -441,6 +448,8 @@ using namespace facebook::react;
     [imperativeIndexMap removeAllObjects];
     imperativePlacemarkCounter = 0;
     hasImperativePlacemarks = NO;
+    clusterRadius = DEFAULT_CLUSTER_RADIUS;
+    clusterMinZoom = DEFAULT_CLUSTER_MIN_ZOOM;
 
     static const auto defaultProps = std::make_shared<const YamapViewProps>();
     _props = defaultProps;
@@ -880,6 +889,18 @@ using namespace facebook::react;
     clusterHeight = [sizes valueForKey:@"height"] != nil ? [RCTConvert NSUInteger:sizes[@"height"]] : 0;
 }
 
+- (void)setClusterRadius:(double)radius {
+    if (radius <= 0) return;
+    clusterRadius = radius;
+    [self clusterPlacemarks];
+}
+
+- (void)setClusterMinZoom:(int)minZoom {
+    if (minZoom < 0) return;
+    clusterMinZoom = minZoom;
+    [self clusterPlacemarks];
+}
+
 - (void)setClusterTextColor:(NSNumber *)color {
     clusterTextColor = [RCTConvert UIColor:color];
 }
@@ -1046,7 +1067,7 @@ using namespace facebook::react;
 
 - (void) clusterPlacemarks {
     if ([clusterPlacemarks count] > 0) {
-        [clusterCollection clusterPlacemarksWithClusterRadius:50 minZoom:12];
+        [clusterCollection clusterPlacemarksWithClusterRadius:clusterRadius minZoom:(NSUInteger)clusterMinZoom];
     }
 }
 

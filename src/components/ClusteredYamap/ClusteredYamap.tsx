@@ -17,7 +17,7 @@ import { Commands } from "../../spec/commands/yamap";
 export const ClusteredYamap = forwardRef<
   ClusteredYamapRef,
   ClusteredYamapProps
->(({ clusterColor = "red", ...props }, ref) => {
+>(({ clusterColor = "red", clusterRadius = 50, clusterMinZoom = 12, ...props }, ref) => {
   const nativeRef = useRef<ClusteredYamapNativeRef | null>(null);
 
   useClusteredYamap(nativeRef, ref, Commands);
@@ -35,6 +35,8 @@ export const ClusteredYamap = forwardRef<
         userLocationIcon: getImageUri(props.userLocationIcon),
         clusterIcon: getImageUri(props.clusterIcon),
         clusterColor,
+        clusterRadius,
+        clusterMinZoom,
         clusteredMarkers: markers.map((mark) => mark.point),
         clusterSize: props.clusterSize
           ? {
@@ -66,7 +68,7 @@ export const ClusteredYamap = forwardRef<
         "clusterTextColor",
       ],
     );
-  }, [clusterColor, props]);
+  }, [clusterColor, clusterRadius, clusterMinZoom, props]);
 
   return <ClusteredYamapNativeComponent {...nativeProps} ref={nativeRef} />;
 });

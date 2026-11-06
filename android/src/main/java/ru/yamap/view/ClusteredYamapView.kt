@@ -40,6 +40,8 @@ class ClusteredYamapView(context: Context?) : YamapView(context), ClusterListene
     private var clusterIconSource = ""
     private var clusterWidth = 32
     private var clusterHeight = 32
+    private var clusterRadius = DEFAULT_CLUSTER_RADIUS
+    private var clusterMinZoom = DEFAULT_CLUSTER_MIN_ZOOM
     private var clusterTextSize = FONT_SIZE
     private var clusterTextColor = Color.BLACK
     private var clusterTextXOffset = 0
@@ -53,6 +55,23 @@ class ClusteredYamapView(context: Context?) : YamapView(context), ClusterListene
 
     fun setClusterTextSize(size: Float) {
         clusterTextSize = size
+    }
+
+    fun setClusterRadius(radius: Double) {
+        if (radius <= 0) return
+        clusterRadius = radius
+        recluster()
+    }
+
+    fun setClusterMinZoom(minZoom: Int) {
+        if (minZoom < 0) return
+        clusterMinZoom = minZoom
+        recluster()
+    }
+
+    private fun recluster() {
+        if (pointsList.isEmpty()) return
+        clusterCollection.clusterPlacemarks(clusterRadius, clusterMinZoom)
     }
 
     fun setClusterTextColor(color: Int) {
@@ -103,7 +122,7 @@ class ClusteredYamapView(context: Context?) : YamapView(context), ClusterListene
             }
             hasImperativePlacemarks = true
             if (recluster) {
-                clusterCollection.clusterPlacemarks(CLUSTER_RADIUS, CLUSTER_MIN_ZOOM)
+                clusterCollection.clusterPlacemarks(clusterRadius, clusterMinZoom)
             }
         }
 
@@ -147,7 +166,7 @@ class ClusteredYamapView(context: Context?) : YamapView(context), ClusterListene
             placemarksMap[pointKey(placemark.geometry)] = placemark
         }
         hasImperativePlacemarks = false
-        clusterCollection.clusterPlacemarks(CLUSTER_RADIUS, CLUSTER_MIN_ZOOM)
+        clusterCollection.clusterPlacemarks(clusterRadius, clusterMinZoom)
         scheduleClusterMarkersBind()
     }
 
@@ -203,7 +222,7 @@ class ClusteredYamapView(context: Context?) : YamapView(context), ClusterListene
             val placemark = placemarks[i]
             placemarksMap[pointKey(placemark.geometry)] = placemark
         }
-        clusterCollection.clusterPlacemarks(CLUSTER_RADIUS, CLUSTER_MIN_ZOOM)
+        clusterCollection.clusterPlacemarks(clusterRadius, clusterMinZoom)
         scheduleClusterMarkersBind()
     }
 
@@ -353,7 +372,7 @@ class ClusteredYamapView(context: Context?) : YamapView(context), ClusterListene
         private const val FONT_SIZE = 45f
         private const val MARGIN_SIZE = 9f
         private const val STROKE_SIZE = 9f
-        private const val CLUSTER_RADIUS = 50.0
-        private const val CLUSTER_MIN_ZOOM = 12
+        private const val DEFAULT_CLUSTER_RADIUS = 50.0
+        private const val DEFAULT_CLUSTER_MIN_ZOOM = 12
     }
 }

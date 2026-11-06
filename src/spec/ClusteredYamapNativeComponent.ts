@@ -136,6 +136,8 @@ export interface ClusteredYamapNativeProps extends ViewProps {
   onScreenToWorldPointsReceived: CodegenTypes.DirectEventHandler<WorldPointsResponse>;
 
   clusteredMarkers: Point[];
+  clusterRadius?: CodegenTypes.Double;
+  clusterMinZoom?: CodegenTypes.Int32;
   clusterColor?: CodegenTypes.Int32;
   clusterIcon?: string | undefined;
   clusterSize?: YandexClusterSizes;

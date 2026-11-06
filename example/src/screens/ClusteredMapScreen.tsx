@@ -54,6 +54,8 @@ export const ClusteredMapScreen = () => {
         clusterIcon={require('../assets/images/octagon.png')}
         clusterSize={{width: 35, height: 35}}
         clusterTextColor={'red'}
+        clusterRadius={80}
+        clusterMinZoom={14}
         initialRegion={{lat: 56.754215, lon: 38.421242, zoom: 6}}
         onMapLoaded={onMapLoaded}
         onCameraPositionChange={e => {

@@ -39,6 +39,8 @@ export type ClusteredYamapProps<T = any> = OmitEx<ClusteredYamapNativeProps,
   'userLocationIcon' |
   'clusteredMarkers' |
   'clusterIcon' |
+  'clusterRadius' |
+  'clusterMinZoom' |
   'clusterTextColor' |
   'onCameraPositionReceived' |
   'onVisibleRegionReceived' |
@@ -56,6 +58,17 @@ export type ClusteredYamapProps<T = any> = OmitEx<ClusteredYamapNativeProps,
    */
   clusteredMarkers?: ReadonlyArray<{point: Point, data: T}>
   clusterIcon?: ImageSourcePropType;
+  /**
+   * Cluster radius. Placemarks closer than this distance to each other are
+   * merged into a single cluster. The value is passed to the native SDK as
+   * is: meters on Android, screen units on iOS. Defaults to `50`.
+   */
+  clusterRadius?: number;
+  /**
+   * Minimum zoom level at which clustering is applied. Below this zoom the
+   * placemarks are shown as individual markers. Defaults to `12`.
+   */
+  clusterMinZoom?: number;
   clusterSize?: YandexClusterSizes;
   clusterTextSize?: number;
   clusterTextYOffset?: number;

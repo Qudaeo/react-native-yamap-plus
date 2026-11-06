@@ -41,6 +41,14 @@ using namespace facebook::react;
         [super setClusterColor:[NSNumber numberWithInt:newViewProps.clusterColor]];
     }
 
+    if (oldViewProps.clusterRadius != newViewProps.clusterRadius) {
+        [super setClusterRadius:newViewProps.clusterRadius];
+    }
+
+    if (oldViewProps.clusterMinZoom != newViewProps.clusterMinZoom) {
+        [super setClusterMinZoom:newViewProps.clusterMinZoom];
+    }
+
     if (oldViewProps.clusterSize.width != newViewProps.clusterSize.width || oldViewProps.clusterSize.height != newViewProps.clusterSize.height) {
         NSMutableDictionary *sizes = [[NSMutableDictionary alloc] init];
         [sizes setValue:[NSNumber numberWithDouble:newViewProps.clusterSize.width] forKey:@"width"];
