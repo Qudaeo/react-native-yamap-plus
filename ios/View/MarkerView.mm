@@ -67,9 +67,7 @@ using namespace facebook::react;
     const auto &oldViewProps = *std::static_pointer_cast<MarkerViewProps const>(_props);
     const auto &newViewProps = *std::static_pointer_cast<MarkerViewProps const>(props);
 
-    if (oldViewProps.point.lat != newViewProps.point.lat || oldViewProps.point.lon != newViewProps.point.lon) {
-        _point = [YMKPoint pointWithLatitude:newViewProps.point.lat longitude:newViewProps.point.lon];
-    }
+    _point = [YMKPoint pointWithLatitude:newViewProps.point.lat longitude:newViewProps.point.lon];
 
     if (oldViewProps.source != newViewProps.source) {
         source = [NSString stringWithCString:newViewProps.source.c_str() encoding:[NSString defaultCStringEncoding]];
@@ -120,6 +118,7 @@ using namespace facebook::react;
     excludeFromCluster = NO;
     source = nil;
     lastSource = nil;
+    _point = nil; // unknown again until the reused view gets its props
     _reactSubviews = [[NSMutableArray alloc] init];
 }
 
@@ -137,7 +136,10 @@ using namespace facebook::react;
 
 - (void)updateMarker {
     if (mapObject != nil && [mapObject isValid]) {
-        [mapObject setGeometry:_point];
+        // Fabric mounts the marker before its props arrive, so the point may still be unknown
+        if (_point != nil) {
+            [mapObject setGeometry:_point];
+        }
         [mapObject setZIndex:zIndex];
         YMKIconStyle* iconStyle = [[YMKIconStyle alloc] init];
         [iconStyle setScale:scale];
@@ -168,7 +170,9 @@ using namespace facebook::react;
 
 - (void)updateClusterMarker {
     if (mapObject != nil && [mapObject isValid]) {
-        [mapObject setGeometry:_point];
+        if (_point != nil) {
+            [mapObject setGeometry:_point];
+        }
         [mapObject setZIndex:zIndex];
         YMKIconStyle* iconStyle = [[YMKIconStyle alloc] init];
         [iconStyle setScale:scale];

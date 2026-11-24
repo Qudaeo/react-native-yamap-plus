@@ -616,7 +616,10 @@ static const int DEFAULT_CLUSTER_MIN_ZOOM = 12;
 
         if ([view isKindOfClass:[MarkerView class]]) {
             MarkerView *marker = (MarkerView *)view;
-            [lastKnownMarkers addObject:[marker getPoint]];
+            YMKPoint *point = [marker getPoint];
+            if (point != nil) {
+                [lastKnownMarkers addObject:point];
+            }
         }
     }
 
@@ -807,7 +810,6 @@ static const int DEFAULT_CLUSTER_MIN_ZOOM = 12;
             YMKMapObjectCollection *objects = mapView.mapWindow.map.mapObjects;
             YMKPlacemarkMapObject *obj = [objects addPlacemark];
             [obj setIconWithImage:[[UIImage alloc] init]];
-            [obj setGeometry:[marker getPoint]];
             [marker setMapObject:obj];
         }
     } else if ([subview isKindOfClass:[CircleView class]]) {

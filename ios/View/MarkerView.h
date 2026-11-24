@@ -9,7 +9,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface MarkerView: RCTViewComponentView
 
-- (YMKPoint*)getPoint;
+// nil until the marker's props arrive: Fabric mounts the view before setting props
+- (nullable YMKPoint*)getPoint;
 - (YMKPlacemarkMapObject*)getMapObject;
 - (void)setMapObject:(YMKPlacemarkMapObject*)mapObject;
 - (void)setClusterMapObject:(nullable YMKPlacemarkMapObject*)mapObject;
