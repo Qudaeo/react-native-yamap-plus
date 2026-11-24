@@ -119,10 +119,11 @@ class MarkerView(context: Context?) : ReactViewGroup(context), MapObjectTapListe
             if (_children.size == 0 && _iconSource != "") {
                 _iconSource?.let { source ->
                     ImageCacheManager.getImage(context, source, fun (image: Bitmap?) {
-                        ImageProvider.fromBitmap(image).let {
-                            (rnMapObject as PlacemarkMapObject).setIcon(it)
-                            (rnMapObject as PlacemarkMapObject).setIconStyle(iconStyle)
-                        }
+                        val placemark = rnMapObject as? PlacemarkMapObject
+                        if (image == null || placemark == null || !placemark.isValid) return
+
+                        placemark.setIcon(ImageProvider.fromBitmap(image))
+                        placemark.setIconStyle(iconStyle)
                     })
                 }
             }
